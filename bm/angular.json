@@ -34,7 +34,8 @@
             "styles": [
               "node_modules/bootstrap/scss/bootstrap.scss",
               "src/global.scss",
-              "src/theme/variables.scss"],
+              "src/theme/variables.scss"
+            ],
             "scripts": [
               "node_modules/bootstrap/dist/js/bootstrap.bundle.min.js"
             ]
@@ -111,7 +112,10 @@
                 "output": "assets"
               }
             ],
-            "styles": ["src/global.scss", "src/theme/variables.scss"],
+            "styles": [
+              "src/global.scss",
+              "src/theme/variables.scss"
+            ],
             "scripts": []
           },
           "configurations": {
@@ -124,8 +128,28 @@
         "lint": {
           "builder": "@angular-eslint/builder:lint",
           "options": {
-            "lintFilePatterns": ["src/**/*.ts", "src/**/*.html"]
+            "lintFilePatterns": [
+              "src/**/*.ts",
+              "src/**/*.html"
+            ]
           }
+        },
+        "deploy": {
+          "builder": "@angular/fire:deploy",
+          "options": {
+            "version": 2
+          },
+          "configurations": {
+            "production": {
+              "buildTarget": "app:build:production",
+              "serveTarget": "app:serve:production"
+            },
+            "development": {
+              "buildTarget": "app:build:development",
+              "serveTarget": "app:serve:development"
+            }
+          },
+          "defaultConfiguration": "production"
         }
       }
     }
