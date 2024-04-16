@@ -1,0 +1,24 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title>workers</ion-title>
+  </ion-toolbar>
+  <ion-segment [value]="active" class="segment">
+    <ion-segment-button value="active" [routerLink]="['/user/workers/active']">
+      <ion-label>Active</ion-label>
+    </ion-segment-button>
+    <ion-segment-button value="pending" [routerLink]="['/user/workers/pending']">
+      <ion-label>Pending</ion-label>
+    </ion-segment-button>
+  </ion-segment>
+</ion-header>
+
+
+<ion-content color="light">
+
+  <ion-grid fixed="true">
+    <ion-router-outlet></ion-router-outlet>
+
+  </ion-grid>
+
+
+</ion-content>

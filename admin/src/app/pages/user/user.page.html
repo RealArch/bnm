@@ -1,0 +1,36 @@
+<ion-split-pane when="lg" contentId="main">
+  <ion-menu contentId="main" class="id">
+    <ion-header>
+      <ion-toolbar color="tertiary">
+        <ion-title>Menu</ion-title>
+      </ion-toolbar>
+    </ion-header>
+    <ion-content class="ion-padding">
+      <ion-list class="menu">
+        <ion-item button lines="none" routerLinkActive="selected" routerDirection="forward"
+          [routerLink]="['/user/dashboard']">
+          <ion-icon aria-hidden="true" name="home" slot="start"></ion-icon>
+
+          Dashboard
+        </ion-item>
+        <ion-item button lines="none" routerLinkActive="selected" routerDirection="forward"
+          [routerLink]="['/user/workers/active']">
+          <ion-icon aria-hidden="true" name="people" slot="start"></ion-icon>
+
+          Workers
+        </ion-item>
+      </ion-list>
+    </ion-content>
+  </ion-menu>
+
+  <div class="ion-page" id="main">
+    <!-- <ion-header>
+      <ion-toolbar>
+        <ion-title>Main View</ion-title>
+      </ion-toolbar>
+    </ion-header> -->
+    <ion-content class="ion-padding">
+      <ion-router-outlet></ion-router-outlet>
+    </ion-content>
+  </div>
+</ion-split-pane>
