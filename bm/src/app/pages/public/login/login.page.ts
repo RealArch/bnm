@@ -3,21 +3,25 @@ import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { IonicModule } from '@ionic/angular';
 import { AuthService } from 'src/app/services/auth.service';
+import { PopupsService } from 'src/app/services/popups.service';
+import { RouterLinkWithHref } from '@angular/router';
 
 @Component({
   selector: 'app-login',
   templateUrl: './login.page.html',
   styleUrls: ['./login.page.scss'],
   standalone: true,
-  imports: [IonicModule, CommonModule, FormsModule, ReactiveFormsModule]
+  imports: [IonicModule, CommonModule, FormsModule, ReactiveFormsModule, RouterLinkWithHref]
 })
 export class LoginPage implements OnInit {
-  authServices = inject(AuthService);
+  authService = inject(AuthService);
+  popupService = inject(PopupsService)
   signinForm: FormGroup = this.fb.group({
-    username: [[], [Validators.required,]],
+    email: [[], [Validators.required,]],
     password: [[], [Validators.required,]]
 
   });
+  sending: boolean = false;
   constructor(
     private fb: FormBuilder,
   ) { }
@@ -26,13 +30,22 @@ export class LoginPage implements OnInit {
 
   }
   sendForm(form: FormGroup) {
-    console.log(form)
-    this.authServices.login(form.value.username, form.value.password)
-    .then(res=>{
-      console.log(res)
-    }).catch(err=>{
-      console.log(err.code)
-    })
+    this.sending = true;
+    this.authService.login(form.value.email, form.value.password)
+      .then(res => {
+      }).catch(err => {
+        console.log(err.code)
+        if (err.code == "auth/user-not-found") {
+          this.popupService.presentToast("bottom", "danger", "The email address you entered is not registered.")
+        } else if (err.code == "auth/wrong-password") {
+          this.popupService.presentToast("bottom", "danger", "The password you entered is wrong.")
+        } else {
+          this.popupService.presentToast("bottom", "danger", "Ups!? There is an unexpected error")
+          console.log(err)
+        }
+      }).finally(() => {
+        this.sending = false;
+      })
   }
 
 }

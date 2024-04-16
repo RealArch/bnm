@@ -1,0 +1,20 @@
+.welcome-box {
+    line-height: 22px;
+    background-color: var(--ion-color-primary);
+    color: white;
+    height: 25%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    border-radius: 0px 0px 20px 20px;
+}
+
+
+.welcome-msg {
+    font-size: 26px;
+    font-weight: bold;
+}
+
+.period-box {
+    font-size: 16px;
+}

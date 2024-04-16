@@ -7,8 +7,9 @@ import { routes } from './app/app.routes';
 import { AppComponent } from './app/app.component';
 import { environment } from './environments/environment';
 import { initializeApp, provideFirebaseApp } from '@angular/fire/app';
-import { getAuth, provideAuth } from '@angular/fire/auth';
+import { connectAuthEmulator, getAuth, provideAuth } from '@angular/fire/auth';
 import { getFirestore, provideFirestore } from '@angular/fire/firestore';
+import { provideHttpClient } from '@angular/common/http'
 
 if (environment.production) {
   enableProdMode();
@@ -17,13 +18,20 @@ if (environment.production) {
 bootstrapApplication(AppComponent, {
   providers: [
     { provide: RouteReuseStrategy, useClass: IonicRouteStrategy },
+    provideHttpClient(),
     provideIonicAngular(),
     provideRouter(routes),
     importProvidersFrom(
       provideFirebaseApp(
         () => initializeApp(environment.firebaseConfig)
       )),
-    importProvidersFrom(provideAuth(() => getAuth())),
+    importProvidersFrom(provideAuth(() => {
+      if (environment.useEmulators) {
+        const fireauth = getAuth();
+        connectAuthEmulator(fireauth, 'http://localhost:9099');
+        return fireauth;
+      } else { return getAuth(); }
+    })),
     importProvidersFrom(provideFirestore(() => getFirestore())),
   ],
 });

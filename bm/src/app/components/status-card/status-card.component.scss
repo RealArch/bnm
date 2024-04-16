@@ -1,0 +1,50 @@
+.card-status {
+    ion-col {
+        padding: 15px 10px 10px 15px;
+    }
+
+    .hours-box {
+        text-align: center;
+        line-height: 20px;
+
+        div:nth-child(1) {
+            font-size: 22px;
+            font-weight: bold;
+        }
+
+        div:nth-child(2) {
+            font-size: 22px;
+            font-weight: bold;
+        }
+
+        div:nth-child(3) {
+            font-size: 12px;
+        }
+    }
+
+    .status-info {
+        display: flex;
+        flex-direction: column;
+
+        div:last-child {
+            margin-top: auto;
+        }
+    }
+
+}
+
+
+.card-status .status-info div:nth-child(1) {
+    font-size: 14px;
+}
+
+.card-status .status-info div:nth-child(2) {
+    color: var(--ion-color-success);
+    font-size: 16px;
+}
+
+.buttons {
+    ion-button {
+        font-size: 14px;
+    }
+}

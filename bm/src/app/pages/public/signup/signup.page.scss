@@ -9,7 +9,7 @@
 
 .divider :nth-child(1) {
     width: 45%;
-    border-top: 2px solid rgb(206, 206, 206);
+    border-top: 2px solid rgb(206, 206, 206) ;
     margin-top: 14px;
 }
 
@@ -23,13 +23,13 @@
 
 .divider :nth-child(3) {
     width: 45%;
-    border-top: 2px solid rgb(206, 206, 206);
+    border-top: 2px solid rgb(206, 206, 206) ;
     margin-top: 14px;
 }
 
-ion-item {
-    --padding-start: 10px;
-    --padding-end: 10px;
+ion-item{
+    --padding-start	: 10px;
+    --padding-end	: 10px;
     margin-bottom: 7px;
-    --border-radius: 10px
+    --border-radius :10px
 }

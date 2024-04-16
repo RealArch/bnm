@@ -4,6 +4,9 @@
 
 export const environment = {
   production: false,
+  useEmulators:true,
+  
+  api: 'http://127.0.0.1:5001/bnm-01-abd4b/us-central1/api',
   firebaseConfig: {
     apiKey: "AIzaSyA0LMo7LR0QcHf_ZOy5ozuG_KT4hnGx51k",
     authDomain: "bnm-01-abd4b.firebaseapp.com",

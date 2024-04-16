@@ -1,28 +1,51 @@
 import { Routes } from '@angular/router';
-import {canActivate, redirectUnauthorizedTo} from '@angular/fire/auth-guard'
+import { canActivate, redirectLoggedInTo, redirectUnauthorizedTo } from '@angular/fire/auth-guard'
 
-const redirectToHome = () => redirectUnauthorizedTo(['/public/login'])
+const redirectToHome = () => redirectUnauthorizedTo(['/auth/login'])
+const redirectToDashboard = () => redirectLoggedInTo(['/user'])
 
 export const routes: Routes = [
-  {
-    path: 'home',
-    loadComponent: () => import('./home/home.page').then((m) => m.HomePage),
-    ...canActivate(redirectToHome)
-  },
+
   {
     path: '',
-    redirectTo: 'home',
+    redirectTo: 'user',
     pathMatch: 'full',
   },
+
   {
-    path: 'public',
-    loadComponent: () => import('./pages/public/public.page').then( m => m.PublicPage),
-    children:[
+    path: 'user',
+    loadComponent: () => import('./pages/user/user.page').then(m => m.UserPage),
+    ...canActivate(redirectToHome),
+    children: [
       {
-        path: 'login',
-        loadComponent: () => import('./pages/public/login/login.page').then( m => m.LoginPage)
+        path: '',
+        redirectTo: 'dashboard',
+        pathMatch: 'full',
+      },
+      {
+        path: 'dashboard',
+        loadComponent: () => import('./pages/user/dashboard/dashboard.page').then(m => m.DashboardPage),
       }
     ]
   },
-  
+  {
+    path: 'auth',
+    loadComponent: () => import('./pages/public/public.page').then(m => m.PublicPage),
+    ...canActivate(redirectToDashboard),
+    children: [
+      {
+        path: 'login',
+        loadComponent: () => import('./pages/public/login/login.page').then(m => m.LoginPage)
+      },
+      {
+        path: 'signup',
+        loadComponent: () => import('./pages/public/signup/signup.page').then(m => m.SignupPage)
+      },
+    ]
+  },
+
+
+
+
+
 ];
