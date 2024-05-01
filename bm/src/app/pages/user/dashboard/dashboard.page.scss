@@ -1,6 +1,7 @@
 .welcome-box {
     line-height: 22px;
-    background-color: var(--ion-color-primary);
+    background: rgb(56, 128, 255);
+    background: linear-gradient(180deg, rgba(56, 128, 255, 1) 0%, rgba(49, 110, 218, 1) 100%);
     color: white;
     height: 25%;
     display: flex;

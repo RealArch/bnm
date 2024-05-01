@@ -1,9 +1,8 @@
-<div>
-  <ion-card class="m-0">
+<div *ngIf="status == 'on-shift'">
+  <ion-card class="m-0 shift-card on-shift">
     <ion-row class="card-status">
-      <ion-col size="2" [style.background-color]="true ? 'var(--ion-color-medium)' : 'blue'"
-        class="py-5 d-flex align-items-center justify-content-center hours-box">
-        <div class="text-center ">
+      <ion-col size="2" class=" py-4 d-flex align-items-center justify-content-center hours-box">
+        <div class="text-center hours-box-container">
           <div>
             08
           </div>
@@ -14,6 +13,7 @@
             HRS
           </div>
         </div>
+
       </ion-col>
       <ion-col class="status-info">
         <div>
@@ -22,15 +22,47 @@
         <div class="current-status">
           En turno
         </div>
-        <div>
-          hola
-        </div>
+
         <div>
           <ion-buttons class="ion-justify-content-end buttons mt-auto">
             <ion-button color="medium">
               Iniciar break
             </ion-button>
             <ion-button color="primary">
+              Finalizar turno
+            </ion-button>
+          </ion-buttons>
+        </div>
+
+      </ion-col>
+    </ion-row>
+  </ion-card>
+</div>
+
+<!--  -->
+
+<div *ngIf="status == 'off-shift'">
+  <ion-card class="m-0 shift-card off-shift">
+    <ion-row class="card-status">
+      <ion-col size="2" class=" py-4 d-flex align-items-center justify-content-center hours-box">
+
+
+        <div class="text-center hours-box-container d-flex justify-content-center align-items-center">
+          <ion-icon name="bed"></ion-icon>
+        </div>
+
+      </ion-col>
+      <ion-col class="status-info">
+        <div>
+          Estado actual
+        </div>
+        <div class="current-status">
+          Fuera de turno
+        </div>
+
+        <div>
+          <ion-buttons class="ion-justify-content-end buttons mt-auto">
+            <ion-button color="primary" id="open-start-shift">
               Iniciar turno
             </ion-button>
           </ion-buttons>
@@ -39,4 +71,10 @@
       </ion-col>
     </ion-row>
   </ion-card>
+  <!-- Start shift modal -->
+  <ion-modal trigger="open-start-shift">
+    <ng-template>
+      <app-start-shift-modal style="height: 100%;"></app-start-shift-modal>
+    </ng-template>
+  </ion-modal>
 </div>

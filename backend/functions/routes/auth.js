@@ -46,7 +46,9 @@ router.post('/signup', async (req, res) => {
             email: body.email,
             firstName: body.firstName,
             lastName: body.lastName,
-            active:false,
+            active: false,
+            status: 'idle',
+            currentShift: null,
             creationDate: Date.now()
         }
         await db.collection('users').doc(userCreated.uid).set(userDataDb).catch(err => {
@@ -85,10 +87,10 @@ router.get('/createAdminUser', async (req, res) => {
                 name: err.name, message: err.message, code: 'auth/error-user-creation'
             })
         })
-        await auth().setCustomUserClaims(userCreated.uid,{
-            admin:true
+        await auth().setCustomUserClaims(userCreated.uid, {
+            admin: true
         })
-        return res.json({ message: 'Admin user created'})
+        return res.json({ message: 'Admin user created' })
     } catch (error) {
         return res.status(500).json({
             name: err.name, message: err.message, code: 'auth/general-error'
