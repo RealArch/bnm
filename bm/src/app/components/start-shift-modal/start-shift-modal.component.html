@@ -11,28 +11,80 @@
     <ion-card class="mt-3 mx-auto time-picker-card ">
       <ion-row class="w-100 h-100 ion-align-items-center ion-justify-content-center">
         <ion-col size="12" class="d-flex ion-align-items-center ion-justify-content-center">
-        
-            <ion-datetime presentation="time" class="timePicker w-100"></ion-datetime>
+
+          <ion-datetime (ionChange)="updateStartTime($event)" presentation="time"
+            class="timePicker w-100"></ion-datetime>
 
         </ion-col>
       </ion-row>
     </ion-card>
     <ion-card>
 
+      <form [formGroup]="startShiftForm">
+        <ion-row>
 
-      <ion-row>
-        <ion-col size="12">
-          <div class="label-1">
-            Shift information
-          </div>
-        </ion-col>
-        <ion-col size="12">
-          <ion-item color="light">
-            <ion-input label="Workplace" labelPlacement="stacked" placeholder="Gatorate"></ion-input>
-          </ion-item>
-        </ion-col>
-      </ion-row>
+          <ion-col size="12">
+            <div class="label-1">
+              Shift information
+            </div>
+          </ion-col>
+
+          <ion-col size="12">
+            <ion-item color="light">
+              <ion-input disabled="true" value="{{startShiftForm.value.startTime | date:'shortTime'}}"
+                label="Start time" labelPlacement="stacked"></ion-input>
+            </ion-item>
+          </ion-col>
+
+          <ion-col size="12">
+            <ion-item color="light">
+              <ion-select formControlName="type" interface="popover" placeholder="Select One"
+                (ionChange)="onTypeChange()">
+                <div slot="label">What are you doing?<ion-text color="danger">*</ion-text></div>
+
+                <ion-select-option value="working">Working</ion-select-option>
+                <ion-select-option value="traveling">Traveling</ion-select-option>
+                <ion-select-option value="other">Other</ion-select-option>
+              </ion-select>
+            </ion-item>
+          </ion-col>
+
+          <ion-col size="12" *ngIf="startShiftForm.value.type=='working' || startShiftForm.value.type=='traveling'">
+            <ion-item color="light">
+              <ion-select formControlName="workingPlace" interface="action-sheet" placeholder="Select One">
+                <div slot="label">Working place<ion-text color="danger">*</ion-text></div>
+
+                @for (customer of customers; track customer) {
+                <ion-select-option value="{{customer.id}}">{{customer.name}}, {{customer.city}},
+                  {{customer.state}}</ion-select-option>
+                }
+              </ion-select>
+            </ion-item>
+          </ion-col>
+
+          <ion-col size="12" *ngIf="startShiftForm.value.type=='other'">
+            <ion-item color="light">
+              <ion-input formControlName="details" label="Add details" labelPlacement="stacked"></ion-input>
+            </ion-item>
+          </ion-col>
+
+        </ion-row>
+      </form>
     </ion-card>
+
+    <ion-row class="justify-content-center">
+      <ion-col size="auto">
+        <ion-button (click)="startShiftAlert()" [disabled]="!startShiftForm.valid || sending">
+          @if (sending){
+          <ion-spinner name="circular"></ion-spinner>
+          } @else {
+          <ion-text>
+            Start shift
+          </ion-text>
+          }
+        </ion-button>
+      </ion-col>
+    </ion-row>
   </ion-grid>
 
 </ion-content>

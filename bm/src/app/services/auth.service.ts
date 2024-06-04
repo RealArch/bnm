@@ -1,7 +1,8 @@
 import { Injectable } from '@angular/core';
-import { Auth, IdTokenResult, authState, getAuth, signInWithCustomToken, signInWithEmailAndPassword } from '@angular/fire/auth';
+import { Auth, IdTokenResult, authState, getAuth, getIdToken, idToken, signInWithCustomToken, signInWithEmailAndPassword, signOut } from '@angular/fire/auth';
 import { HttpClient } from '@angular/common/http';
 import { environment } from '../../environments/environment';
+import { idTokenResult } from '@angular/fire/auth-guard';
 @Injectable({
   providedIn: 'root'
 })
@@ -32,5 +33,45 @@ export class AuthService {
   }
   getAuthState() {
     return authState(getAuth())
+  }
+  logout() {
+    return signOut(getAuth())
+  }
+  async getIdToken() {
+    // var token = await this.auth.currentUser?.getIdToken(true)
+    // return token
+    const user = this.auth.currentUser;
+    var token = user ? await user.getIdToken(true) : null;
+    return token;
+  }
+
+  async handleTokenRevocation() {
+    const user = this.auth.currentUser;
+    var token = user ? await user.getIdToken(true) : null;
+    return token;
+    // const auth = getAuth();
+    // try {
+    //   const user = auth.currentUser;
+    //   console.log(user)
+    //   if (user) {
+    //     // Intenta obtener el token
+    //     const token = await user.getIdToken(true);
+    //     return true;
+    //   } else {
+    //     // Si no hay un usuario autenticado, redirige al usuario a la página de inicio de sesión
+    //     console.log('no user')
+    //     return false;
+    //   }
+    // } catch (error:any) {
+    //   console.log(error)
+    //   if (error.code === 'auth/id-token-revoked') {
+    //     // Si el token ha sido revocado, refresca el token
+    //     const user = auth.currentUser;
+    //     const newToken = user ? await user.getIdToken(true) : null;
+    //     return true;
+    //   } else {
+    //     return false;
+    //   }
+    // }
   }
 }

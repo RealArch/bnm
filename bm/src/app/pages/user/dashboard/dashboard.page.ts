@@ -5,6 +5,7 @@ import { IonicModule } from '@ionic/angular';
 import { StatusCardComponent } from 'src/app/components/status-card/status-card.component';
 import { addIcons } from 'ionicons';
 import { notifications } from 'ionicons/icons';
+import { AuthService } from 'src/app/services/auth.service';
 
 @Component({
   selector: 'app-dashboard',
@@ -14,7 +15,10 @@ import { notifications } from 'ionicons/icons';
   imports: [IonicModule, CommonModule, FormsModule, StatusCardComponent]
 })
 export class DashboardPage implements OnInit {
-  constructor() {
+  constructor(
+    private authService: AuthService
+
+  ) {
     addIcons({ notifications })
 
   }
@@ -22,5 +26,7 @@ export class DashboardPage implements OnInit {
   ngOnInit() {
 
   }
-
+  logout() {
+    this.authService.logout()
+  }
 }

@@ -10,6 +10,7 @@ import { initializeApp, provideFirebaseApp } from '@angular/fire/app';
 import { connectAuthEmulator, getAuth, provideAuth } from '@angular/fire/auth';
 import { getFirestore, provideFirestore } from '@angular/fire/firestore';
 import { provideHttpClient } from '@angular/common/http'
+import { DatePipe } from '@angular/common';
 
 if (environment.production) {
   enableProdMode();
@@ -17,9 +18,12 @@ if (environment.production) {
 
 bootstrapApplication(AppComponent, {
   providers: [
+    DatePipe,
     { provide: RouteReuseStrategy, useClass: IonicRouteStrategy },
     provideHttpClient(),
-    provideIonicAngular(),
+    provideIonicAngular({
+      innerHTMLTemplatesEnabled: true
+    }),
     provideRouter(routes),
     importProvidersFrom(
       provideFirebaseApp(

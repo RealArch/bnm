@@ -24,7 +24,9 @@ initializeApp({
 //RUTAS
 const authRoute = require("./routes/auth")
 app.use('/auth', authRoute)
-//
+//SHIFTS
+const shiftRoute = require("./routes/shifts")
+app.use('/shifts', shiftRoute)
 
 
 exports.api = onRequest(app);

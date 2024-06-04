@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { ToastController } from '@ionic/angular'
+import { ToastController, AlertController } from '@ionic/angular'
 import { closeOutline } from 'ionicons/icons'
 import { addIcons } from 'ionicons';
 @Injectable({
@@ -9,6 +9,7 @@ export class PopupsService {
 
   constructor(
     private toastController: ToastController,
+    private alertController: AlertController
   ) {
     addIcons({ closeOutline });
   }
@@ -27,4 +28,17 @@ export class PopupsService {
 
     await toast.present();
   }
+
+  async presentAlert(header:string, message:string) {
+    const alert = await this.alertController.create({
+      header: header,
+      message: message,
+      buttons: ['Ok'],
+      backdropDismiss:false,
+      
+    });
+
+    await alert.present();
+  }
+  
 }

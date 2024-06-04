@@ -1,0 +1,9 @@
+{
+    "authentication": [
+        {
+            "code":"A-001",
+            "description": "No token provided"
+
+        }
+    ]
+}
