@@ -8,7 +8,7 @@ import { AppComponent } from './app/app.component';
 import { environment } from './environments/environment';
 import { initializeApp, provideFirebaseApp } from '@angular/fire/app';
 import { connectAuthEmulator, getAuth, provideAuth } from '@angular/fire/auth';
-import { getFirestore, provideFirestore } from '@angular/fire/firestore';
+import { connectFirestoreEmulator, getFirestore, provideFirestore } from '@angular/fire/firestore';
 import { provideHttpClient } from '@angular/common/http'
 import { DatePipe } from '@angular/common';
 
@@ -25,10 +25,33 @@ bootstrapApplication(AppComponent, {
       innerHTMLTemplatesEnabled: true
     }),
     provideRouter(routes),
+    //FIREBASE INIT
     importProvidersFrom(
       provideFirebaseApp(
         () => initializeApp(environment.firebaseConfig)
       )),
+
+    //  if(environment.useEmulators) {
+
+    //   const firestore = getFirestore();
+    //   connectFirestoreEmulator(firestore, 'localhost', 8080);
+    //   enableIndexedDbPersistence(firestore);
+    //   return firestore;
+    // } else {
+    //   getFirestore();
+    // }
+
+    importProvidersFrom(provideFirestore(() => {
+      if (environment.useEmulators) {
+        const firestore = getFirestore();
+        connectFirestoreEmulator(firestore, 'localhost', 8080)
+        return firestore
+      } else {
+        return getFirestore()
+      }
+    })),
+
+    //AUTHENTICATION INIT
     importProvidersFrom(provideAuth(() => {
       if (environment.useEmulators) {
         const fireauth = getAuth();
@@ -36,6 +59,6 @@ bootstrapApplication(AppComponent, {
         return fireauth;
       } else { return getAuth(); }
     })),
-    importProvidersFrom(provideFirestore(() => getFirestore())),
+    // importProvidersFrom(provideFirestore(() => getFirestore())),
   ],
 });

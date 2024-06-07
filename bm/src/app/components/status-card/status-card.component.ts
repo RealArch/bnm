@@ -1,9 +1,11 @@
 import { NgIf } from '@angular/common';
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, inject } from '@angular/core';
 import { IonicModule } from '@ionic/angular';
 import { addIcons } from 'ionicons';
 import { bed } from 'ionicons/icons';
 import { StartShiftModalComponent } from '../start-shift-modal/start-shift-modal.component';
+import { AuthService } from 'src/app/services/auth.service';
+import { AppComponent } from 'src/app/app.component';
 
 @Component({
   selector: 'app-status-card',
@@ -13,12 +15,19 @@ import { StartShiftModalComponent } from '../start-shift-modal/start-shift-modal
   imports: [IonicModule, NgIf, StartShiftModalComponent ]
 })
 export class StatusCardComponent implements OnInit {
-  status: 'on-shift' | 'off-shift' = 'off-shift'
-
-  constructor() { 
-    addIcons({bed})
+  status: 'onShift' | 'outOfShift' = 'outOfShift'
+  appComponent = inject(AppComponent)
+  constructor(
+    private authService: AuthService
+  ) {
+    addIcons({ bed })
   }
 
-  ngOnInit() { }
+  ngOnInit() {
+    //todo: read realtime user data info
+
+    
+  }
+  
 
 }

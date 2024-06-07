@@ -3,12 +3,14 @@ import { Auth, IdTokenResult, authState, getAuth, getIdToken, idToken, signInWit
 import { HttpClient } from '@angular/common/http';
 import { environment } from '../../environments/environment';
 import { idTokenResult } from '@angular/fire/auth-guard';
+import { Firestore, doc, docSnapshots, getDoc, getFirestore } from '@angular/fire/firestore';
 @Injectable({
   providedIn: 'root'
 })
 export class AuthService {
 
   constructor(
+    private firebase: Firestore,
     private auth: Auth, //Esto es necesario para hacer funcionar el servicio en standalone
     private http: HttpClient,
 
@@ -44,34 +46,10 @@ export class AuthService {
     var token = user ? await user.getIdToken(true) : null;
     return token;
   }
-
-  async handleTokenRevocation() {
-    const user = this.auth.currentUser;
-    var token = user ? await user.getIdToken(true) : null;
-    return token;
-    // const auth = getAuth();
-    // try {
-    //   const user = auth.currentUser;
-    //   console.log(user)
-    //   if (user) {
-    //     // Intenta obtener el token
-    //     const token = await user.getIdToken(true);
-    //     return true;
-    //   } else {
-    //     // Si no hay un usuario autenticado, redirige al usuario a la página de inicio de sesión
-    //     console.log('no user')
-    //     return false;
-    //   }
-    // } catch (error:any) {
-    //   console.log(error)
-    //   if (error.code === 'auth/id-token-revoked') {
-    //     // Si el token ha sido revocado, refresca el token
-    //     const user = auth.currentUser;
-    //     const newToken = user ? await user.getIdToken(true) : null;
-    //     return true;
-    //   } else {
-    //     return false;
-    //   }
-    // }
+  getUserData(userUid: string) {
+    var ref = doc(getFirestore(), 'users', userUid)
+    return docSnapshots(ref)
   }
+
+
 }

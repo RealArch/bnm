@@ -6,6 +6,7 @@ const db = getFirestore()
 
 router.post('/signup', async (req, res) => {
     var body = req.body
+    var dateNow = Date.now()
     if (body.firstName === null || body.firstName === undefined || body.firstName.length < 3 || body.firstName.length > 50 || body.firstName === '') {
         return res.status(500).json({
             msg: 'The "firstName" field is required and must contain between 3 and 50 characters.',
@@ -47,9 +48,10 @@ router.post('/signup', async (req, res) => {
             firstName: body.firstName,
             lastName: body.lastName,
             active: false,
-            status: 'idle',
-            currentShift: null,
-            creationDate: Date.now()
+            status: 'idle', // outOfShift | onShift 
+            currentShift: [],
+            creationDate: dateNow,
+            lastUpdate: dateNow
         }
         await db.collection('users').doc(userCreated.uid).set(userDataDb).catch(err => {
             //Delete user previeusly created

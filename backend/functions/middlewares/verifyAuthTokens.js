@@ -3,8 +3,6 @@ var admin = require("firebase-admin");
 
 const middlewares = {
     verifyClientToken: function (req, res, next) {
-        console.log('pase por aqui 0')
-
         var afAuthToken = req.body.afAuthToken || req.query.afAuthToken;
         if (afAuthToken) {
             admin.auth().verifyIdToken(afAuthToken)
@@ -15,7 +13,6 @@ const middlewares = {
                             'msg': "This account is not allowed to do this"
                         });
                     } else {
-                        console.log('pase por aqui')
                         req.afAuthTokenDecoded = decodedToken
                         next();
                         return

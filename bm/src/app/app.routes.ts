@@ -1,8 +1,28 @@
-import { Routes } from '@angular/router';
+import { ActivatedRouteSnapshot, ResolveFn, RouterStateSnapshot, Routes } from '@angular/router';
 import { canActivate, redirectLoggedInTo, redirectUnauthorizedTo } from '@angular/fire/auth-guard'
+import { inject } from '@angular/core';
+import { AuthService } from './services/auth.service';
 
 const redirectToHome = () => redirectUnauthorizedTo(['/auth/login'])
 const redirectToDashboard = () => redirectLoggedInTo(['/user'])
+
+// const initialDataResolver: ResolveFn<any> = async (
+//   route: ActivatedRouteSnapshot,
+//   state: RouterStateSnapshot,
+
+// ) => {
+//   var authService = inject(AuthService)
+//    return authService.getAuthState().subscribe(auth => {
+//     return authService.getUserData(auth!.uid).subscribe(userData=>{
+//       return 'hola';
+
+//     })
+//   })
+//   //get uid
+
+//   //
+// };
+
 
 export const routes: Routes = [
 

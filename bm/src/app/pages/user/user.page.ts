@@ -4,6 +4,8 @@ import { FormsModule } from '@angular/forms';
 import { IonicModule } from '@ionic/angular';
 import { addIcons } from 'ionicons';
 import { home, hourglass, person } from 'ionicons/icons';
+import { ActivatedRoute } from '@angular/router';
+import { DocumentSnapshot } from '@angular/fire/firestore';
 
 @Component({
   selector: 'app-user',
@@ -13,12 +15,15 @@ import { home, hourglass, person } from 'ionicons/icons';
   imports: [IonicModule, CommonModule, FormsModule]
 })
 export class UserPage implements OnInit {
+  data!: any;
 
-  constructor() {
+  constructor(
+  ) {
     addIcons({ home, person, hourglass })
   }
 
   ngOnInit() {
+
   }
 
 }
