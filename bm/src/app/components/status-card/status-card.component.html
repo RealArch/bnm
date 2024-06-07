@@ -1,13 +1,14 @@
-<div *ngIf="status == 'onShift'">
+<div *ngIf="userData.status == 'onShift'">
   <ion-card class="m-0 shift-card on-shift">
     <ion-row class="card-status">
       <ion-col size="2" class=" py-4 d-flex align-items-center justify-content-center hours-box">
         <div class="text-center hours-box-container">
           <div>
-            08
+            <span *ngIf="elapsedTime.hours == 0">00</span>
+            <span *ngIf="elapsedTime.hours > 0">{{elapsedTime.hours}}</span>
           </div>
           <div>
-            16
+            {{elapsedTime.minutes}}
           </div>
           <div>
             HRS
@@ -41,7 +42,7 @@
 
 <!--  -->
 
-<div *ngIf="status == 'outOfShift'">
+<div *ngIf="userData.status == 'outOfShift'">
   <ion-card class="m-0 shift-card off-shift">
     <ion-row class="card-status">
       <ion-col size="2" class=" py-4 d-flex align-items-center justify-content-center hours-box">

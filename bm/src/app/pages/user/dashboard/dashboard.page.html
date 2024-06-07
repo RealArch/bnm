@@ -5,27 +5,29 @@
 </ion-header> -->
 
 <ion-content color="light" class="">
-  <ion-toolbar color="primary">
-    <ion-buttons slot="end">
-      <ion-button >
-        <ion-icon slot="icon-only" name="notifications"></ion-icon>
+  <div *ngIf="!loadingData">
+    <ion-toolbar color="primary">
+      <ion-buttons slot="end">
+        <ion-button>
+          <ion-icon slot="icon-only" name="notifications"></ion-icon>
+        </ion-button>
+      </ion-buttons>
+    </ion-toolbar>
+    <ion-grid class="welcome-box  ion-padding">
+      <div class="welcome-msg">
+        !Hola, Rafael!
+      </div>
+      <div class="period-box">
+        Periodo actual 04/05/24 - 04/18/04</div>
+    </ion-grid>
+    <ion-grid class="ion-padding">
+
+
+      <app-status-card [userData]="userData"></app-status-card>
+
+      <ion-button (click)="logout()">
+        cerrar sesion
       </ion-button>
-    </ion-buttons>
-  </ion-toolbar>
-  <ion-grid class="welcome-box  ion-padding">
-    <div class="welcome-msg">
-      !Hola, Rafael!
-    </div>
-    <div class="period-box">
-      Periodo actual 04/05/24 - 04/18/04</div>
-  </ion-grid>
-  <ion-grid class="ion-padding">
-
-
-    <app-status-card></app-status-card>
-
-    <ion-button (click)="logout()">
-      cerrar sesion
-    </ion-button>
-  </ion-grid>
+    </ion-grid>
+  </div>
 </ion-content>

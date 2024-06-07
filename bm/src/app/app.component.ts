@@ -23,7 +23,7 @@ export class AppComponent {
       .subscribe({
         next: (user: any) => {
           if (user) {
-            this.getUserData(user.uid)
+            localStorage.setItem('userUid', user.uid)
             this.router.navigate(['/'])
           } else {
             this.router.navigate(['/auth/login'])
@@ -32,14 +32,6 @@ export class AppComponent {
       })
   }
 
-  async getUserData(uid: string) {
-    // try {
-    //   this.userData = await this.authService.getUserData(uid)
-    // } catch (error) {
-    //   //todo: handle error when can't find the user data
-    //   console.log('error getting data')
-    //   console.log(error)
-    // }
-  }
+
 
 }

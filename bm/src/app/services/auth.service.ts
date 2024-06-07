@@ -17,8 +17,6 @@ export class AuthService {
   ) { }
 
   login(email: string, password: string) {
-    console.log(email)
-    console.log(password)
     return signInWithEmailAndPassword(getAuth(), email, password)
   }
   loginWithToken(loginToken: string) {
@@ -37,6 +35,8 @@ export class AuthService {
     return authState(getAuth())
   }
   logout() {
+    localStorage.removeItem('userUid')
+
     return signOut(getAuth())
   }
   async getIdToken() {
@@ -50,6 +50,5 @@ export class AuthService {
     var ref = doc(getFirestore(), 'users', userUid)
     return docSnapshots(ref)
   }
-
 
 }
