@@ -38,3 +38,5 @@ exports.api = onRequest(app);
 //   logger.info("Hello logs!", {structuredData: true});
 //   response.send("Hello from Firebase!");
 // });
+
+//todo: automatic function to close a shift when it reaches 12:00 And fill only 8 hours.

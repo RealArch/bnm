@@ -21,7 +21,6 @@ router.post('/start', middlewares.verifyClientToken, async (req, res) => {
     //todo: Validate data
 
 
-    //todo:edit status on user data info
 
     try {
         //todo: get current user data from transaction
@@ -31,18 +30,21 @@ router.post('/start', middlewares.verifyClientToken, async (req, res) => {
                     throw "Document does not exist!";
                 }
                 userData = userDoc.data()
-                //if  currentShift is empty, just push the data
-                if (userData.currentShift.length == 0) {
-                    userData.currentShift.push({
-                        startTime: body.startTime,
-                        endTime: null,
-                        type: body.type,
-                        workingPlace: body.workingPlace,
-                        details: body.details
-                    })
-                    userData.status = 'onShift';
-                    userData.lastUpdate = dateNow
+                //if there is a previous block, close that block adding the actual startTime as the previous endTime
+                if (userData.currentShift.length > 0) {
+                    userData.currentShift[userData.currentShift.length - 1].endTime = body.startTime
                 }
+                //then push the data
+                userData.currentShift.push({
+                    startTime: body.startTime,
+                    endTime: null,
+                    type: body.type,
+                    workingPlace: body.workingPlace,
+                    details: body.details
+                })
+                userData.status = 'onShift';
+                userData.lastUpdate = dateNow
+
                 //save data
                 transaction.update(userDocRef, userData)
             })
@@ -52,7 +54,7 @@ router.post('/start', middlewares.verifyClientToken, async (req, res) => {
         return res.status(500).json({ msg: "there were a problem saving the data" })
 
     }
-    return res.status(200).json({ msg: "Shift started successfully" })
+    return res.status(200).json({ msg: "Shift updated successfully" })
 })
 
 module.exports = router
