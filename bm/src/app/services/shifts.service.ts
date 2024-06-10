@@ -10,7 +10,7 @@ export class ShiftsService {
     private http: HttpClient
   ) { }
 
-  startShift(startTime: number, type: 'working' | 'traveling' | 'other', workingPlace: string, details: string, afAuthToken: string | null) {
+  startShift(startTime: number, type: 'working' | 'traveling' | 'other' | 'lunch', workingPlace: string, details: string, afAuthToken: string | null) {
     var data = {
       startTime: startTime,
       type: type,

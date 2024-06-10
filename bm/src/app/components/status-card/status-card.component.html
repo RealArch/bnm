@@ -1,14 +1,14 @@
-<div *ngIf="userData.status == 'onShift'">
+<div *ngIf="userData.status == 'onShift' || userData.status == 'onLunch'">
   <ion-card class="m-0 shift-card on-shift">
     <ion-row class="card-status">
       <ion-col size="2" class=" py-4 d-flex align-items-center justify-content-center hours-box">
         <div class="text-center hours-box-container">
           <div>
-            <span *ngIf="elapsedTime.hours == 0">00</span>
-            <span *ngIf="elapsedTime.hours > 0">{{elapsedTime.hours}}</span>
+            <span *ngIf="elapsedTime.work.hours == 0">00</span>
+            <span *ngIf="elapsedTime.work.hours > 0">{{elapsedTime.work.hours}}</span>
           </div>
           <div>
-            {{elapsedTime.minutes}}
+            {{elapsedTime.work.minutes}}
           </div>
           <div>
             HRS
@@ -21,16 +21,28 @@
           Estado actual
         </div>
         <div class="current-status">
-          En turno
+
+          <ion-text *ngIf="userData.status=='onShift'" color="success">
+            On Shift
+          </ion-text>
+          <ion-text *ngIf="userData.status=='onLunch'" color="warning">
+            On Lunch
+          </ion-text>
         </div>
 
         <div>
           <ion-buttons class="ion-justify-content-end buttons mt-auto">
-            <ion-button color="medium">
-              Iniciar break
+            <ion-button *ngIf="userData.status != 'onLunch'" (click)="openModal('commute')" color="warning">
+              Commute
             </ion-button>
-            <ion-button color="primary">
-              Finalizar turno
+            <ion-button *ngIf="userData.status != 'onLunch'" color="success" (click)="openModal('lunch')">
+              Start lunch
+            </ion-button>
+            <ion-button *ngIf="userData.status == 'onLunch'" color="success" (click)="openModal('commute')">
+              Finish lunch
+            </ion-button>
+            <ion-button color="danger">
+              End shift
             </ion-button>
           </ion-buttons>
         </div>
@@ -63,7 +75,7 @@
 
         <div>
           <ion-buttons class="ion-justify-content-end buttons mt-auto">
-            <ion-button color="primary" id="open-start-shift">
+            <ion-button color="primary" (click)="openModal('start')">
               Iniciar turno
             </ion-button>
           </ion-buttons>
@@ -72,10 +84,11 @@
       </ion-col>
     </ion-row>
   </ion-card>
-  <!-- Start shift modal -->
-  <ion-modal trigger="open-start-shift">
-    <ng-template>
-      <app-start-shift-modal style="height: 90%;"></app-start-shift-modal>
-    </ng-template>
-  </ion-modal>
+
 </div>
+<!-- Start shift modal -->
+<!-- <ion-modal trigger="open-start-shift">
+  <ng-template>
+    <app-start-shift-modal [modType]="modType" style="height: 90%;"></app-start-shift-modal>
+  </ng-template>
+</ion-modal> -->

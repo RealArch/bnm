@@ -15,13 +15,7 @@ router.post('/start', middlewares.verifyClientToken, async (req, res) => {
     var userDocRef = db.collection("users").doc(userUid);
     var userData = null;
     var body = req.body
-    //
-    console.log('entre')
-    console.log(req.body)
     //todo: Validate data
-
-
-
     try {
         //todo: get current user data from transaction
         await db.runTransaction((transaction) => {
@@ -43,6 +37,7 @@ router.post('/start', middlewares.verifyClientToken, async (req, res) => {
                     details: body.details
                 })
                 userData.status = 'onShift';
+                if (body.type == 'lunch') userData.status = 'onLunch';
                 userData.lastUpdate = dateNow
 
                 //save data
