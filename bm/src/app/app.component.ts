@@ -24,7 +24,6 @@ export class AppComponent {
         next: (user: any) => {
           if (user) {
             localStorage.setItem('userUid', user.uid)
-            this.router.navigate(['/'])
           } else {
             this.router.navigate(['/auth/login'])
           }

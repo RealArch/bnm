@@ -48,8 +48,11 @@ router.post('/signup', async (req, res) => {
             firstName: body.firstName,
             lastName: body.lastName,
             active: false,
-            status: 'idle', // outOfShift | onShift 
-            currentShift: [],
+            status: 'outOfShift', // outOfShift | onShift 
+            currentShift: {
+                blocks:[],
+                lunchTaken:false
+            },
             creationDate: dateNow,
             lastUpdate: dateNow
         }

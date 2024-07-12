@@ -4,7 +4,7 @@ import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } 
 import { IonicModule } from '@ionic/angular';
 import { AuthService } from 'src/app/services/auth.service';
 import { PopupsService } from 'src/app/services/popups.service';
-import { RouterLinkWithHref } from '@angular/router';
+import { Router, RouterLinkWithHref } from '@angular/router';
 import { addIcons } from 'ionicons';
 import { checkmarkCircle, closeCircle } from 'ionicons/icons';
 
@@ -29,6 +29,7 @@ export class SignupPage implements OnInit {
   sending: boolean = false;
   constructor(
     private fb: FormBuilder,
+    private router: Router
   ) {
     //Icons used
     addIcons({ checkmarkCircle });
@@ -45,7 +46,11 @@ export class SignupPage implements OnInit {
       .subscribe({
         next: (res: any) => {
           console.log(res)
-          this.authService.loginWithToken(res.loginToken)
+          this.authService.loginWithToken(res.loginToken).then(()=>{
+            this.router.navigate(['user'])
+
+          })
+
         },
         error: err => {
           this.sending = false;

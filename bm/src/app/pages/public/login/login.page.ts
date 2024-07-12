@@ -4,7 +4,7 @@ import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } 
 import { IonicModule } from '@ionic/angular';
 import { AuthService } from 'src/app/services/auth.service';
 import { PopupsService } from 'src/app/services/popups.service';
-import { RouterLinkWithHref } from '@angular/router';
+import { Router, RouterLinkWithHref } from '@angular/router';
 
 @Component({
   selector: 'app-login',
@@ -24,6 +24,7 @@ export class LoginPage implements OnInit {
   sending: boolean = false;
   constructor(
     private fb: FormBuilder,
+    private router:Router
   ) { }
 
   ngOnInit() {
@@ -33,6 +34,7 @@ export class LoginPage implements OnInit {
     this.sending = true;
     this.authService.login(form.value.email, form.value.password)
       .then(res => {
+        this.router.navigate(['user'])
       }).catch(err => {
         console.log(err.code)
         if (err.code == "auth/user-not-found") {

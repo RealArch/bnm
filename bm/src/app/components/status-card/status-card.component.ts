@@ -1,6 +1,6 @@
 import { CommonModule, NgIf } from '@angular/common';
-import { Component, Input, OnInit, inject } from '@angular/core';
-import { IonicModule, ModalController, AlertController } from '@ionic/angular';
+import { Component, EventEmitter, Input, OnInit, ViewChild, inject } from '@angular/core';
+import { IonicModule, ModalController, AlertController, IonModal } from '@ionic/angular';
 import { addIcons } from 'ionicons';
 import { bed } from 'ionicons/icons';
 import { StartShiftModalComponent } from '../start-shift-modal/start-shift-modal.component';
@@ -16,11 +16,15 @@ import { AppComponent } from 'src/app/app.component';
 })
 export class StatusCardComponent implements OnInit {
   @Input() userData: any;
+  @ViewChild(IonModal) modal!: IonModal;
+
   appComponent = inject(AppComponent)
   alertController = inject(AlertController);
   interval: any;
-  elapsedTime!: { lunch: { hours: number; minutes: number; }; work: { hours: number; minutes: number; }; };
+  elapsedTime!: { lunch: { hours: number; minutes: number; }; work: { hours: number; minutes: number; }; } | null;
   modType!: 'start' | 'commute' | 'lunch';
+  copyElapseTime!: { lunch: { hours: number; minutes: number; }; work: { hours: number; minutes: number; }; } | null;
+  updating: boolean = false;
   constructor(
     private authService: AuthService,
     private modalCtrl: ModalController,
@@ -30,14 +34,27 @@ export class StatusCardComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.elapsedTime = this.getElapsedMinSec(this.userData.currentShift)
+
+    this.elapsedTime = this.getElapsedMinSec(this.userData.currentShift.blocks)
     this.interval = window.setInterval(() => {
-      this.elapsedTime = this.getElapsedMinSec(this.userData.currentShift)
+      this.elapsedTime = this.getElapsedMinSec(this.userData.currentShift.blocks)
     }, 1000);
 
   }
 
-  getElapsedMinSec(currentShift: any[]) {
+  getElapsedMinSec(blocks: any[]) {
+    var res = {
+      lunch: {
+        hours: 0,
+        minutes: 0
+      },
+      work: {
+        hours: 0,
+        minutes: 0
+      }
+    }
+
+    if (this.userData.status == "outOfShift") return null;
     var dateNow = Date.now()
     var diffLunchMinutes = 0;
     var diffLunchHours = 0;
@@ -46,7 +63,7 @@ export class StatusCardComponent implements OnInit {
     var totalTimeWorked = 0;
     var totalTimeLunch = 0;
     //Otra opcion para hacer esto mas facil seria sumar todos los elementos que tengan fecha de inicio y de final y que no sean lunch
-    currentShift.forEach((block, index) => {
+    blocks.forEach((block, index) => {
       //Count all the laps with end time. if lunch to totalTimeLunch, if not to  totalTimeWorked
       if (block.endTime != null) {
         let timeDifference = block.endTime - block.startTime;
@@ -83,39 +100,30 @@ export class StatusCardComponent implements OnInit {
       }
     }
   }
-
-  // async alertAfterLunch() {
-  //   const alert = await this.alertController.create({
-  //     header: 'Ending Lunch',
-  //     message: 'Continue where you were working or select a new location',
-  //     buttons: [
-  //       {
-  //         text: 'No, Commute',
-  //         role: 'confirm',
-  //         handler: () => {
-  //           this.openModal('commute')
-  //         },
-  //       },
-  //       {
-  //         text: 'Yes',
-  //         role: 'confirm',
-  //         handler: () => {
-  //           this.endLunch()
-  //         },
-  //       },
-  //     ],
-  //   });
-
-  //   await alert.present();
-  // }
-  endLunch() {
+  calculateClosingHour(ev: CustomEvent) {
+    var newEndTime = new Date(ev.detail.value).getTime()
+    var copyBlocks = JSON.parse(JSON.stringify(this.userData.currentShift.blocks));
+    copyBlocks[copyBlocks.length - 1].endTime = newEndTime
+    this.copyElapseTime = this.getElapsedMinSec(copyBlocks)
+  }
+  closeModal() {
+    this.modal.dismiss(null, 'cancel');
+  }
+  closeShift() {
+    // this.modal.dismiss()
+    this.updating = true
 
   }
+  fillCopyElapseTime() {
+    this.copyElapseTime = this.getElapsedMinSec(this.userData.currentShift.blocks)
+
+  }
+
   async openModal(modType: 'start' | 'commute' | 'lunch') {
     var previousShift = null
-    var currentShiftSize = this.userData.currentShift.length
-    if (currentShiftSize > 0) {
-      previousShift = this.userData.currentShift[currentShiftSize - 1];
+    var currentShiftBlockSize = this.userData.currentShift.blocks.length
+    if (currentShiftBlockSize > 0) {
+      previousShift = this.userData.currentShift.blocks[currentShiftBlockSize - 1];
     }
 
     const modal = await this.modalCtrl.create({
@@ -127,5 +135,31 @@ export class StatusCardComponent implements OnInit {
     });
     return await modal.present();
   }
+  //Alert
+  //This is for ending shift
+  async alertEndShift() {
+    const alert = await this.alertController.create({
+      header: 'Confirmation',
+      message: 'You are about to end your shift for today. Do you wish to continue?',
+      buttons: [
+        {
+          text: 'Cancel',
+          role: 'cancel',
+          handler: () => {
+          },
+        },
+        {
+          text: 'Close shift',
+          role: 'confirm',
+          handler: () => {
+            this.closeShift()
+          },
+        },
+      ]
+    });
 
+    await alert.present();
+  }
 }
+
+

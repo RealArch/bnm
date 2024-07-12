@@ -2,7 +2,7 @@
   <ion-card class="m-0 shift-card on-shift">
     <ion-row class="card-status">
       <ion-col size="2" class=" py-4 d-flex align-items-center justify-content-center hours-box">
-        <div class="text-center hours-box-container">
+        <div class="text-center hours-box-container" *ngIf="elapsedTime != null">
           <div>
             <span *ngIf="elapsedTime.work.hours == 0">00</span>
             <span *ngIf="elapsedTime.work.hours > 0">{{elapsedTime.work.hours}}</span>
@@ -41,9 +41,71 @@
             <ion-button *ngIf="userData.status == 'onLunch'" color="success" (click)="openModal('commute')">
               Finish lunch
             </ion-button>
-            <ion-button color="danger">
+            <ion-button color="danger" id="open-modal">
               End shift
             </ion-button>
+
+            <ion-modal trigger="open-modal" (ionModalWillPresent)="fillCopyElapseTime()" backdrop-dismiss="false">
+              <ng-template>
+                <ion-header>
+                  <ion-toolbar color="primary">
+                    Ending Shift
+                    <ion-buttons slot="end">
+                      <ion-button (click)="closeModal()" [disabled]="updating">Cancel</ion-button>
+                    </ion-buttons>
+                  </ion-toolbar>
+                </ion-header>
+                <div class="block">
+                  <ion-card class="mt-3 mx-auto time-picker-card">
+                    <ion-row class="w-100 h-100 ion-align-items-center ion-justify-content-center">
+                      <ion-col size="12" class="d-flex ion-align-items-center ion-justify-content-center">
+
+                        <ion-datetime (ionChange)="calculateClosingHour($event)" presentation="time" [disabled]="updating"
+                          class="timePicker w-100"></ion-datetime>
+
+                      </ion-col>
+                    </ion-row>
+                  </ion-card>
+                </div>
+                <div class="mx-4">
+                  <!-- <ion-item color="light" class="radius input">
+                    <ion-input labelPlacement="floating" [readonly]="true"></ion-input>
+                    <div slot="label">Worked Hours:"
+                      value="{{elapsedTime!.work.hours}}:{{elapsedTime!.work.minutes}} hrs <ion-text
+                        color="danger">(Required)</ion-text></div>
+                  </ion-item> -->
+                  <ion-item color="light" class="radius" lines="none" *ngIf="copyElapseTime != null">
+                    <ion-input labelPlacement="fixed" [readonly]="true"
+                      value="{{copyElapseTime!.work.hours}}:{{copyElapseTime!.work.minutes}} hrs">
+                      <div slot="label"><strong>Worked Hours:</strong> </div>
+                    </ion-input>
+                  </ion-item>
+
+                </div>
+                <ion-footer class="mt-3">
+                  <ion-toolbar class="p-1">
+                    <ion-buttons slot="end">
+                      <ion-button color="primary" fill="solid" (click)="alertEndShift()" [disabled]="updating">
+                        @if (updating) {
+                        <ion-text class="px-2">
+                          <ion-spinner name="circular" ></ion-spinner>
+                        </ion-text>
+                        } @else {
+                          <ion-text class="px-2">
+                            End Shift
+                          </ion-text>
+                        }
+
+                      </ion-button>
+                    </ion-buttons>
+
+                  </ion-toolbar>
+
+
+                </ion-footer>
+              </ng-template>
+            </ion-modal>
+
           </ion-buttons>
         </div>
 
@@ -86,9 +148,3 @@
   </ion-card>
 
 </div>
-<!-- Start shift modal -->
-<!-- <ion-modal trigger="open-start-shift">
-  <ng-template>
-    <app-start-shift-modal [modType]="modType" style="height: 90%;"></app-start-shift-modal>
-  </ng-template>
-</ion-modal> -->

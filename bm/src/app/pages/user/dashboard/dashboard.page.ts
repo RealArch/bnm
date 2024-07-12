@@ -41,7 +41,6 @@ export class DashboardPage implements OnInit {
       .subscribe({
         next: (user) => {
           this.userData = user.data()
-          console.log(this.userData)
           this.loadingData=false
         },
         error: (e) => {
@@ -51,9 +50,7 @@ export class DashboardPage implements OnInit {
       })
 
   }
-  logout() {
-    this.authService.logout()
-  }
+
   ngOnDestroy() {
     this.subscriptions.forEach(element => {
       element.unsubscribe()

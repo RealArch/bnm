@@ -2,7 +2,7 @@
   <ion-router-outlet></ion-router-outlet>
 
 </ion-content>
-<ion-footer>
+<!-- <ion-footer>
   <ion-toolbar color="primary">
     <ion-row class="m-0 p-0">
       <ion-col size="4" class="d-flex justify-content-center">
@@ -30,4 +30,16 @@
 
 
   </ion-toolbar>
-</ion-footer>
+</ion-footer> -->
+<ion-tabs >
+  <ion-tab-bar slot="bottom">
+    <ion-tab-button tab="dashboard">
+      <ion-icon name="home"></ion-icon>
+      Listen Now
+    </ion-tab-button>
+    <ion-tab-button tab="profile">
+      <ion-icon name="person"></ion-icon>
+      Profile
+    </ion-tab-button>
+  </ion-tab-bar>
+</ion-tabs>

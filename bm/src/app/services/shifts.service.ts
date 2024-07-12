@@ -20,4 +20,13 @@ export class ShiftsService {
     }
     return this.http.post(`${global.api}/shifts/start`, data)
   }
+  alreadyHasLunch(currentShiftBlocks: any[]) {
+    var alreadyHasLunch = false;
+    currentShiftBlocks.forEach((element) => {
+      if (element.type == 'lunch') {
+        alreadyHasLunch = true;
+      }
+    });
+    return alreadyHasLunch
+  }
 }

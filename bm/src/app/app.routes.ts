@@ -45,7 +45,11 @@ export const routes: Routes = [
       {
         path: 'dashboard',
         loadComponent: () => import('./pages/user/dashboard/dashboard.page').then(m => m.DashboardPage),
-      }
+      },
+      {
+        path: 'profile',
+        loadComponent: () => import('./pages/user/profile/profile.page').then(m => m.ProfilePage)
+      },
     ]
   },
   {
@@ -63,6 +67,7 @@ export const routes: Routes = [
       },
     ]
   },
+
 
 
 

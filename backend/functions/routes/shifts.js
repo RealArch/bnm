@@ -25,11 +25,18 @@ router.post('/start', middlewares.verifyClientToken, async (req, res) => {
                 }
                 userData = userDoc.data()
                 //if there is a previous block, close that block adding the actual startTime as the previous endTime
-                if (userData.currentShift.length > 0) {
-                    userData.currentShift[userData.currentShift.length - 1].endTime = body.startTime
+                if (userData.currentShift.blocks.length > 0) {
+                    userData.currentShift.blocks[userData.currentShift.blocks.length - 1].endTime = body.startTime
+                    //if the current block is lunch and there is a lunch block already, send an error
+
+                    // if(alreadyHasLunch(userData.currentShift)){
+                    //     return res.status(500).json({ code:"S-001", msg: "This user already has a lunch period" })
+
+                    // }
+
                 }
                 //then push the data
-                userData.currentShift.push({
+                userData.currentShift.blocks.push({
                     startTime: body.startTime,
                     endTime: null,
                     type: body.type,
@@ -37,7 +44,10 @@ router.post('/start', middlewares.verifyClientToken, async (req, res) => {
                     details: body.details
                 })
                 userData.status = 'onShift';
-                if (body.type == 'lunch') userData.status = 'onLunch';
+                if (body.type == 'lunch') {
+                    userData.status = 'onLunch';
+                    userData.currentShift.lunchTaken = true;
+                }
                 userData.lastUpdate = dateNow
 
                 //save data
@@ -51,5 +61,20 @@ router.post('/start', middlewares.verifyClientToken, async (req, res) => {
     }
     return res.status(200).json({ msg: "Shift updated successfully" })
 })
+router.post('/closeShift', middlewares.verifyClientToken, async (req, res)=>{
+    //Close de previous block
+    //totalize hours worked
+    //add that block to the current active pay cycle
+    
+})
 
-module.exports = router
+
+module.exports = router;
+
+//Functions
+function alreadyHasLunch(currentShift) {
+    currentShift.forEach(element => {
+        if (element.type == 'lunch') return true
+    });
+    return false
+}
