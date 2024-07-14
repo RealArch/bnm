@@ -6,6 +6,8 @@ import { bed } from 'ionicons/icons';
 import { StartShiftModalComponent } from '../start-shift-modal/start-shift-modal.component';
 import { AuthService } from 'src/app/services/auth.service';
 import { AppComponent } from 'src/app/app.component';
+import { ShiftsService } from 'src/app/services/shifts.service';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-status-card',
@@ -17,7 +19,7 @@ import { AppComponent } from 'src/app/app.component';
 export class StatusCardComponent implements OnInit {
   @Input() userData: any;
   @ViewChild(IonModal) modal!: IonModal;
-
+  dateNow = Date.now();
   appComponent = inject(AppComponent)
   alertController = inject(AlertController);
   interval: any;
@@ -25,16 +27,18 @@ export class StatusCardComponent implements OnInit {
   modType!: 'start' | 'commute' | 'lunch';
   copyElapseTime!: { lunch: { hours: number; minutes: number; }; work: { hours: number; minutes: number; }; } | null;
   updating: boolean = false;
+  closingShiftTime: number = 0;
+  subscriptions: Subscription[] = [];
   constructor(
     private authService: AuthService,
     private modalCtrl: ModalController,
-
+    private shiftsService: ShiftsService
   ) {
     addIcons({ bed })
   }
 
   ngOnInit() {
-
+    this.closingShiftTime = this.dateNow;
     this.elapsedTime = this.getElapsedMinSec(this.userData.currentShift.blocks)
     this.interval = window.setInterval(() => {
       this.elapsedTime = this.getElapsedMinSec(this.userData.currentShift.blocks)
@@ -82,7 +86,6 @@ export class StatusCardComponent implements OnInit {
         }
       }
     });
-
     diffWorkHours = Math.floor(totalTimeWorked / (1000 * 60 * 60));
     diffWorkMinutes = Math.floor((totalTimeWorked % (1000 * 60 * 60)) / (1000 * 60));
 
@@ -100,19 +103,33 @@ export class StatusCardComponent implements OnInit {
       }
     }
   }
+
   calculateClosingHour(ev: CustomEvent) {
-    var newEndTime = new Date(ev.detail.value).getTime()
+    this.closingShiftTime = new Date(ev.detail.value).getTime()
     var copyBlocks = JSON.parse(JSON.stringify(this.userData.currentShift.blocks));
-    copyBlocks[copyBlocks.length - 1].endTime = newEndTime
+    copyBlocks[copyBlocks.length - 1].endTime = this.closingShiftTime;
     this.copyElapseTime = this.getElapsedMinSec(copyBlocks)
   }
+
   closeModal() {
     this.modal.dismiss(null, 'cancel');
   }
-  closeShift() {
+
+  async closeShift() {
     // this.modal.dismiss()
     this.updating = true
-
+    var afAuthToken = await this.authService.getIdToken()
+    this.subscriptions.push(this.shiftsService.closeShift(this.closingShiftTime, afAuthToken)
+      .subscribe({
+        next: (res) => {
+          this.updating = false;
+        },
+        error: (err) => {
+          this.updating = false;
+          console.log(err)
+        }
+      })
+    )
   }
   fillCopyElapseTime() {
     this.copyElapseTime = this.getElapsedMinSec(this.userData.currentShift.blocks)
@@ -159,6 +176,11 @@ export class StatusCardComponent implements OnInit {
     });
 
     await alert.present();
+  }
+  ngOnDestroy() {
+    this.subscriptions.forEach(element => {
+      element.unsubscribe()
+    });
   }
 }
 

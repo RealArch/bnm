@@ -60,7 +60,7 @@
                     <ion-row class="w-100 h-100 ion-align-items-center ion-justify-content-center">
                       <ion-col size="12" class="d-flex ion-align-items-center ion-justify-content-center">
 
-                        <ion-datetime (ionChange)="calculateClosingHour($event)" presentation="time" [disabled]="updating"
+                        <ion-datetime  (ionChange)="calculateClosingHour($event)" presentation="time" [disabled]="updating"
                           class="timePicker w-100"></ion-datetime>
 
                       </ion-col>
@@ -68,12 +68,6 @@
                   </ion-card>
                 </div>
                 <div class="mx-4">
-                  <!-- <ion-item color="light" class="radius input">
-                    <ion-input labelPlacement="floating" [readonly]="true"></ion-input>
-                    <div slot="label">Worked Hours:"
-                      value="{{elapsedTime!.work.hours}}:{{elapsedTime!.work.minutes}} hrs <ion-text
-                        color="danger">(Required)</ion-text></div>
-                  </ion-item> -->
                   <ion-item color="light" class="radius" lines="none" *ngIf="copyElapseTime != null">
                     <ion-input labelPlacement="fixed" [readonly]="true"
                       value="{{copyElapseTime!.work.hours}}:{{copyElapseTime!.work.minutes}} hrs">

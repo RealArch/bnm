@@ -20,6 +20,14 @@ export class ShiftsService {
     }
     return this.http.post(`${global.api}/shifts/start`, data)
   }
+  closeShift(closingTime: number, afAuthToken:any) {
+    console.log(closingTime)
+    var data = {
+      closingTime : closingTime,
+      afAuthToken
+    }
+    return this.http.post(`${global.api}/shifts/close`, data)
+  }
   alreadyHasLunch(currentShiftBlocks: any[]) {
     var alreadyHasLunch = false;
     currentShiftBlocks.forEach((element) => {
