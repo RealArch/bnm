@@ -60,8 +60,6 @@ export class StartShiftModalComponent implements OnInit {
     var dateNow = this.getCurrentIso8601Date()
     this.startShiftForm.controls['startTime'].setValue(this.getDate(dateNow));
     //If there is a previous shift block and the current is lunch, load the values from the previous one
-    console.log(this.previousShift)
-    console.log(this.modType)
 
     if (this.previousShift) {
       console.log(1)

@@ -1,8 +1,14 @@
 const { auth } = require('firebase-admin');
-const { getFirestore } = require('firebase-admin/firestore');
-
+const { getFirestore, FieldValue } = require('firebase-admin/firestore');
+const functions = require('firebase-functions/v2');
+const { firestore } = require('firebase-functions/v2');
+const { onDocumentUpdated } = require('firebase-functions/v2/firestore');
 const router = require('express').Router();
 const db = getFirestore()
+
+const express = require('express');
+
+const app = express();
 
 const middlewares = require('../middlewares/verifyAuthTokens');
 
@@ -70,6 +76,9 @@ router.post('/close', middlewares.verifyClientToken, async (req, res) => {
     var blocks;
     var timeWorked
     var dateNow = Date.now()
+    var nextPayDay = null
+    var settings = null
+    var currentFortnight = null
     //INPUTS: closingTime,
     if (body.closingTime === null || body.closingTime === undefined || body.closingTime.length < 1 || body.closingTime.length > 15) {
         return res.status(500).json({
@@ -91,17 +100,53 @@ router.post('/close', middlewares.verifyClientToken, async (req, res) => {
                 //Change the status of the user to 'outOfShift'
                 userData.status = 'outOfShift';
                 userData.lastUpdate = dateNow;
+                userData.lastFinishedShift = Date.now();
+                // userData.currentShift.shiftFinished = true;
+                //TODO: Es date.now seguro si trabajo con diferentes husos horarios?
                 blocks = userData.currentShift.blocks
+                //totalize hours worked
+                // timeWorked = getElapsedMinSec(blocks);
+                // userData.currentShift.totalTimeWorked = getElapsedMinSec(blocks);
+                userData.currentShift.blocks = [];
+                userData.currentShift.lunchTaken = false;
                 //save data
-                return
-                // transaction.update(userDocRef, userData);
+                // return
+
+                // return transaction.update(userDocRef, userData);
             })
         })
-        //totalize hours worked
+        //Una vez guardamos la data añadimos el bloque trabajado al registro general semanal
+        // quedamos en crear un documento por cada quincena. ademas crear una coleccion para dias individuales y guiardarl;os en algolia
         timeWorked = getElapsedMinSec(blocks);
-        console.log(timeWorked)
-        //TODO add that block to the current active pay cycle
 
+        //obtener el dia de pago correspondiente para la fecha de hoy
+        settings = await db.collection('general').doc('settings').get();
+        nextPayDay = settings.data().nextPayDay
+        console.log(nextPayDay)
+        //Leer el fortnight current
+        currentFortnight = await db.collection('fortnights').doc(nextPayDay).get()
+        //Si no existe para esta semana, crearlo
+        if (!currentFortnight.exists) {
+            console.log('999')
+            await db.collection('fortnights').doc(nextPayDay).set({
+                days: FieldValue.arrayUnion({
+                    date: null,
+                    employees: [
+                        {
+                            employeeId: null,
+                            block: blocks,
+                            timeWorked: timeWorked,
+                        }
+                    ]
+                })
+            })
+
+        }
+
+
+
+        //TODO add that block to the current active pay cycle
+        return res.status(200).json({ msg: "Shift successfully finished" })
 
     } catch (error) {
         console.log(error)
@@ -109,15 +154,16 @@ router.post('/close', middlewares.verifyClientToken, async (req, res) => {
     }
     return res.status(200).json({ msg: "Shift updated successfully" })
 
-    
+
 
 
 
 
 })
 
-
 module.exports = router;
+exports.app = functions.https.onRequest(app);
+
 
 //Functions
 function alreadyHasLunch(currentShift) {
@@ -138,7 +184,7 @@ function getElapsedMinSec(blocks) {
             totalTimeLunch += timeDifference
         }
 
-    });  
+    });
     var workedHours = totalTimeWorked
     var lunchedHours = totalTimeLunch
     return {

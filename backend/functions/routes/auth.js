@@ -50,11 +50,12 @@ router.post('/signup', async (req, res) => {
             active: false,
             status: 'outOfShift', // outOfShift | onShift 
             currentShift: {
-                blocks:[],
-                lunchTaken:false
+                blocks: [],
+                lunchTaken: false,
             },
             creationDate: dateNow,
-            lastUpdate: dateNow
+            lastUpdate: dateNow,
+            lastFinishedShift: null
         }
         await db.collection('users').doc(userCreated.uid).set(userDataDb).catch(err => {
             //Delete user previeusly created
@@ -95,6 +96,12 @@ router.get('/createAdminUser', async (req, res) => {
         await auth().setCustomUserClaims(userCreated.uid, {
             admin: true
         })
+        //Setear la DB
+        await db.collection('general').doc('settings').set({
+            nextPayDay:1699900800000,
+            paymentSchedule:"bi-weekly" 
+        })
+
         return res.json({ message: 'Admin user created' })
     } catch (error) {
         return res.status(500).json({

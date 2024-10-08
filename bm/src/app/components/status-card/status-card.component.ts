@@ -122,7 +122,9 @@ export class StatusCardComponent implements OnInit {
     this.subscriptions.push(this.shiftsService.closeShift(this.closingShiftTime, afAuthToken)
       .subscribe({
         next: (res) => {
+          console.log(res)
           this.updating = false;
+          this.modalCtrl.dismiss()
         },
         error: (err) => {
           this.updating = false;

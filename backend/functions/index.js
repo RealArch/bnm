@@ -10,9 +10,11 @@
 const { onRequest } = require("firebase-functions/v2/https");
 const { admin } = require("firebase-admin")
 const { initializeApp, cert } = require('firebase-admin/app');
+const { onDocumentUpdated, onDocumentCreated } = require('firebase-functions/v2/firestore');
 const logger = require("firebase-functions/logger");
 var express = require('express');
 var app = express();
+
 
 var serviceAccount = require('./adminKeyFirebase.json');
 
@@ -25,12 +27,31 @@ initializeApp({
 const authRoute = require("./routes/auth")
 app.use('/auth', authRoute)
 //SHIFTS
-const shiftRoute = require("./routes/shifts")
+const shiftRoute = require("./routes/shifts");
+const { event } = require("firebase-functions/v1/analytics");
 app.use('/shifts', shiftRoute)
-
 
 exports.api = onRequest(app);
 
+//AUTOMATIC FUNCTIONS
+// exports.user = onDocumentUpdated('users/{usersID}',
+//     (event) => {
+//         // console.log(event.data.before);
+//         // console.log(event.data.after);
+//         //Adding the finished shift time to the data base
+//         //if end
+//         // if(event.data.before.data
+
+//         console.log(1)
+//         if (!event.data.before.data().currentShift.shiftFinished && event.data.after.data().currentShift.shiftFinished) {
+//             console.log("finalice un turno, añadiendo al registro y re iniando data de usuario")
+//         } else {
+//             console.log(2)
+
+//         }
+//         return
+//     }
+// )
 // Create and deploy your first functions
 // https://firebase.google.com/docs/functions/get-started
 
