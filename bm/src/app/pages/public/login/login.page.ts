@@ -5,6 +5,8 @@ import { IonicModule } from '@ionic/angular';
 import { AuthService } from 'src/app/services/auth.service';
 import { PopupsService } from 'src/app/services/popups.service';
 import { Router, RouterLinkWithHref } from '@angular/router';
+import { addIcons } from 'ionicons';
+import { checkmarkCircle, closeCircle } from 'ionicons/icons';
 
 @Component({
   selector: 'app-login',
@@ -17,15 +19,18 @@ export class LoginPage implements OnInit {
   authService = inject(AuthService);
   popupService = inject(PopupsService)
   signinForm: FormGroup = this.fb.group({
-    email: [[], [Validators.required,]],
-    password: [[], [Validators.required,]]
+    email: [null, [Validators.required, Validators.minLength(6), Validators.maxLength(254)]],
+    password: [null, [Validators.required, Validators.minLength(6),]]
 
   });
   sending: boolean = false;
   constructor(
     private fb: FormBuilder,
-    private router:Router
-  ) { }
+    private router: Router
+  ) {
+    addIcons({ checkmarkCircle });
+    addIcons({ closeCircle });
+  }
 
   ngOnInit() {
 

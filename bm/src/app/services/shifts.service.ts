@@ -20,10 +20,10 @@ export class ShiftsService {
     }
     return this.http.post(`${global.api}/shifts/start`, data)
   }
-  closeShift(closingTime: number, afAuthToken:any) {
+  closeShift(closingTime: number, afAuthToken: any) {
     console.log(closingTime)
     var data = {
-      closingTime : closingTime,
+      closingTime: closingTime,
       afAuthToken
     }
     return this.http.post(`${global.api}/shifts/close`, data)
@@ -37,4 +37,76 @@ export class ShiftsService {
     });
     return alreadyHasLunch
   }
+  //UTILITIES
+
+  //get a block[] and return lunch and work hours
+  getElapsedMinSec(blocks: any[], status: String) {
+    var res = {
+      lunch: {
+        hours: 0,
+        minutes: 0
+      },
+      work: {
+        hours: 0,
+        minutes: 0
+      }
+    }
+
+    if (status == "outOfShift") return null;
+    var dateNow = Date.now()
+    var diffLunchMinutes = 0;
+    var diffLunchHours = 0;
+    var diffWorkMinutes = 0;
+    var diffWorkHours = 0;
+    var totalTimeWorked = 0;
+    var totalTimeLunch = 0;
+    //Otra opcion para hacer esto mas facil seria sumar todos los elementos que tengan fecha de inicio y de final y que no sean lunch
+    blocks.forEach((block, index) => {
+      //Count all the laps with end time. if lunch to totalTimeLunch, if not to  totalTimeWorked
+      if (block.endTime != null) {
+        let timeDifference = block.endTime - block.startTime;
+        //If it is the last lap, count the time till now. only if it is not lunch time
+        if (block.type != "lunch") {
+          totalTimeWorked += timeDifference
+        } else {
+          totalTimeLunch += timeDifference
+        }
+      } else if (block.endTime == null) {
+        let timeDifference = dateNow - block.startTime;
+        if (block.type != "lunch") {
+          totalTimeWorked += timeDifference;
+        } else {
+          totalTimeLunch += timeDifference;
+        }
+      }
+    });
+    diffWorkHours = Math.floor(totalTimeWorked / (1000 * 60 * 60));
+    diffWorkMinutes = Math.floor((totalTimeWorked % (1000 * 60 * 60)) / (1000 * 60));
+
+    diffLunchHours = Math.floor(totalTimeLunch / (1000 * 60 * 60));
+    diffLunchMinutes = Math.floor((totalTimeLunch % (1000 * 60 * 60)) / (1000 * 60));
+    var res = {
+      lunch: {
+        hours: diffLunchHours || 0,
+        minutes: diffLunchMinutes || 0
+      },
+      work: {
+        hours: diffWorkHours || 0,
+        minutes: diffWorkMinutes || 0
+      }
+    }
+
+    return res
+  }
+  // //Executes every time the date picker changes
+  // calculateClosingHour(value: any) {
+  //   console.log(value)
+  //   this.closingShiftTime = new Date(value).getTime()
+
+  //   var copyBlocks = JSON.parse(JSON.stringify(this.userData.currentShift.blocks));
+  //   copyBlocks[copyBlocks.length - 1].endTime = this.closingShiftTime;
+  //   this.copyElapseTime = this.getElapsedMinSec(copyBlocks)
+  // }
+
+
 }

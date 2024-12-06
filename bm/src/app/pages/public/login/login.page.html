@@ -9,19 +9,16 @@
         <ion-col>
           <ion-item lines="none">
             <ion-input formControlName="email" label="Email" label-placement="stacked" fill="outline"
-              placeholder="Enter your Email">
-              @if(signinForm.value.email !=null && signinForm.controls['email'].invalid){
-              <ion-icon slot="end" color="danger" name="close-circle"></ion-icon>
-              }
-              @if(signinForm.value.email !=null && !signinForm.controls['email'].invalid){
-              <ion-icon slot="end" color="success" name="checkmark-circle"></ion-icon>
-              }
+              placeholder="Enter your Email" [counter]="true" maxlength="256">
+             
             </ion-input>
           </ion-item>
 
           <ion-item lines="none">
             <ion-input formControlName="password" type="password" label="Password" label-placement="stacked"
               fill="outline" placeholder="Enter your password" autocomplete="off">
+              <ion-input-password-toggle slot="end"></ion-input-password-toggle>
+
               @if(signinForm.value.password !=null && signinForm.controls['password'].invalid){
               <ion-icon slot="end" color="danger" name="close-circle"></ion-icon>
               }

@@ -1,0 +1,50 @@
+<ion-header>
+  <ion-toolbar color="primary">
+    Ending Shift
+    <ion-buttons slot="end">
+      <ion-button (click)="closeModal()" [disabled]="updating">Cancel</ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+<div class="block">
+  <ion-card class="mt-3 mx-auto time-picker-card">
+    <ion-row class="w-100 h-100 ion-align-items-center ion-justify-content-center">
+      <ion-col size="12" class="d-flex ion-align-items-center ion-justify-content-center">
+
+        <ion-datetime (ionChange)="calculateClosingHour($event.detail.value)" presentation="time" [disabled]="updating"
+          class="timePicker w-100"></ion-datetime>
+
+      </ion-col>
+    </ion-row>
+  </ion-card>
+</div>
+<div class="mx-4">
+  <ion-item color="light" class="radius" lines="none" *ngIf="copyElapseTime != null">
+    <ion-input labelPlacement="fixed" [readonly]="true"
+      value="{{copyElapseTime!.work.hours}}:{{copyElapseTime!.work.minutes}} hrs">
+      <div slot="label"><strong>Worked Hours:</strong> </div>
+    </ion-input>
+  </ion-item>
+
+</div>
+<ion-footer class="mt-3">
+  <ion-toolbar class="p-1">
+    <ion-buttons slot="end">
+      <ion-button color="primary" fill="solid" (click)="alertEndShift()" [disabled]="updating">
+        @if (updating) {
+        <ion-text class="px-2">
+          <ion-spinner name="circular" ></ion-spinner>
+        </ion-text>
+        } @else {
+          <ion-text class="px-2">
+            End Shift
+          </ion-text>
+        }
+
+      </ion-button>
+    </ion-buttons>
+
+  </ion-toolbar>
+
+
+</ion-footer>

@@ -8,13 +8,15 @@ import { notifications } from 'ionicons/icons';
 import { AuthService } from 'src/app/services/auth.service';
 import { Subscription } from 'rxjs';
 import { PopupsService } from 'src/app/services/popups.service';
+import { HoursWorkedCardComponent } from 'src/app/components/hours-worked-card/hours-worked-card.component';
+import { MoneyEarnedCardComponent } from 'src/app/components/money-earned-card/money-earned-card.component';
 
 @Component({
   selector: 'app-dashboard',
   templateUrl: './dashboard.page.html',
   styleUrls: ['./dashboard.page.scss'],
   standalone: true,
-  imports: [IonicModule, CommonModule, FormsModule, StatusCardComponent]
+  imports: [IonicModule, CommonModule, FormsModule, StatusCardComponent, HoursWorkedCardComponent, MoneyEarnedCardComponent]
 })
 export class DashboardPage implements OnInit {
   subscriptions!: Subscription[];

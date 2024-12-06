@@ -8,13 +8,15 @@ import { AuthService } from 'src/app/services/auth.service';
 import { AppComponent } from 'src/app/app.component';
 import { ShiftsService } from 'src/app/services/shifts.service';
 import { Subscription } from 'rxjs';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { EndingShiftModalComponent } from './ending-shift-modal/ending-shift-modal.component';
 
 @Component({
   selector: 'app-status-card',
   templateUrl: './status-card.component.html',
   styleUrls: ['./status-card.component.scss'],
   standalone: true,
-  imports: [IonicModule, CommonModule, NgIf]
+  imports: [IonicModule, CommonModule, NgIf, ReactiveFormsModule, FormsModule]
 })
 export class StatusCardComponent implements OnInit {
   @Input() userData: any;
@@ -28,9 +30,10 @@ export class StatusCardComponent implements OnInit {
   copyElapseTime!: { lunch: { hours: number; minutes: number; }; work: { hours: number; minutes: number; }; } | null;
   updating: boolean = false;
   closingShiftTime: number = 0;
-  subscriptions: Subscription[] = [];
+  // subscriptions: Subscription[] = [];
+  datetimeValue: any = Date.now();
   constructor(
-    private authService: AuthService,
+    //private authService: AuthService,
     private modalCtrl: ModalController,
     private shiftsService: ShiftsService
   ) {
@@ -103,39 +106,60 @@ export class StatusCardComponent implements OnInit {
       }
     }
   }
+  // //Executes every time the date picker changes
+  // calculateClosingHour(value: any) {
+  //   console.log(value)
+  //   this.closingShiftTime = new Date(value).getTime()
 
-  calculateClosingHour(ev: CustomEvent) {
-    this.closingShiftTime = new Date(ev.detail.value).getTime()
-    var copyBlocks = JSON.parse(JSON.stringify(this.userData.currentShift.blocks));
-    copyBlocks[copyBlocks.length - 1].endTime = this.closingShiftTime;
-    this.copyElapseTime = this.getElapsedMinSec(copyBlocks)
-  }
+  //   var copyBlocks = JSON.parse(JSON.stringify(this.userData.currentShift.blocks));
+  //   copyBlocks[copyBlocks.length - 1].endTime = this.closingShiftTime;
+  //   this.copyElapseTime = this.getElapsedMinSec(copyBlocks)
+  // }
 
   closeModal() {
     this.modal.dismiss(null, 'cancel');
   }
 
-  async closeShift() {
-    // this.modal.dismiss()
-    this.updating = true
-    var afAuthToken = await this.authService.getIdToken()
-    this.subscriptions.push(this.shiftsService.closeShift(this.closingShiftTime, afAuthToken)
-      .subscribe({
-        next: (res) => {
-          console.log(res)
-          this.updating = false;
-          this.modalCtrl.dismiss()
-        },
-        error: (err) => {
-          this.updating = false;
-          console.log(err)
-        }
-      })
-    )
-  }
-  fillCopyElapseTime() {
-    this.copyElapseTime = this.getElapsedMinSec(this.userData.currentShift.blocks)
+  // async closeShift() {
+  //   // this.modal.dismiss()
 
+  //   this.updating = true
+  //   var afAuthToken = await this.authService.getIdToken()
+  //   this.subscriptions.push(this.shiftsService.closeShift(this.closingShiftTime, afAuthToken)
+  //     .subscribe({
+  //       next: (res) => {
+  //         console.log(res)
+  //         this.updating = false;
+  //         this.modalCtrl.dismiss()
+  //       },
+  //       error: (err) => {
+  //         this.updating = false;
+  //         console.log(err)
+  //       }
+  //     })
+  //   )
+  // }
+  // this executes every time the ending shift Modal opens
+  fillCopyElapseTime() {
+    console.log('holas')
+    this.copyElapseTime = this.getElapsedMinSec(this.userData.currentShift.blocks)
+    //update the variable datetimeValue with the date now so it can send the close time to the api
+    this.datetimeValue = new Date(Date.now()).toISOString()
+    console.log(new Date(Date.now()).toISOString())
+
+    // console.log(Date.now())
+
+  }
+  //Opening endingShiftModal
+  async openEndingShiftModal() {
+    const modal = await this.modalCtrl.create({
+      component: EndingShiftModalComponent,
+      componentProps: {
+        'userData': this.userData
+      },
+      cssClass:'modal-box'
+    })
+    await modal.present()
   }
 
   async openModal(modType: 'start' | 'commute' | 'lunch') {
@@ -156,34 +180,34 @@ export class StatusCardComponent implements OnInit {
   }
   //Alert
   //This is for ending shift
-  async alertEndShift() {
-    const alert = await this.alertController.create({
-      header: 'Confirmation',
-      message: 'You are about to end your shift for today. Do you wish to continue?',
-      buttons: [
-        {
-          text: 'Cancel',
-          role: 'cancel',
-          handler: () => {
-          },
-        },
-        {
-          text: 'Close shift',
-          role: 'confirm',
-          handler: () => {
-            this.closeShift()
-          },
-        },
-      ]
-    });
+  // async alertEndShift() {
+  //   const alert = await this.alertController.create({
+  //     header: 'Confirmation',
+  //     message: 'You are about to end your shift for today. Do you wish to continue?',
+  //     buttons: [
+  //       {
+  //         text: 'Cancel',
+  //         role: 'cancel',
+  //         handler: () => {
+  //         },
+  //       },
+  //       {
+  //         text: 'Close shift',
+  //         role: 'confirm',
+  //         handler: () => {
+  //           this.closeShift()
+  //         },
+  //       },
+  //     ]
+  //   });
 
-    await alert.present();
-  }
-  ngOnDestroy() {
-    this.subscriptions.forEach(element => {
-      element.unsubscribe()
-    });
-  }
+  //   await alert.present();
+  // }
+  // ngOnDestroy() {
+  //   this.subscriptions.forEach(element => {
+  //     element.unsubscribe()
+  //   });
+  // }
 }
 
 

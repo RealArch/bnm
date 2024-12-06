@@ -41,11 +41,11 @@
             <ion-button *ngIf="userData.status == 'onLunch'" color="success" (click)="openModal('commute')">
               Finish lunch
             </ion-button>
-            <ion-button color="danger" id="open-modal">
+            <ion-button color="danger" (click)="openEndingShiftModal()">
               End shift
             </ion-button>
 
-            <ion-modal trigger="open-modal" (ionModalWillPresent)="fillCopyElapseTime()" backdrop-dismiss="false">
+            <!-- <ion-modal trigger="open-modal" (ionModalWillPresent)="fillCopyElapseTime()" backdrop-dismiss="false">
               <ng-template>
                 <ion-header>
                   <ion-toolbar color="primary">
@@ -60,7 +60,7 @@
                     <ion-row class="w-100 h-100 ion-align-items-center ion-justify-content-center">
                       <ion-col size="12" class="d-flex ion-align-items-center ion-justify-content-center">
 
-                        <ion-datetime  (ionChange)="calculateClosingHour($event)" presentation="time" [disabled]="updating"
+                        <ion-datetime value="{{datetimeValue}}" (ionChange)="calculateClosingHour($event.detail.value)" presentation="time" [disabled]="updating"
                           class="timePicker w-100"></ion-datetime>
 
                       </ion-col>
@@ -98,7 +98,7 @@
 
                 </ion-footer>
               </ng-template>
-            </ion-modal>
+            </ion-modal> -->
 
           </ion-buttons>
         </div>

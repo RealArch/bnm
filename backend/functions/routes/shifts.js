@@ -11,6 +11,7 @@ const express = require('express');
 const app = express();
 
 const middlewares = require('../middlewares/verifyAuthTokens');
+const { createFortnightArray } = require('../utilities/utilities');
 
 
 router.post('/start', middlewares.verifyClientToken, async (req, res) => {
@@ -76,9 +77,12 @@ router.post('/close', middlewares.verifyClientToken, async (req, res) => {
     var blocks;
     var timeWorked
     var dateNow = Date.now()
+    var lunchTaken;
+    var shiftDate
     var nextPayDay = null
     var settings = null
     var currentFortnight = null
+    var dayName = null
     //INPUTS: closingTime,
     if (body.closingTime === null || body.closingTime === undefined || body.closingTime.length < 1 || body.closingTime.length > 15) {
         return res.status(500).json({
@@ -104,7 +108,7 @@ router.post('/close', middlewares.verifyClientToken, async (req, res) => {
                 // userData.currentShift.shiftFinished = true;
                 //TODO: Es date.now seguro si trabajo con diferentes husos horarios?
                 blocks = userData.currentShift.blocks
-                //totalize hours worked
+                lunchTaken = userData.currentShift.lunchTaken
                 // timeWorked = getElapsedMinSec(blocks);
                 // userData.currentShift.totalTimeWorked = getElapsedMinSec(blocks);
                 userData.currentShift.blocks = [];
@@ -112,36 +116,76 @@ router.post('/close', middlewares.verifyClientToken, async (req, res) => {
                 //save data
                 // return
 
-                // return transaction.update(userDocRef, userData);
+                return transaction.update(userDocRef, userData);
             })
         })
-        //Una vez guardamos la data añadimos el bloque trabajado al registro general semanal
-        // quedamos en crear un documento por cada quincena. ademas crear una coleccion para dias individuales y guiardarl;os en algolia
+        //totalize hours worked
         timeWorked = getElapsedMinSec(blocks);
-
-        //obtener el dia de pago correspondiente para la fecha de hoy
-        settings = await db.collection('general').doc('settings').get();
-        nextPayDay = settings.data().nextPayDay
-        console.log(nextPayDay)
-        //Leer el fortnight current
-        currentFortnight = await db.collection('fortnights').doc(nextPayDay).get()
-        //Si no existe para esta semana, crearlo
-        if (!currentFortnight.exists) {
-            console.log('999')
-            await db.collection('fortnights').doc(nextPayDay).set({
-                days: FieldValue.arrayUnion({
-                    date: null,
-                    employees: [
-                        {
-                            employeeId: null,
-                            block: blocks,
-                            timeWorked: timeWorked,
-                        }
-                    ]
-                })
+        //Set the shiftDate to 12:00pm
+        console.log(blocks[0].startTime)
+        shiftDate = new Date(blocks[0].startTime).setHours(12, 0, 0, 0);
+        // Add the closing shift to collection "usersCurrentPaychecks"
+        var userCurrentPaychecks = await db.collection('usersCurrentPaychecks').doc(userUid).set({
+            days: FieldValue.arrayUnion({
+                blocks: blocks,
+                lunchTaken: lunchTaken,
+                day: shiftDate
             })
+        }, { merge: true })
 
-        }
+
+
+
+
+
+
+        // //Una vez guardamos la data añadimos el bloque trabajado al registro general semanal
+        // // quedamos en crear un documento por cada quincena. ademas crear una coleccion para dias individuales y guiardarlos en algolia
+
+
+        // //obtener el dia de pago correspondiente para la fecha de hoy
+        // settings = await db.collection('general').doc('settings').get();
+        // nextPayDay = settings.data().nextPayDay.toString()
+        // console.log(nextPayDay)
+        // //Leer el fortnight current
+        // console.log(111)
+        // // currentFortnight = await db.collection('fortnights').doc(nextPayDay).get()
+
+
+
+        // // console.log('999')
+
+        // //Then save the data from createFortnightArray, adding the data for this user. 
+        // //with a transaction due to the change sensitive data
+        // var userDocRef = db.collection('fortnights').doc(nextPayDay)
+        // await db.runTransaction((transaction) => {
+        //     return transaction.get(userDocRef).then((userDoc) => {
+        //         //Si no existe para esta semana, crearlo
+        //         if (!userDoc.exists) {
+        //             //"createFortnightArray" creates the template for filling the payCheck  data
+        //             var fortnightArray = createFortnightArray('biweekly', nextPayDay)
+        //             fortnightArray
+        //             return transaction.update(userDocRef, userData);
+        //         }
+        //     })
+        // })
+        // console.log(fortnightArray)
+        // // dayName = getDayName()
+
+        // // await db.collection('fortnights').doc(nextPayDay).set({
+        // //     days: FieldValue.arrayUnion({
+        // //         day: null,
+        // //         employees: [
+        // //             {
+        // //                 employeeId: null,
+        // //                 block: blocks,
+        // //                 timeWorked: timeWorked,
+        // //             }
+        // //         ]
+        // //     })
+        // // })
+
+
 
 
 
@@ -171,6 +215,12 @@ function alreadyHasLunch(currentShift) {
         if (element.type == 'lunch') return true
     });
     return false
+}
+function getDayName(milliseconds) {
+    const daysOfWeek = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
+    const date = new Date(milliseconds);
+    const dayName = daysOfWeek[date.getUTCDay()];
+    return dayName;
 }
 function getElapsedMinSec(blocks) {
     var totalTimeWorked = 0;
