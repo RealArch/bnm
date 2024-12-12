@@ -43,6 +43,11 @@ router.post('/signup', async (req, res) => {
                 name: err.name, message: err.message, code: 'auth/error-user-creation'
             })
         })
+        //set claims, Ex. active:false
+        //TODO, if this fails, remove the user
+        await auth().setCustomUserClaims(userCreated.uid, {
+            active: false
+        })
         var userDataDb = {
             email: body.email,
             firstName: body.firstName,
@@ -98,9 +103,9 @@ router.get('/createAdminUser', async (req, res) => {
         })
         //Setear la DB
         await db.collection('general').doc('settings').set({
-            nextPayDay:1699900800000,
-            paymentSchedule:"biweekly",
-            paycheckStartingDay:"friday"
+            nextPayDay: 1699900800000,
+            paymentSchedule: "biweekly",
+            paycheckStartingDay: "friday"
         })
 
         return res.json({ message: 'Admin user created' })

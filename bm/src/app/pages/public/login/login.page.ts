@@ -1,7 +1,7 @@
 import { Component, OnInit, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
-import { IonicModule } from '@ionic/angular';
+import { IonicModule,NavController } from '@ionic/angular';
 import { AuthService } from 'src/app/services/auth.service';
 import { PopupsService } from 'src/app/services/popups.service';
 import { Router, RouterLinkWithHref } from '@angular/router';
@@ -17,6 +17,7 @@ import { checkmarkCircle, closeCircle } from 'ionicons/icons';
 })
 export class LoginPage implements OnInit {
   authService = inject(AuthService);
+  navController = inject(NavController);
   popupService = inject(PopupsService)
   signinForm: FormGroup = this.fb.group({
     email: [null, [Validators.required, Validators.minLength(6), Validators.maxLength(254)]],
@@ -39,7 +40,10 @@ export class LoginPage implements OnInit {
     this.sending = true;
     this.authService.login(form.value.email, form.value.password)
       .then(res => {
-        this.router.navigate(['user'])
+        localStorage.setItem('userUid', res.user.uid)
+        this.navController.setDirection("forward")
+        this.navController.navigateRoot("user")
+
       }).catch(err => {
         console.log(err.code)
         if (err.code == "auth/user-not-found") {

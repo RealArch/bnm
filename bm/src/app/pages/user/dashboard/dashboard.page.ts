@@ -19,9 +19,9 @@ import { MoneyEarnedCardComponent } from 'src/app/components/money-earned-card/m
   imports: [IonicModule, CommonModule, FormsModule, StatusCardComponent, HoursWorkedCardComponent, MoneyEarnedCardComponent]
 })
 export class DashboardPage implements OnInit {
-  subscriptions!: Subscription[];
+  subscriptions: Subscription[] = [];
   loadingData: boolean = true;
-  userUid: string;
+  userUid: any;
   userData: any;
   constructor(
     private authService: AuthService,
@@ -30,30 +30,38 @@ export class DashboardPage implements OnInit {
 
   ) {
     addIcons({ notifications })
-    this.userUid = localStorage.getItem('userUid')!
+    
   }
 
   ngOnInit() {
+    console.log(44)
+
     this.getUserData()
   }
 
   getUserData() {
+    this.userUid = localStorage.getItem('userUid')
+    console.log(this.userUid)
     this.loadingData = true
-    this.authService.getUserData(this.userUid)
-      .subscribe({
-        next: (user) => {
-          this.userData = user.data()
-          this.loadingData=false
-        },
-        error: (e) => {
-          this.loadingData = false
-          this.popupService.presentToast('bottom', 'danger', 'An error occurred while reading your data.')
-        }
-      })
+    this.subscriptions.push(
+      this.authService.getUserData(this.userUid)
+        .subscribe({
+          next: (user) => {
+            this.userData = user.data()
+            this.loadingData = false
+          },
+          error: (e) => {
+            this.loadingData = false
+            this.popupService.presentToast('bottom', 'danger', 'An error occurred while reading your data.')
+          }
+        })
+    )
+
 
   }
 
   ngOnDestroy() {
+    console.log('destroy')
     this.subscriptions.forEach(element => {
       element.unsubscribe()
     });

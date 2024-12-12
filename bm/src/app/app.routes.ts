@@ -2,6 +2,7 @@ import { ActivatedRouteSnapshot, ResolveFn, RouterStateSnapshot, Routes } from '
 import { canActivate, redirectLoggedInTo, redirectUnauthorizedTo } from '@angular/fire/auth-guard'
 import { inject } from '@angular/core';
 import { AuthService } from './services/auth.service';
+import { isActiveGuard } from './guards/is-active-user.guard';
 
 const redirectToHome = () => redirectUnauthorizedTo(['/auth/login'])
 const redirectToDashboard = () => redirectLoggedInTo(['/user'])
@@ -30,12 +31,14 @@ export const routes: Routes = [
     path: '',
     redirectTo: 'user',
     pathMatch: 'full',
+    
   },
 
   {
     path: 'user',
     loadComponent: () => import('./pages/user/user.page').then(m => m.UserPage),
     ...canActivate(redirectToHome),
+    canMatch: [isActiveGuard,],
     children: [
       {
         path: '',
@@ -50,6 +53,7 @@ export const routes: Routes = [
         path: 'profile',
         loadComponent: () => import('./pages/user/profile/profile.page').then(m => m.ProfilePage)
       },
+
     ]
   },
   {
@@ -65,8 +69,18 @@ export const routes: Routes = [
         path: 'signup',
         loadComponent: () => import('./pages/public/signup/signup.page').then(m => m.SignupPage)
       },
+
     ]
+
   },
+  {
+    path: 'not-allowed-user',
+    loadComponent: () => import('./pages/public/not-allowed-user/not-allowed-user.page').then(m => m.NotAllowedUserPage),
+    
+  },
+
+
+
 
 
 

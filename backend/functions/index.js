@@ -8,7 +8,7 @@
  */
 
 const { onRequest } = require("firebase-functions/v2/https");
-const { admin } = require("firebase-admin")
+const { admin, auth } = require("firebase-admin")
 const { initializeApp, cert } = require('firebase-admin/app');
 const { onDocumentUpdated, onDocumentCreated } = require('firebase-functions/v2/firestore');
 const logger = require("firebase-functions/logger");
@@ -34,6 +34,24 @@ app.use('/shifts', shiftRoute)
 exports.api = onRequest(app);
 
 //AUTOMATIC FUNCTIONS
+
+
+exports.user = onDocumentUpdated('users/{usersID}',
+    (event) => {
+        // console.log(event.data.before);
+        console.log('entrre')
+        console.log(event.data.after.id)
+        if (event.data.before.data().active == false && event.data.after.data().active == true) {
+            auth().setCustomUserClaims(event.data.after.id, {
+                active: true
+            })
+        } else if (event.data.before.data().active == true && event.data.after.data().active == false) {
+            auth().setCustomUserClaims(event.data.after.id, {
+                active: false
+            })
+        }
+        return
+    })
 // exports.user = onDocumentUpdated('users/{usersID}',
 //     (event) => {
 //         // console.log(event.data.before);

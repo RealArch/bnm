@@ -160,6 +160,7 @@ export class StartShiftModalComponent implements OnInit {
     return item ? item.name : 'Name not found';
   }
   ngOnDestroy() {
+    console.log('destroy StartShiftModalComponent')
     this.subscriptions.forEach(element => {
       element.unsubscribe()
     });

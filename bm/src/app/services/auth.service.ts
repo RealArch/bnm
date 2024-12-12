@@ -1,9 +1,11 @@
 import { Injectable } from '@angular/core';
-import { Auth, IdTokenResult, authState, getAuth, getIdToken, idToken, signInWithCustomToken, signInWithEmailAndPassword, signOut } from '@angular/fire/auth';
+import { Auth, IdTokenResult, authState, getAuth, getIdToken, idToken, onAuthStateChanged, signInWithCustomToken, signInWithEmailAndPassword, signOut } from '@angular/fire/auth';
 import { HttpClient } from '@angular/common/http';
 import { environment } from '../../environments/environment';
 import { idTokenResult } from '@angular/fire/auth-guard';
 import { Firestore, doc, docSnapshots, getDoc, getFirestore } from '@angular/fire/firestore';
+import { Router } from '@angular/router';
+import { NavController } from '@ionic/angular';
 @Injectable({
   providedIn: 'root'
 })
@@ -13,6 +15,8 @@ export class AuthService {
     private firebase: Firestore,
     private auth: Auth, //Esto es necesario para hacer funcionar el servicio en standalone
     private http: HttpClient,
+    private router:Router,
+    private navController:NavController
 
   ) { }
 
@@ -34,8 +38,11 @@ export class AuthService {
   getAuthState() {
     return authState(getAuth())
   }
+
   logout() {
     localStorage.removeItem('userUid')
+    // this.router.navigate(["/auth/login"])
+    this.navController.navigateRoot("/auth/login")
 
     return signOut(getAuth())
   }
