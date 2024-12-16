@@ -39,6 +39,14 @@ export const routes: Routes = [
           },
         ]
       },
+      {
+        path: 'shifts',
+        loadComponent: () => import('./pages/user/shifts/shifts.page').then(m => m.ShiftsPage)
+      },
+      {
+        path: 'pay-periods',
+        loadComponent: () => import('./pages/user/pay-periods/pay-periods.page').then(m => m.PayPeriodsPage)
+      },
     ]
   },
 
@@ -61,6 +69,15 @@ export const routes: Routes = [
       ,
     ]
   },
+  {
+    path: 'user-accordion',
+    loadComponent: () => import('./pages/user/pay-periods/user-accordion/user-accordion.page').then( m => m.UserAccordionPage)
+  },
+
+
+
+
+
 
 
 

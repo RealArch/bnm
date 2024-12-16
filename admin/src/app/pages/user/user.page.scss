@@ -8,3 +8,9 @@
         border-radius: 10px;
     }
 }
+
+
+ion-item.selected {
+    --color: var(--ion-color-primary);
+}
+

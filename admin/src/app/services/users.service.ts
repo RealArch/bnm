@@ -28,4 +28,14 @@ export class UsersService {
     })
 
   }
+  getUsers() {
+    const usersRef = collection(getFirestore(), 'users')
+    return collectionSnapshots(usersRef).pipe(
+      map(users => users.map(user => {
+        const data = user.data()
+        const id = user.id
+        return { id, ...data }
+      }))
+    )
+  }
 }

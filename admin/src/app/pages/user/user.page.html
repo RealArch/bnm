@@ -7,18 +7,29 @@
     </ion-header>
     <ion-content class="ion-padding">
       <ion-list class="menu">
-        <ion-item button lines="none" routerLinkActive="selected" routerDirection="forward"
-          [routerLink]="['/user/dashboard']">
-          <ion-icon aria-hidden="true" name="home" slot="start"></ion-icon>
-
-          Dashboard
-        </ion-item>
-        <ion-item button lines="none" routerLinkActive="selected" routerDirection="forward"
-          [routerLink]="['/user/workers/active']">
+        <ion-menu-toggle auto-hide="false">
+          <ion-item lines="none" detail="false" routerLinkActive="selected" routerDirection="root"
+            [routerLink]="['/user/dashboard']">
+            <ion-icon aria-hidden="true" name="home" slot="start"></ion-icon>
+            Dashboard
+          </ion-item>
+          <ion-item button lines="none" routerLinkActive="selected" routerDirection="root"
+          [routerLink]="['/user/pay-periods']">
           <ion-icon aria-hidden="true" name="people" slot="start"></ion-icon>
-
-          Workers
+          Pay Periods
         </ion-item>
+          <ion-item button lines="none" routerLinkActive="selected" routerDirection="root"
+            [routerLink]="['/user/shifts']">
+            <ion-icon aria-hidden="true" name="people" slot="start"></ion-icon>
+            Shifts
+          </ion-item>
+
+          <ion-item button lines="none" routerLinkActive="selected" routerDirection="root"
+            [routerLink]="['/user/workers/active']">
+            <ion-icon aria-hidden="true" name="people" slot="start"></ion-icon>
+            Workers
+          </ion-item>
+        </ion-menu-toggle>
       </ion-list>
     </ion-content>
   </ion-menu>

@@ -1,0 +1,113 @@
+<ion-accordion value="1" class=" box-shadow  " style="border-width: none;">
+  <ion-item slot="header">
+    <ion-row class="w-100">
+      <ion-col size="1">
+        <div class="avatar">
+
+        </div>
+      </ion-col>
+      <ion-col size="3">
+        <div>
+          <div class="title">
+            Name
+          </div>
+          <div class="name">
+            {{userData.firstName + ' ' + userData.lastName | titlecase}}
+          </div>
+        </div>
+      </ion-col>
+
+      <ion-col size="2">
+        <div>
+          <div class="title">
+            Current status
+          </div>
+          <div class="status" [ngClass]="{
+            'onShift': userData.status === 'onShift',
+            'outOfShift': userData.status === 'outOfShift',
+          }" >
+            @if(userData.status == "onShift"){
+              On Shift
+            }@else if(userData.status == "outOfShift"){
+              Out of shift
+            }
+          </div>
+        </div>
+      </ion-col>
+
+      <ion-col size="2">
+        <div>
+          <div class="title">
+            Hours
+          </div>
+          <div class="earnings">
+            38:30
+          </div>
+        </div>
+      </ion-col>
+
+      <ion-col size="2">
+        <div>
+          <div class="title">
+            Earnings
+          </div>
+          <div class="earnings">
+            $1203
+          </div>
+        </div>
+      </ion-col>
+
+      <!-- <ion-col size="2" (click)="preventDefault($event)">
+        <div>
+          <ion-buttons>
+            <ion-button slot="icon-only">
+              <ion-icon name="ellipsis-vertical"></ion-icon>
+            </ion-button>
+          </ion-buttons>
+        </div>
+      </ion-col> -->
+
+    </ion-row>
+  </ion-item>
+
+  <div slot="content" class="ion-padding">
+    <!-- Headers of the list of time sheets -->
+    <ion-row class="row-headers">
+      <ion-col>
+        Date
+      </ion-col>
+      <ion-col>
+        Start
+      </ion-col>
+      <ion-col>
+        End
+      </ion-col>
+      <ion-col>
+        Lunch time
+      </ion-col>
+      <ion-col>
+        Total Hrs.
+      </ion-col>
+    </ion-row>
+    <!-- List of time sheets -->
+    <ion-row class="row-list">
+      <ion-col>
+        <ion-text class="day">Thu &nbsp;</ion-text> 12/13/24
+      </ion-col>
+      <ion-col>
+        7:00 AM
+      </ion-col>
+      <ion-col>
+        3:30 PM
+      </ion-col>
+      <ion-col>
+        00:30 Hrs
+      </ion-col>
+      <ion-col>
+        8:00
+      </ion-col>
+    </ion-row>
+
+  </div>
+
+</ion-accordion>
