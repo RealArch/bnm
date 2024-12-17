@@ -1,0 +1,40 @@
+<ion-header [translucent]="true">
+  <ion-toolbar color="primary">
+    <ion-buttons slot="end">
+      <ion-button (click)="closeModal()">
+        Close
+      </ion-button>
+    </ion-buttons>
+    <ion-title>Edit Profile</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content [fullscreen]="true">
+  <ion-grid class="ion-padding" fixed="true">
+    <ion-row class="profile-box align-items-center justify-content-center mb-3">
+      <ion-col size="auto" class="me-3">
+        <div class="avatar">
+          <img src="/assets/no-profile-img-svg.webp" alt="">
+        </div>
+      </ion-col>
+
+    </ion-row>
+    <form [formGroup]="profileForm">
+      <ion-list class="radius">
+        <ion-item color="light">
+          <ion-input label="Name" labelPlacement="stacked" placeHolder="Your name is required" formControlName="name"
+            required></ion-input>
+        </ion-item>
+        <ion-item color="light">
+          <ion-input label="Last Name" labelPlacement="stacked" placeHolder="Your last name is required"
+            formControlName="lastName" required></ion-input>
+        </ion-item>
+      </ion-list>
+      <div class="w-100">
+        <ion-button (click)='updateProfile()'> 
+
+        </ion-button>
+      </div>
+    </form>
+  </ion-grid>
+</ion-content>

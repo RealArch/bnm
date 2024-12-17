@@ -78,6 +78,10 @@ export const routes: Routes = [
     loadComponent: () => import('./pages/public/not-allowed-user/not-allowed-user.page').then(m => m.NotAllowedUserPage),
     
   },
+  {
+    path: 'edit-profile-modal',
+    loadComponent: () => import('./pages/user/profile/edit-profile-modal/edit-profile-modal.page').then( m => m.EditProfileModalPage)
+  },
 
 
 

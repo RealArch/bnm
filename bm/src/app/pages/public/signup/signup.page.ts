@@ -1,7 +1,7 @@
 import { Component, OnInit, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
-import { IonicModule } from '@ionic/angular';
+import { IonicModule, NavController } from '@ionic/angular';
 import { AuthService } from 'src/app/services/auth.service';
 import { PopupsService } from 'src/app/services/popups.service';
 import { Router, RouterLinkWithHref } from '@angular/router';
@@ -29,9 +29,10 @@ export class SignupPage implements OnInit {
   sending: boolean = false;
   constructor(
     private fb: FormBuilder,
-    private router: Router
+    private router: Router,
+    private navController: NavController
   ) {
-    //Icons used
+    //Icons useds
     addIcons({ checkmarkCircle });
     addIcons({ closeCircle });
   }
@@ -46,8 +47,10 @@ export class SignupPage implements OnInit {
       .subscribe({
         next: (res: any) => {
           console.log(res)
-          this.authService.loginWithToken(res.loginToken).then(()=>{
-            this.router.navigate(['user'])
+          this.authService.loginWithToken(res.loginToken).then(() => {
+            localStorage.setItem('userUid', res.data.uid)
+            this.navController.setDirection("forward")
+            this.navController.navigateRoot("user")
 
           })
 
@@ -56,15 +59,19 @@ export class SignupPage implements OnInit {
           this.sending = false;
           if (err.code == 'auth/error-first-name') {
             this.popupService.presentToast('bottom', 'danger', 'There is an error with the field "First name". ')
-          } else if (err.code == 'auth/error-last-name') {
+          } else if (err.error.code == 'auth/error-last-name') {
             this.popupService.presentToast('bottom', 'danger', 'There is an error with the field "Last name". ')
-          } else if (err.code == 'auth/error-password') {
+          } else if (err.error.code == 'auth/error-password') {
             this.popupService.presentToast('bottom', 'danger', 'There is an error with the field "Password". ')
-          } else if (err.code == 'auth/error-email') {
+          } else if (err.error.code == 'auth/error-email') {
             this.popupService.presentToast('bottom', 'danger', 'There is an error with the field "Email". ')
+          } else if (err.error.code == 'auth/error-user-creation') {
+            this.popupService.presentToast('bottom', 'danger', err.error.message)
           } else {
             this.popupService.presentToast('bottom', 'danger', 'Something went wrong. Please contact administrator. ')
-            console.log(err)
+            console.log(err.error)
+           
+
             //Create a DB entry with this error
           }
 

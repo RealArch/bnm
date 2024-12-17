@@ -1,8 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { IonicModule } from '@ionic/angular';
+import { IonicModule, ModalController } from '@ionic/angular';
 import { AuthService } from 'src/app/services/auth.service';
+import { EditProfileModalPage } from './edit-profile-modal/edit-profile-modal.page';
 
 @Component({
   selector: 'app-profile',
@@ -15,11 +16,20 @@ export class ProfilePage implements OnInit {
 
   constructor(
     private authService: AuthService,
+    private modalContrller:ModalController
 
   ) { }
 
   ngOnInit() {
   }
+  //OPEN MODALS
+  async openEditProfileModal() {
+    const modal = await this.modalContrller.create({
+      component: EditProfileModalPage,
+    });
+    modal.present();
+  }
+  //
   logout() {
     this.authService.logout()
   }

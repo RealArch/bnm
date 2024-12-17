@@ -8,12 +8,34 @@
 </ion-header>
 
 <ion-content>
-  <ion-grid class="m-2">
-    <ion-list color="primary" class="radius">
+  <ion-grid class="ion-padding" fixed="true">
+    <ion-row class="profile-box align-items-center mb-3">
+      <ion-col size="auto" class="me-3">
+        <div class="avatar">
+
+        </div>
+      </ion-col>
+      <ion-col class="profile-info">
+        <div class="name">
+          Rafael Alvarez
+        </div>
+        <div class="email">
+          rafael8721693&#64;gmail.com
+        </div>
+        <div>
+          <ion-button size="small" class="ms-0" (click)="openEditProfileModal()">
+            Edit profile
+          </ion-button>
+        </div>
+      </ion-col>
+    </ion-row>
+
+    <ion-list color="primary" class="radius" [inset]="false">
       <ion-item button color="light" detail="false" (click)="logout()">
         Sign out
       </ion-item>
-
     </ion-list>
+    
+   
   </ion-grid>
 </ion-content>

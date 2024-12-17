@@ -60,7 +60,8 @@ router.post('/signup', async (req, res) => {
             },
             creationDate: dateNow,
             lastUpdate: dateNow,
-            lastFinishedShift: null
+            lastFinishedShift: null,
+            uid:userCreated.uid,
         }
         await db.collection('users').doc(userCreated.uid).set(userDataDb).catch(err => {
             //Delete user previeusly created
