@@ -8,7 +8,10 @@
 </ion-header>
 
 <ion-content>
-  <ion-grid class="ion-padding" fixed="true">
+  <ion-grid class="loading" *ngIf="loading">
+    <ion-spinner></ion-spinner>
+  </ion-grid>
+  <ion-grid class="ion-padding" fixed="true" *ngIf="!loading">
     <ion-row class="profile-box align-items-center mb-3">
       <ion-col size="auto" class="me-3">
         <div class="avatar">
@@ -17,7 +20,7 @@
       </ion-col>
       <ion-col class="profile-info">
         <div class="name">
-          Rafael Alvarez
+          {{userData.firstName + " " + userData.lastName | titlecase}}
         </div>
         <div class="email">
           rafael8721693&#64;gmail.com
@@ -35,7 +38,7 @@
         Sign out
       </ion-item>
     </ion-list>
-    
-   
+
+
   </ion-grid>
 </ion-content>

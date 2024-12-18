@@ -47,7 +47,7 @@ export class DashboardPage implements OnInit {
       this.authService.getUserData(this.userUid)
         .subscribe({
           next: (user) => {
-            this.userData = user.data()
+            this.userData = user
             this.loadingData = false
           },
           error: (e) => {

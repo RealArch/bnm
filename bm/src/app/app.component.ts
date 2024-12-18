@@ -57,7 +57,7 @@ export class AppComponent implements OnDestroy{
         .subscribe({
           next: (subUserData) => {
 
-            userData = subUserData.data();
+            userData = subUserData;
             //save the status of the user in localStorage
             localStorage.setItem('userUid', user.uid);
             localStorage.setItem('isUserActive', userData.active)

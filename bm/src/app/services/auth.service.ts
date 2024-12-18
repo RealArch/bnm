@@ -6,6 +6,7 @@ import { idTokenResult } from '@angular/fire/auth-guard';
 import { Firestore, doc, docSnapshots, getDoc, getFirestore } from '@angular/fire/firestore';
 import { Router } from '@angular/router';
 import { NavController } from '@ionic/angular';
+import { map } from 'rxjs'
 @Injectable({
   providedIn: 'root'
 })
@@ -15,8 +16,8 @@ export class AuthService {
     private firebase: Firestore,
     private auth: Auth, //Esto es necesario para hacer funcionar el servicio en standalone
     private http: HttpClient,
-    private router:Router,
-    private navController:NavController
+    private router: Router,
+    private navController: NavController
 
   ) { }
 
@@ -55,7 +56,12 @@ export class AuthService {
   }
   getUserData(userUid: string) {
     var ref = doc(getFirestore(), 'users', userUid)
-    return docSnapshots(ref)
+    return docSnapshots(ref).pipe(
+      map(snapshot => ({
+        id: snapshot.id,
+        ...snapshot.data()
+      }))
+    )
   }
 
 }
