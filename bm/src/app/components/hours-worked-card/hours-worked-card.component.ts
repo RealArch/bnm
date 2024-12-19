@@ -1,5 +1,5 @@
 import { CommonModule, NgIf } from '@angular/common';
-import { Component, OnInit } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { IonicModule } from '@ionic/angular';
 
@@ -10,10 +10,17 @@ import { IonicModule } from '@ionic/angular';
   standalone: true,
   imports: [IonicModule, CommonModule]
 })
-export class HoursWorkedCardComponent  implements OnInit {
-
+export class HoursWorkedCardComponent implements OnInit {
+  @Input() totalWorkHours: any;
+  hours: number = 0;
+  minutes: number = 0;
   constructor() { }
 
-  ngOnInit() {}
+  ngOnInit() {
+    console.log(this.totalWorkHours)
+    this.hours = Math.floor(this.totalWorkHours / (1000 * 60 * 60))
+    this.minutes = Math.floor((this.totalWorkHours % (1000 * 60 * 60)) / (1000 * 60));
+
+  }
 
 }

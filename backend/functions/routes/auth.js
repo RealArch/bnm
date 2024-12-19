@@ -58,6 +58,7 @@ router.post('/signup', async (req, res) => {
                 blocks: [],
                 lunchTaken: false,
             },
+            currentPaycheck:[],
             creationDate: dateNow,
             lastUpdate: dateNow,
             lastFinishedShift: null,

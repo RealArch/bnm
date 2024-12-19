@@ -23,6 +23,7 @@ export class DashboardPage implements OnInit {
   loadingData: boolean = true;
   userUid: any;
   userData: any;
+  totalPaycheckHours: any;
   constructor(
     private authService: AuthService,
     private popupService: PopupsService,
@@ -30,7 +31,7 @@ export class DashboardPage implements OnInit {
 
   ) {
     addIcons({ notifications })
-    
+
   }
 
   ngOnInit() {
@@ -48,6 +49,7 @@ export class DashboardPage implements OnInit {
         .subscribe({
           next: (user) => {
             this.userData = user
+            this.totalPaycheckHours = this.calculateWorkedHours(this.userData.currentPaycheck)
             this.loadingData = false
           },
           error: (e) => {
@@ -58,6 +60,15 @@ export class DashboardPage implements OnInit {
     )
 
 
+  }
+  calculateWorkedHours(currentPaycheck: any) {
+    
+    let totalWorkHours = 0;
+    let totalLunchHours = 0;
+    currentPaycheck.forEach((paycheck: { timeWorked: { work: number; lunch: number; }; }) => {
+      totalWorkHours += paycheck.timeWorked.work; totalLunchHours += paycheck.timeWorked.lunch;
+    });
+    return { totalWorkHours, totalLunchHours };
   }
 
   ngOnDestroy() {

@@ -5,6 +5,9 @@
 </ion-header> -->
 
 <ion-content color="light" class="">
+  <div *ngIf="loadingData" class="loading">
+    <ion-spinner></ion-spinner>
+  </div>
   <div *ngIf="!loadingData">
     <ion-toolbar color="primary">
       <ion-buttons slot="end">
@@ -15,7 +18,7 @@
     </ion-toolbar>
     <ion-grid class="welcome-box  ion-padding">
       <div class="welcome-msg">
-        !Hola, Rafael!
+        !Hola, {{userData.firstName | titlecase}}!
       </div>
       <div class="period-box">
         Periodo actual 04/05/24 - 04/18/04</div>
@@ -45,19 +48,22 @@
         </ion-col>
         <ion-col size="6">
           <div class="mb-1">
-            <app-hours-worked-card></app-hours-worked-card>
+            <app-hours-worked-card 
+            [totalWorkHours]="totalPaycheckHours.totalWorkHours">
+          </app-hours-worked-card>
           </div>
         </ion-col>
         <ion-col size="6">
           <div class="mb-1">
-            <app-money-earned-card></app-money-earned-card>
+            <app-money-earned-card 
+            [hourlyRate]="userData.hourlyRate"
+            [timeWorked]="totalPaycheckHours.totalWorkHours"></app-money-earned-card>
           </div>
         </ion-col>
 
 
 
       </ion-row>
-
 
 
 

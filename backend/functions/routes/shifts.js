@@ -125,12 +125,14 @@ router.post('/close', middlewares.verifyClientToken, async (req, res) => {
         console.log(blocks[0].startTime)
         shiftDate = new Date(blocks[0].startTime).setHours(12, 0, 0, 0);
         // Add the closing shift to collection "usersCurrentPaychecks"
-        var userCurrentPaychecks = await db.collection('usersCurrentPaychecks').doc(userUid).set({
-            days: FieldValue.arrayUnion({
+        var userCurrentPaychecks = await userDocRef.set({
+            currentPaycheck: FieldValue.arrayUnion({
                 blocks: blocks,
                 lunchTaken: lunchTaken,
-                day: shiftDate
+                day: shiftDate,
+                timeWorked: timeWorked
             })
+
         }, { merge: true })
 
 

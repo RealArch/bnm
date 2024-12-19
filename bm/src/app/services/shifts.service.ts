@@ -80,6 +80,7 @@ export class ShiftsService {
         }
       }
     });
+    
     diffWorkHours = Math.floor(totalTimeWorked / (1000 * 60 * 60));
     diffWorkMinutes = Math.floor((totalTimeWorked % (1000 * 60 * 60)) / (1000 * 60));
 
@@ -95,7 +96,7 @@ export class ShiftsService {
         minutes: diffWorkMinutes || 0
       }
     }
-
+    console.log(res)
     return res
   }
   // //Executes every time the date picker changes

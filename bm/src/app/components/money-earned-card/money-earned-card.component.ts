@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { IonicModule } from '@ionic/angular';
 
@@ -9,10 +9,24 @@ import { IonicModule } from '@ionic/angular';
   standalone: true,
   imports: [IonicModule, CommonModule]
 })
-export class MoneyEarnedCardComponent  implements OnInit {
+export class MoneyEarnedCardComponent implements OnInit {
+  @Input() hourlyRate: number = 0;
+  @Input() timeWorked: number = 0;
+  moneyEarned: any;
 
   constructor() { }
 
-  ngOnInit() {}
+  ngOnInit() {
+
+    this.moneyEarned= this.calculateEarnings(this.hourlyRate, this.timeWorked).toFixed(2);
+  }
+
+  calculateEarnings(hourlyRate: any, timeWorked: any) {
+    // Convertir milisegundos a horas 
+    const totalHoursWorked = timeWorked / (1000 * 60 * 60);
+    // Calcular el dinero adquirido 
+    const earnings = hourlyRate * totalHoursWorked;
+    return earnings;
+  }
 
 }

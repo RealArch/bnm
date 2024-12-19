@@ -40,6 +40,7 @@ export class EndingShiftModalComponent implements OnInit {
 
     this.updating = true
     var afAuthToken = await this.authService.getIdToken()
+    console.log(this.datetimeValue)
     //Prepare datetimeValue to send it to api. Convert it from iso to milliseconds
     let datetimeValueMilliseconds = new Date(this.datetimeValue).getTime()
     this.subscriptions.push(
@@ -59,11 +60,15 @@ export class EndingShiftModalComponent implements OnInit {
   }
   //Executes every time the date picker changes
   calculateClosingHour(value: any) {
+    this.datetimeValue = value
     console.log(value)
     this.closingShiftTime = new Date(value).getTime()
+    console.log(this.closingShiftTime)
+
     var copyBlocks = JSON.parse(JSON.stringify(this.userData.currentShift.blocks));
     copyBlocks[copyBlocks.length - 1].endTime = this.closingShiftTime;
     this.copyElapseTime = this.shiftsService.getElapsedMinSec(copyBlocks, this.userData.status)
+    console.log(this.copyElapseTime)
   }
 
   //ALERTS DOWN HERE--------------
