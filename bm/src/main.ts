@@ -26,22 +26,8 @@ bootstrapApplication(AppComponent, {
     }),
     provideRouter(routes),
     //FIREBASE INIT
-    importProvidersFrom(
-      provideFirebaseApp(
-        () => initializeApp(environment.firebaseConfig)
-      )),
-
-    //  if(environment.useEmulators) {
-
-    //   const firestore = getFirestore();
-    //   connectFirestoreEmulator(firestore, 'localhost', 8080);
-    //   enableIndexedDbPersistence(firestore);
-    //   return firestore;
-    // } else {
-    //   getFirestore();
-    // }
-
-    importProvidersFrom(provideFirestore(() => {
+    provideFirebaseApp(() => initializeApp(environment.firebaseConfig)),
+    provideFirestore(() => {
       if (environment.useEmulators) {
         const firestore = getFirestore();
         connectFirestoreEmulator(firestore, 'localhost', 8080)
@@ -49,16 +35,16 @@ bootstrapApplication(AppComponent, {
       } else {
         return getFirestore()
       }
-    })),
+    }),
 
     //AUTHENTICATION INIT
-    importProvidersFrom(provideAuth(() => {
+provideAuth(() => {
       if (environment.useEmulators) {
         const fireauth = getAuth();
         connectAuthEmulator(fireauth, 'http://localhost:9099');
         return fireauth;
       } else { return getAuth(); }
-    })),
+    }),
     // importProvidersFrom(provideFirestore(() => getFirestore())),
   ],
 });
