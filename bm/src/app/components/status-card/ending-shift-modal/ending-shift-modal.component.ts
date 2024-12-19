@@ -6,11 +6,10 @@ import { ShiftsService } from 'src/app/services/shifts.service';
 import { FormsModule } from '@angular/forms';
 import { NgIf } from '@angular/common';
 @Component({
-  selector: 'app-ending-shift-modal',
-  templateUrl: './ending-shift-modal.component.html',
-  styleUrls: ['./ending-shift-modal.component.scss'],
-  standalone: true,
-  imports: [IonicModule, FormsModule, NgIf]
+    selector: 'app-ending-shift-modal',
+    templateUrl: './ending-shift-modal.component.html',
+    styleUrls: ['./ending-shift-modal.component.scss'],
+    imports: [IonicModule, FormsModule, NgIf]
 })
 export class EndingShiftModalComponent implements OnInit {
   @Input() userData: any;

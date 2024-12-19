@@ -8,11 +8,10 @@ import { PopupsService } from 'src/app/services/popups.service';
 import { ShiftsService } from 'src/app/services/shifts.service';
 
 @Component({
-  selector: 'app-start-shift-modal',
-  templateUrl: './start-shift-modal.component.html',
-  styleUrls: ['./start-shift-modal.component.scss'],
-  standalone: true,
-  imports: [IonicModule, CommonModule, FormsModule, ReactiveFormsModule, DatePipe, NgIf, JsonPipe]
+    selector: 'app-start-shift-modal',
+    templateUrl: './start-shift-modal.component.html',
+    styleUrls: ['./start-shift-modal.component.scss'],
+    imports: [IonicModule, CommonModule, FormsModule, ReactiveFormsModule, DatePipe, NgIf, JsonPipe]
 })
 export class StartShiftModalComponent implements OnInit {
   @Input() modType!: 'start' | 'commute' | 'lunch';

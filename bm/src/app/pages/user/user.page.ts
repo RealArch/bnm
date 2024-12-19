@@ -10,11 +10,10 @@ import { AuthService } from 'src/app/services/auth.service';
 import { onAuthStateChanged, getAuth } from '@angular/fire/auth';
 
 @Component({
-  selector: 'app-user',
-  templateUrl: './user.page.html',
-  styleUrls: ['./user.page.scss'],
-  standalone: true,
-  imports: [IonicModule, CommonModule, FormsModule]
+    selector: 'app-user',
+    templateUrl: './user.page.html',
+    styleUrls: ['./user.page.scss'],
+    imports: [IonicModule, CommonModule, FormsModule]
 })
 export class UserPage implements OnInit {
   data!: any;

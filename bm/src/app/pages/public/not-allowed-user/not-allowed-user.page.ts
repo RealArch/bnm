@@ -7,11 +7,10 @@ import { keyOutline } from 'ionicons/icons';
 import { AuthService } from 'src/app/services/auth.service';
 
 @Component({
-  selector: 'app-not-allowed-user',
-  templateUrl: './not-allowed-user.page.html',
-  styleUrls: ['./not-allowed-user.page.scss'],
-  standalone: true,
-  imports: [IonicModule, CommonModule, FormsModule]
+    selector: 'app-not-allowed-user',
+    templateUrl: './not-allowed-user.page.html',
+    styleUrls: ['./not-allowed-user.page.scss'],
+    imports: [IonicModule, CommonModule, FormsModule]
 })
 export class NotAllowedUserPage implements OnInit {
   constructor(

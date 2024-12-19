@@ -12,11 +12,10 @@ import { HoursWorkedCardComponent } from 'src/app/components/hours-worked-card/h
 import { MoneyEarnedCardComponent } from 'src/app/components/money-earned-card/money-earned-card.component';
 
 @Component({
-  selector: 'app-dashboard',
-  templateUrl: './dashboard.page.html',
-  styleUrls: ['./dashboard.page.scss'],
-  standalone: true,
-  imports: [IonicModule, CommonModule, FormsModule, StatusCardComponent, HoursWorkedCardComponent, MoneyEarnedCardComponent]
+    selector: 'app-dashboard',
+    templateUrl: './dashboard.page.html',
+    styleUrls: ['./dashboard.page.scss'],
+    imports: [IonicModule, CommonModule, FormsModule, StatusCardComponent, HoursWorkedCardComponent, MoneyEarnedCardComponent]
 })
 export class DashboardPage implements OnInit {
   subscriptions: Subscription[] = [];

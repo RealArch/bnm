@@ -9,11 +9,10 @@ import { addIcons } from 'ionicons';
 import { checkmarkCircle, closeCircle } from 'ionicons/icons';
 
 @Component({
-  selector: 'app-signup',
-  templateUrl: './signup.page.html',
-  styleUrls: ['./signup.page.scss'],
-  standalone: true,
-  imports: [IonicModule, CommonModule, FormsModule, ReactiveFormsModule, RouterLinkWithHref]
+    selector: 'app-signup',
+    templateUrl: './signup.page.html',
+    styleUrls: ['./signup.page.scss'],
+    imports: [IonicModule, CommonModule, FormsModule, ReactiveFormsModule, RouterLinkWithHref]
 })
 export class SignupPage implements OnInit {
   authService = inject(AuthService);

@@ -5,11 +5,10 @@ import { IonicModule, ModalController } from '@ionic/angular';
 import { AuthService } from 'src/app/services/auth.service';
 
 @Component({
-  selector: 'app-edit-profile-modal',
-  templateUrl: './edit-profile-modal.page.html',
-  styleUrls: ['./edit-profile-modal.page.scss'],
-  standalone: true,
-  imports: [IonicModule, CommonModule, FormsModule, FormsModule, ReactiveFormsModule]
+    selector: 'app-edit-profile-modal',
+    templateUrl: './edit-profile-modal.page.html',
+    styleUrls: ['./edit-profile-modal.page.scss'],
+    imports: [IonicModule, CommonModule, FormsModule, FormsModule, ReactiveFormsModule]
 })
 export class EditProfileModalPage implements OnInit {
   @Input() userData: any;

@@ -12,11 +12,10 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { EndingShiftModalComponent } from './ending-shift-modal/ending-shift-modal.component';
 
 @Component({
-  selector: 'app-status-card',
-  templateUrl: './status-card.component.html',
-  styleUrls: ['./status-card.component.scss'],
-  standalone: true,
-  imports: [IonicModule, CommonModule, NgIf, ReactiveFormsModule, FormsModule]
+    selector: 'app-status-card',
+    templateUrl: './status-card.component.html',
+    styleUrls: ['./status-card.component.scss'],
+    imports: [IonicModule, CommonModule, NgIf, ReactiveFormsModule, FormsModule]
 })
 export class StatusCardComponent implements OnInit {
   @Input() userData: any;

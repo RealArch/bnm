@@ -8,10 +8,9 @@ import { authState, getAuth, onAuthStateChanged } from '@angular/fire/auth';
 import { fileTray } from 'ionicons/icons';
 
 @Component({
-  selector: 'app-root',
-  templateUrl: 'app.component.html',
-  standalone: true,
-  imports: [IonApp, IonRouterOutlet],
+    selector: 'app-root',
+    templateUrl: 'app.component.html',
+    imports: [IonApp, IonRouterOutlet]
 })
 export class AppComponent implements OnDestroy{
   //Injects

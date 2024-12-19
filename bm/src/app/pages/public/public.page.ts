@@ -4,11 +4,10 @@ import { FormsModule } from '@angular/forms';
 import { IonicModule } from '@ionic/angular';
 
 @Component({
-  selector: 'app-public',
-  templateUrl: './public.page.html',
-  styleUrls: ['./public.page.scss'],
-  standalone: true,
-  imports: [IonicModule, CommonModule, FormsModule]
+    selector: 'app-public',
+    templateUrl: './public.page.html',
+    styleUrls: ['./public.page.scss'],
+    imports: [IonicModule, CommonModule, FormsModule]
 })
 export class PublicPage implements OnInit {
 
