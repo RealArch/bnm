@@ -3,7 +3,7 @@ import { Auth, IdTokenResult, authState, getAuth, getIdToken, idToken, onAuthSta
 import { HttpClient } from '@angular/common/http';
 import { environment } from '../../environments/environment';
 import { idTokenResult } from '@angular/fire/auth-guard';
-import { Firestore, doc, docSnapshots, getDoc, getFirestore } from '@angular/fire/firestore';
+import { Firestore, doc, docData, docSnapshots, getDoc, getFirestore } from '@angular/fire/firestore';
 import { Router } from '@angular/router';
 import { NavController } from '@ionic/angular';
 import { map } from 'rxjs'
@@ -39,7 +39,15 @@ export class AuthService {
   getAuthState() {
     return authState(getAuth())
   }
-
+  getPublicConfigData() {
+    var ref = doc(getFirestore(), 'general', 'settings')
+    return docSnapshots(ref).pipe(
+      map(snapshot => ({
+        id: snapshot.id,
+        ...snapshot.data()
+      }))
+    )
+  }
   logout() {
     localStorage.removeItem('userUid')
     // this.router.navigate(["/auth/login"])

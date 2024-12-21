@@ -1,4 +1,4 @@
-import { CommonModule, DatePipe, JsonPipe, NgIf, TitleCasePipe } from '@angular/common';
+import { CommonModule, DatePipe, NgIf, TitleCasePipe } from '@angular/common';
 import { Component, Inject, Input, OnInit, inject, viewChild } from '@angular/core';
 import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { IonicModule, ModalController, AlertController } from '@ionic/angular';
@@ -11,7 +11,7 @@ import { ShiftsService } from 'src/app/services/shifts.service';
     selector: 'app-start-shift-modal',
     templateUrl: './start-shift-modal.component.html',
     styleUrls: ['./start-shift-modal.component.scss'],
-    imports: [IonicModule, CommonModule, FormsModule, ReactiveFormsModule, DatePipe, NgIf, JsonPipe]
+    imports: [IonicModule, CommonModule, FormsModule, ReactiveFormsModule, DatePipe, NgIf]
 })
 export class StartShiftModalComponent implements OnInit {
   @Input() modType!: 'start' | 'commute' | 'lunch';

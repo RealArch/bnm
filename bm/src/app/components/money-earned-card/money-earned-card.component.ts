@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, effect, Input, OnInit, signal, Signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { IonicModule } from '@ionic/angular';
 
@@ -9,23 +9,26 @@ import { IonicModule } from '@ionic/angular';
     imports: [IonicModule, CommonModule]
 })
 export class MoneyEarnedCardComponent implements OnInit {
-  @Input() hourlyRate: number = 0;
-  @Input() timeWorked: number = 0;
+  @Input() hourlyRate: Signal<number> = signal(0);
+  @Input() timeWorked: Signal<number> = signal(0);
   moneyEarned: any;
 
-  constructor() { }
+  constructor() { 
+    effect(()=>{
+      this.calculateEarnings()
+    })
+  }
 
   ngOnInit() {
 
-    this.moneyEarned= this.calculateEarnings(this.hourlyRate, this.timeWorked).toFixed(2);
   }
-
-  calculateEarnings(hourlyRate: any, timeWorked: any) {
+  
+  calculateEarnings() {   
     // Convertir milisegundos a horas 
-    const totalHoursWorked = timeWorked / (1000 * 60 * 60);
+    const totalHoursWorked = this.timeWorked() / (1000 * 60 * 60);
     // Calcular el dinero adquirido 
-    const earnings = hourlyRate * totalHoursWorked;
-    return earnings;
+    const earnings = this.hourlyRate() * totalHoursWorked;
+    this.moneyEarned =  earnings.toFixed(2);
   }
 
 }

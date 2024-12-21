@@ -80,7 +80,7 @@ export class ShiftsService {
         }
       }
     });
-    
+
     diffWorkHours = Math.floor(totalTimeWorked / (1000 * 60 * 60));
     diffWorkMinutes = Math.floor((totalTimeWorked % (1000 * 60 * 60)) / (1000 * 60));
 
@@ -99,15 +99,20 @@ export class ShiftsService {
     console.log(res)
     return res
   }
-  // //Executes every time the date picker changes
-  // calculateClosingHour(value: any) {
-  //   console.log(value)
-  //   this.closingShiftTime = new Date(value).getTime()
 
-  //   var copyBlocks = JSON.parse(JSON.stringify(this.userData.currentShift.blocks));
-  //   copyBlocks[copyBlocks.length - 1].endTime = this.closingShiftTime;
-  //   this.copyElapseTime = this.getElapsedMinSec(copyBlocks)
-  // }
-
+  calculateEndOfPaycheck(paymentSchedule: string, paycheckStartingDate: number) {
+    const nextPaymentDate = paycheckStartingDate;
+    let startDate: Date;
+    if (paymentSchedule === 'biweekly') {
+      // Restar 14 días (2 semanas) para obtener el día de inicio 
+      startDate = new Date(nextPaymentDate + 14 * 24 * 60 * 60 * 1000);
+    } else if (paymentSchedule === 'weekly') {
+      // Restar 7 días (1 semana) para obtener el día de inicio 
+      startDate = new Date(nextPaymentDate + 7 * 24 * 60 * 60 * 1000);
+    } else {
+      throw new Error('Invalid payment schedule. Use "biweekly" or "weekly".');
+    }
+    return startDate;
+  }
 
 }
