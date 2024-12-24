@@ -1,0 +1,124 @@
+<ion-header [translucent]="true">
+  <ion-toolbar color="primary">
+    <ion-row class="align-items-center">
+      <ion-col size="8" class="py-0 ps-0">
+        <ion-title>Customers</ion-title>
+      </ion-col>
+      <ion-col size="4" class="py-0 pe-2">
+        <ion-searchbar class=" search-bar" mode="ios"></ion-searchbar>
+
+      </ion-col>
+    </ion-row>
+
+  </ion-toolbar>
+</ion-header>
+
+<ion-content color="light" fixed-slot-placement="before">
+
+  <ion-grid fixed="true" class="ion-padding">
+    <ion-list class="customers-list m-0 box-shadow" [inset]="true">
+      <ion-item>
+        <ion-row class="w-100">
+
+          <ion-col size="4">
+            <div>
+              <div class="title">
+                Customer name
+              </div>
+            </div>
+          </ion-col>
+
+          <ion-col size="3">
+            <div>
+              <div class="title">
+                Contact Name
+              </div>
+            </div>
+          </ion-col>
+
+          <ion-col size="3">
+            <div>
+              <div class="title">
+                Contact Phone N.
+              </div>
+            </div>
+          </ion-col>
+
+          <ion-col size="2" class="justify-content-end">
+            <div>
+              <div class="title">
+                Actions
+              </div>
+            </div>
+          </ion-col>
+
+        </ion-row>
+      </ion-item>
+      <!-- Of not loading data -->
+      @if(!loading){
+      <!-- Iterate all customers -->
+      @for (customer of customers ; track customer.id){
+      <ion-item>
+        <ion-row class="w-100">
+
+          <ion-col size="4">
+            <div>
+              <div class="name">
+                {{customer.companyName}}
+              </div>
+            </div>
+          </ion-col>
+
+          <ion-col size="3">
+            <div>
+              <div class="status">
+                {{customer.contactName}}
+              </div>
+            </div>
+          </ion-col>
+
+          <ion-col size="3">
+            <div>
+              <div class="earnings">
+                {{customer.contactPhone}}
+              </div>
+            </div>
+          </ion-col>
+
+
+          <ion-col size="2" class="justify-content-end">
+            <div>
+              <ion-buttons>
+                <ion-button  color="danger" (click)="openRemoveAlert(customer.id)">
+                  <ion-icon size="small" slot="icon-only" name="trash"></ion-icon>
+                </ion-button>
+               
+                <ion-button color="primary">
+                  <ion-icon size="small" slot="icon-only" name="pencil"></ion-icon>
+                </ion-button>
+              </ion-buttons>
+            </div>
+          </ion-col>
+
+        </ion-row>
+      </ion-item>
+      <!-- If no customers -->
+      } @empty{
+      No hay documentos
+      }
+      <!-- if loading -->
+      } @else {
+      <div class="section-loading-box">
+        <ion-spinner color="primary"></ion-spinner>
+      </div>
+      }
+    </ion-list>
+
+  </ion-grid>
+  <ion-fab slot="fixed" vertical="bottom" horizontal="end">
+    <ion-fab-button (click)="openAddCustomerModal()">
+      <ion-icon name="add"></ion-icon>
+    </ion-fab-button>
+  </ion-fab>
+
+</ion-content>

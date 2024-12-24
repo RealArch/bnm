@@ -1,7 +1,7 @@
 <ion-split-pane when="lg" contentId="main">
   <ion-menu contentId="main" class="id">
     <ion-header>
-      <ion-toolbar color="tertiary">
+      <ion-toolbar color="primary">
         <ion-title>Menu</ion-title>
       </ion-toolbar>
     </ion-header>
@@ -14,16 +14,20 @@
             Dashboard
           </ion-item>
           <ion-item button lines="none" routerLinkActive="selected" routerDirection="root"
-          [routerLink]="['/user/pay-periods']">
-          <ion-icon aria-hidden="true" name="people" slot="start"></ion-icon>
-          Pay Periods
-        </ion-item>
+            [routerLink]="['/user/pay-periods']">
+            <ion-icon aria-hidden="true" name="people" slot="start"></ion-icon>
+            Pay Periods
+          </ion-item>
           <ion-item button lines="none" routerLinkActive="selected" routerDirection="root"
             [routerLink]="['/user/shifts']">
             <ion-icon aria-hidden="true" name="people" slot="start"></ion-icon>
             Shifts
           </ion-item>
-
+          <ion-item button lines="none" routerLinkActive="selected" routerDirection="root"
+            [routerLink]="['/user/customers']">
+            <ion-icon aria-hidden="true" name="business" slot="start"></ion-icon>
+            Customers
+          </ion-item>
           <ion-item button lines="none" routerLinkActive="selected" routerDirection="root"
             [routerLink]="['/user/workers/active']">
             <ion-icon aria-hidden="true" name="people" slot="start"></ion-icon>
@@ -32,6 +36,14 @@
         </ion-menu-toggle>
       </ion-list>
     </ion-content>
+    <ion-footer class="ion-padding">
+      <ion-list class="menu py-0">
+        <ion-item button lines="none" (click)="logOut()">
+          <ion-icon aria-hidden="true" name="log-out" slot="start"></ion-icon>
+          Log Out
+        </ion-item>
+      </ion-list>
+    </ion-footer>
   </ion-menu>
 
   <div class="ion-page" id="main">

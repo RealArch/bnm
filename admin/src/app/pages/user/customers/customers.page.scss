@@ -1,0 +1,63 @@
+.search-bar {
+    padding: 0;
+    margin-right: 10px;
+
+
+}
+
+
+
+ion-col {
+    display: flex;
+    align-items: center;
+}
+
+.title {
+    font-size: 0.8rem;
+
+}
+
+.name {
+    color: rgb(63, 63, 63);
+    font-weight: bold;
+    font-size: 0.9rem;
+}
+
+.earnings {
+    color: rgb(63, 63, 63);
+    font-weight: bold;
+    font-size: 0.9rem;
+}
+
+.status {
+    font-weight: bold;
+    font-size: 0.9rem;
+}
+
+.onShift {
+    color: var(--ion-color-success);
+}
+
+.outOfShift {
+    color: var(--ion-color-dark);
+}
+
+.customers-list {
+    border-radius: 10px;
+    padding: 0 0 10px 0;
+
+
+}
+
+.customers-list ion-item:nth-child(odd) {
+
+    --background: rgb(242, 242, 242);
+
+}
+
+.customers-list ion-item:nth-child(1) {
+
+    --background: var(--ion-color-primary);
+    color: var(--ion-color-light);
+
+}

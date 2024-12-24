@@ -47,6 +47,11 @@ export const routes: Routes = [
         path: 'pay-periods',
         loadComponent: () => import('./pages/user/pay-periods/pay-periods.page').then(m => m.PayPeriodsPage)
       },
+      {
+        path: 'customers',
+        loadComponent: () => import('./pages/user/customers/customers.page').then( m => m.CustomersPage)
+      },
+    
     ]
   },
 
@@ -73,6 +78,13 @@ export const routes: Routes = [
     path: 'user-accordion',
     loadComponent: () => import('./pages/user/pay-periods/user-accordion/user-accordion.page').then( m => m.UserAccordionPage)
   },
+  {
+    path: 'add-customer-modal',
+    loadComponent: () => import('./pages/user/customers/add-customer-modal/add-customer-modal.page').then( m => m.AddCustomerModalPage)
+  },
+ 
+
+
 
 
 

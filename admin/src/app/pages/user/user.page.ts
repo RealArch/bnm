@@ -4,7 +4,7 @@ import { FormsModule } from '@angular/forms';
 import { IonicModule, MenuController } from '@ionic/angular';
 import { Router, RouterLinkActive, RouterLinkWithHref } from '@angular/router';
 import { addIcons } from 'ionicons';
-import { home, people } from 'ionicons/icons'
+import { home, people, logOut, business } from 'ionicons/icons'
 import { AuthService } from 'src/app/services/auth.service';
 import { Subject, takeUntil } from 'rxjs';
 
@@ -22,7 +22,7 @@ export class UserPage implements OnInit {
   private unsubscribe$ = new Subject<void>();
   constructor() {
 
-    addIcons({ home, people })
+    addIcons({ home, people, logOut, business })
     this.authService.getAuthState()
     .pipe(takeUntil(this.unsubscribe$))
       .subscribe({

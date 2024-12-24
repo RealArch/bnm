@@ -32,6 +32,7 @@ export class AuthService {
     }
     return
   }
+  
   logOut() {
     return signOut(getAuth())
   }
