@@ -14,8 +14,14 @@ const { onDocumentUpdated, onDocumentCreated } = require('firebase-functions/v2/
 const logger = require("firebase-functions/logger");
 var express = require('express');
 var app = express();
+const { onInit } = require('firebase-functions/v2/core');
 
+const { defineSecret } = require('firebase-functions/params');
 
+const algoliaAppId = defineSecret('ALGOLIA_APP_ID');
+const algoliaAdminKey = defineSecret('ALGOLIA_ADMIN_KEY');
+
+//This is for the env variables
 var serviceAccount = require('./adminKeyFirebase.json');
 
 initializeApp({
@@ -30,8 +36,13 @@ app.use('/auth', authRoute)
 const shiftRoute = require("./routes/shifts");
 const { event } = require("firebase-functions/v1/analytics");
 app.use('/shifts', shiftRoute)
-
-exports.api = onRequest(app);
+// Middleware para acceder a los parámetros 
+// app.use((req, res, next) => {
+//     req.algoliaAppId = algoliaAppId.value();
+//     req.algoliaAdminKey = algoliaAdminKey.value();
+//     next()
+// })
+exports.api = onRequest({ secrets: [algoliaAppId, algoliaAdminKey] }, app);
 
 //AUTOMATIC FUNCTIONS
 
@@ -39,7 +50,6 @@ exports.api = onRequest(app);
 exports.user = onDocumentUpdated('users/{usersID}',
     (event) => {
         // console.log(event.data.before);
-        console.log('entrre')
         console.log(event.data.after.id)
         if (event.data.before.data().active == false && event.data.after.data().active == true) {
             auth().setCustomUserClaims(event.data.after.id, {

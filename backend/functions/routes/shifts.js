@@ -6,12 +6,14 @@ const { onDocumentUpdated } = require('firebase-functions/v2/firestore');
 const router = require('express').Router();
 const db = getFirestore()
 
+
 const express = require('express');
 
 const app = express();
 
 const middlewares = require('../middlewares/verifyAuthTokens');
 const { createFortnightArray } = require('../utilities/utilities');
+
 
 
 router.post('/start', middlewares.verifyClientToken, async (req, res) => {

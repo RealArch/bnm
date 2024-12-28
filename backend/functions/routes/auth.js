@@ -1,9 +1,18 @@
 const { auth } = require('firebase-admin');
 const { getFirestore } = require('firebase-admin/firestore');
+const { defineSecret } = require('firebase-functions/params');
+
+const algoliaAppId = defineSecret('ALGOLIA_APP_ID');
+const algoliaAdminKey = defineSecret('ALGOLIA_ADMIN_KEY');
 
 const router = require('express').Router();
 const db = getFirestore()
 
+router.get('/',(req,res)=>{
+    console.log(algoliaAdminKey.value())
+    console.log(algoliaAppId.value())
+    return res.send("ok")
+})
 router.post('/signup', async (req, res) => {
     var body = req.body
     var dateNow = Date.now()
