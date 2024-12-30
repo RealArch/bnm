@@ -1,12 +1,13 @@
-import { Component, inject, OnInit } from '@angular/core';
+import { Component, inject, Input, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { IonicModule, ModalController } from '@ionic/angular';
 import { addIcons } from 'ionicons';
 import { close } from 'ionicons/icons'
 import { CustomersService } from 'src/app/services/customers.service';
-import { AddCustomer } from 'src/app/interfaces/customers';
+import { AddCustomer, Customer } from 'src/app/interfaces/customers';
 import { PopupService } from 'src/app/services/popup.service';
+import { GeneralService } from 'src/app/services/general.service';
 
 @Component({
   selector: 'app-add-customer-modal',
@@ -16,26 +17,39 @@ import { PopupService } from 'src/app/services/popup.service';
   imports: [IonicModule, CommonModule, FormsModule, ReactiveFormsModule]
 })
 export class AddCustomerModalPage implements OnInit {
+  @Input() customer:Customer | undefined
+
   customerForm: FormGroup = new FormGroup({});
   loading = false;
+  states: { name: string; code: string; }[] = [];
   constructor(
     private modalController: ModalController,
     private customersService: CustomersService,
     private fb: FormBuilder,
-    private popupService: PopupService
+    private popupService: PopupService,
+    private generalService: GeneralService
   ) {
     addIcons({ close })
-    this.customerForm = this.fb.group({
-      companyName: [null, Validators.required],
-      companyPhone: [null, Validators.required],
-      companyAddress: [null, Validators.required],
-      contactName: [null, Validators.required],
-      contactPhone: [null, Validators.required],
 
-    })
+   
   }
 
   ngOnInit() {
+    this.states = this.generalService.getStatesArray()
+    //Declare form
+    this.customerForm = this.fb.group({
+      companyName: [this.customer?.companyName || null, Validators.required],
+      companyPhone: [this.customer?.companyPhone || null],
+      companyAddress: this.fb.group({
+        street: [this.customer?.companyAddress.street || null, Validators.required],
+        city: [this.customer?.companyAddress.city || null, Validators.required],
+        state: [this.customer?.companyAddress.state || null, Validators.required],
+        zip: [this.customer?.companyAddress.zip || null, Validators.required]
+      }),
+      contactName: [this.customer?.contactName || null,],
+      contactPhone: [this.customer?.contactPhone || null,],
+    })
+    console.log(this.customer)
   }
   //Add customer to data base
   addCustomer() {
@@ -46,7 +60,7 @@ export class AddCustomerModalPage implements OnInit {
       companyAddress: this.customerForm.value.companyAddress,
       contactName: this.customerForm.value.contactName,
       contactPhone: this.customerForm.value.contactPhone,
-
+      id:this.customer?.id || null
     }
     this.customersService.addCustomer(data)
       .then(() => {
@@ -57,7 +71,7 @@ export class AddCustomerModalPage implements OnInit {
         )
         this.closeModal()
         this.loading = false;
-      }).catch(e=>{
+      }).catch(e => {
         console.log(e)
         this.loading = false;
         this.popupService.presentToast(

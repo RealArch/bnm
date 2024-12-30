@@ -1,7 +1,7 @@
 import { Component, inject, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, FormsModule, Validators } from '@angular/forms';
-import { IonicModule, ModalController, AlertController } from '@ionic/angular';
+import { IonicModule, ModalController, AlertController, SearchbarCustomEvent } from '@ionic/angular';
 import { addIcons } from 'ionicons';
 import { add, ellipsisVertical, pencil, search, trash } from 'ionicons/icons';
 import { AddCustomerModalPage } from './add-customer-modal/add-customer-modal.page';
@@ -27,7 +27,7 @@ export class CustomersPage implements OnInit {
     private customersServices: CustomersService,
     private router: Router,
     private alertController: AlertController,
-    private popupServices:PopupService
+    private popupServices: PopupService
   ) {
     addIcons({ add, pencil, trash })
 
@@ -40,6 +40,21 @@ export class CustomersPage implements OnInit {
         // this.setOpen(false)
       }
     });
+  }
+
+  searchData(event: SearchbarCustomEvent) {
+    if (event.detail.value == '') return this.getData()
+    this.loading = true
+    let q = event.detail.value || '';
+    this.customersServices.searchCustomer(q)
+      .then((customers: Customer[]) => {
+        this.customers = customers
+        console.log(this.customers)
+        this.loading = false
+      }).catch(e => {
+        console.log(e)
+        this.loading = false
+      })
   }
   getData() {
     this.loading = true
@@ -56,16 +71,17 @@ export class CustomersPage implements OnInit {
           this.loading = false
         }
       })
+
   }
   removeCustomer(customerId: string) {
-      this.customersServices.removeCustomer(customerId)
-      .then(()=>{
+    this.customersServices.removeCustomer(customerId)
+      .then(() => {
         this.popupServices.presentToast(
           'bottom',
           'success',
           'The customer has been successfully deleted.'
         )
-      }).catch(e=>{
+      }).catch(e => {
         console.log(e)
         this.popupServices.presentToast(
           'bottom',
@@ -100,10 +116,16 @@ export class CustomersPage implements OnInit {
 
 
   //Open modals
-  async openAddCustomerModal() {
+  async openAddCustomerModal(customer:any) {
+    var data = customer;
+
     const modal = await this.modalController.create({
       component: AddCustomerModalPage,
-      backdropDismiss: false
+      backdropDismiss: false,
+      cssClass: 'radius',
+      componentProps: {
+        customer: data
+      }
     });
     modal.present();
 

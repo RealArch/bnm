@@ -5,7 +5,13 @@
         <ion-icon name="close" slot="icon-only"></ion-icon>
       </ion-button>
     </ion-buttons>
-    <ion-title>Add Customer</ion-title>
+    <ion-title>
+      @if(customer!=null){
+      Edit Customer
+      }@else{
+      Add Customer
+      }
+    </ion-title>
   </ion-toolbar>
 </ion-header>
 
@@ -20,22 +26,58 @@
 
           <ion-col size="6" class=" ">
             <ion-item color="light" class="radius">
-              <ion-input formControlName="companyName" label="Company Name" label-placement="stacked"></ion-input>
+              <ion-input formControlName="companyName" label="Company Name (Required)"
+                label-placement="stacked"></ion-input>
             </ion-item>
           </ion-col>
           <ion-col size="6" class="">
             <ion-item color="light" class="radius">
-              <ion-input formControlName="companyPhone" label="Phone number" label-placement="stacked"></ion-input>
+              <ion-input formControlName="companyPhone" label="Phone number (Optional)"
+                label-placement="stacked"></ion-input>
             </ion-item>
           </ion-col>
-          <ion-col size="12" class="">
+
+        </ion-row>
+      </ion-list>
+
+      <ion-list class="py-0 " formGroupName="companyAddress">
+
+        <ion-list-header class="ps-2">
+          Address
+        </ion-list-header>
+        <ion-row>
+          <ion-col size="6" class="">
             <ion-item color="light" class="radius">
-              <ion-input formControlName="companyAddress" label="Address" label-placement="stacked"></ion-input>
+              <ion-input formControlName="street" label="Street (Required)" label-placement="stacked"></ion-input>
+            </ion-item>
+          </ion-col>
+          <ion-col size="6" class="">
+            <ion-item color="light" class="radius">
+              <ion-input formControlName="city" label="City (Required)" label-placement="stacked"></ion-input>
+            </ion-item>
+          </ion-col>
+          <ion-col size="6" class="">
+            <ion-item color="light" class="radius">
+              <ion-select formControlName="state" labelPlacement="stacked" label="State (Required)" aria-label="State"
+                interface="popover" placeholder="Select state">
+                @for(state of states; track state.code){
+                <ion-select-option [value]="state.code">{{state.name}}</ion-select-option>
+
+                }
+
+              </ion-select>
+            </ion-item>
+            <!-- <ion-item color="light" class="radius">
+              <ion-input formControlName="state" label="State" label-placement="stacked"></ion-input>
+            </ion-item> -->
+          </ion-col>
+          <ion-col size="6" class="">
+            <ion-item color="light" class="radius">
+              <ion-input formControlName="zip" label="Zip (Required)" label-placement="stacked"></ion-input>
             </ion-item>
           </ion-col>
         </ion-row>
       </ion-list>
-
       <ion-list class="py-0 ">
         <ion-list-header class="ps-2">
           Contact Information
@@ -44,12 +86,14 @@
 
           <ion-col size="6" class=" ">
             <ion-item color="light" class="radius">
-              <ion-input formControlName="contactName" label="Contact Name" label-placement="stacked"></ion-input>
+              <ion-input formControlName="contactName" label="Contact Name (Optional)"
+                label-placement="stacked"></ion-input>
             </ion-item>
           </ion-col>
           <ion-col size="6" class="">
             <ion-item color="light" class="radius">
-              <ion-input formControlName="contactPhone" label="Phone number" label-placement="stacked"></ion-input>
+              <ion-input formControlName="contactPhone" label="Phone number (Optional)"
+                label-placement="stacked"></ion-input>
             </ion-item>
           </ion-col>
 
@@ -67,7 +111,11 @@
         @if (loading){
         <ion-spinner></ion-spinner>
         } @else {
-        Add
+          @if(customer!=null){
+            Update
+            }@else{
+            Add
+            }
         }
       </ion-button>
     </ion-buttons>

@@ -57,18 +57,20 @@
 }
 
 //All rounded
+
 ion-popover::part(content) {
     border-radius: 15px !important;
     box-shadow: rgba(149, 157, 165, 0.2) 0px 8px 24px;
 }
-ion-card {
+ion-card, ion-modal {
     border-radius: 15px !important;
     box-shadow: rgba(149, 157, 165, 0.2) 0px 8px 24px;
 }
 
 .radius {
-    border-radius: 10px;
-    --border-radius:10px;
+    border-radius: 15px;
+    --border-radius:15px;
+    
 }
 .box-shadow{
     box-shadow: rgba(149, 157, 165, 0.2) 0px 8px 24px;
