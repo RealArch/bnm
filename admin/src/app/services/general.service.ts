@@ -7,7 +7,7 @@ export class GeneralService {
 
   constructor() { }
 
-  getStatesArray(){
+  getStatesArray() {
     return [
       { "name": "Alabama", "code": "AL" },
       { "name": "Alaska", "code": "AK" },
@@ -60,6 +60,43 @@ export class GeneralService {
       { "name": "Wisconsin", "code": "WI" },
       { "name": "Wyoming", "code": "WY" }
     ]
-    
   }
+  createFortnightArray(paymentSchedule: string, nextClosingDate: number, currentPaycheck: any) {
+
+    /////FIRST format the array for the schedule
+    var paycheckDays = 0;
+    var fortnight;
+    var days = []
+
+    if (paymentSchedule == 'biweekly') paycheckDays = 14
+    if (paymentSchedule == 'weekly') paycheckDays = 7
+
+    for (let i = 0; i < paycheckDays; i++) {
+      //get the previous date on each iteration, then fill the array with all the days possible on the paycheck
+      const previousDayMilliseconds = nextClosingDate - (i * 24 * 60 * 60 * 1000);
+      var dayData = previousDayMilliseconds
+
+
+      days.unshift({
+        day: dayData,
+        start: null,
+        end: null,
+        timeWorked:null
+      }); // Añade los días en orden ascendente
+    }
+
+    //////SECOND insert user currentPaycheck to schedule
+    for (let i = 0; i < days.length; i++) {
+      for (let j = 0; j < currentPaycheck.length; j++) {
+        if (currentPaycheck[j].day == days[i].day) {
+          days[i].start = currentPaycheck[j].blocks[0].startTime
+          days[i].end = currentPaycheck[j].blocks[currentPaycheck[j].blocks.length-1].endTime
+          days[i].timeWorked = currentPaycheck[j].timeWorked
+        }
+      }
+
+    }
+    return days
+  }
+
 }

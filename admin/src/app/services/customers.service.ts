@@ -61,8 +61,10 @@ export class CustomersService {
     const id = data.id ?? doc(collection(firestore, 'customers')).id; // Usa el ID proporcionado o genera uno nuevo
     console.log(id)
     var ref = doc(firestore, 'customers/', id)
-    return setDoc(ref, {
-      ...data,
+    //const { id, ...rest } = originalObject;
+    const { id: removedId, ...rest } = data;
+        return setDoc(ref, {
+      ...rest,
       creationDate: serverTimestamp(),
     }, { merge: true })
   }

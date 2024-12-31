@@ -25,11 +25,11 @@
           <div class="status" [ngClass]="{
             'onShift': userData.status === 'onShift',
             'outOfShift': userData.status === 'outOfShift',
-          }" >
+          }">
             @if(userData.status == "onShift"){
-              On Shift
+            On Shift
             }@else if(userData.status == "outOfShift"){
-              Out of shift
+            Out of shift
             }
           </div>
         </div>
@@ -90,23 +90,41 @@
       </ion-col>
     </ion-row>
     <!-- List of time sheets -->
+    @for (day of schedule ; track day){
     <ion-row class="row-list">
-      <ion-col>
-        <ion-text class="day">Thu &nbsp;</ion-text> 12/13/24
+      <ion-col class="">
+        <div class="day">
+          {{day.day | date:'EEEEEE' }}
+        </div>
+        <div>
+          {{day.day | date:'LLL, d, YY'}}
+        </div>
+        <!-- <ion-text class="day">Thu &nbsp;</ion-text> 12/13/24 -->
       </ion-col>
       <ion-col>
-        7:00 AM
+        {{ day.start ? (day.start | date:'h:mm aaa') : '-' }}
       </ion-col>
       <ion-col>
-        3:30 PM
+        {{ day.end ? (day.end | date:'h:mm aaa'): '-' }}
       </ion-col>
       <ion-col>
-        00:30 Hrs
+        @if(day.timeWorked){
+        {{day.timeWorked.lunch | date:'H:mm':'UTC'}} Hrs
+        }@else{
+        -
+        }
+
       </ion-col>
       <ion-col>
-        8:00
+        @if(day.timeWorked){
+        {{day.timeWorked.work | date:'H:mm':'UTC'}} Hrs
+        }@else{
+        -
+        }
       </ion-col>
     </ion-row>
+    }
+
 
   </div>
 

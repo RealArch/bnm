@@ -60,7 +60,7 @@ export class AddCustomerModalPage implements OnInit {
       companyAddress: this.customerForm.value.companyAddress,
       contactName: this.customerForm.value.contactName,
       contactPhone: this.customerForm.value.contactPhone,
-      id:this.customer?.id || null
+      id:this.customer?.id || null // if null, it's a new record
     }
     this.customersService.addCustomer(data)
       .then(() => {
