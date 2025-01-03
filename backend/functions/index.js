@@ -20,8 +20,6 @@ const { defineSecret } = require('firebase-functions/params');
 const algoliasearch = require('algoliasearch');
 
 //Algolia config
-const algoliaAppId = defineSecret('ALGOLIA_APP_ID');
-const algoliaAdminKey = defineSecret('ALGOLIA_ADMIN_KEY');
 const ALGOLIA_ADMIN_KEY = defineSecret("ALGOLIA_ADMIN_KEY");
 const ALGOLIA_APP_ID = defineSecret("ALGOLIA_APP_ID")
 

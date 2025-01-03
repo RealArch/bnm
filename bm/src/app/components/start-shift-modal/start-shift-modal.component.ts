@@ -8,10 +8,10 @@ import { PopupsService } from 'src/app/services/popups.service';
 import { ShiftsService } from 'src/app/services/shifts.service';
 
 @Component({
-    selector: 'app-start-shift-modal',
-    templateUrl: './start-shift-modal.component.html',
-    styleUrls: ['./start-shift-modal.component.scss'],
-    imports: [IonicModule, CommonModule, FormsModule, ReactiveFormsModule, DatePipe, NgIf]
+  selector: 'app-start-shift-modal',
+  templateUrl: './start-shift-modal.component.html',
+  styleUrls: ['./start-shift-modal.component.scss'],
+  imports: [IonicModule, CommonModule, FormsModule, ReactiveFormsModule, DatePipe, NgIf]
 })
 export class StartShiftModalComponent implements OnInit {
   @Input() modType!: 'start' | 'commute' | 'lunch';
@@ -20,7 +20,7 @@ export class StartShiftModalComponent implements OnInit {
   fb = inject(FormBuilder);
   sending: boolean = false;
   subscriptions: Subscription[] = [];
-
+  minDatePicker:string = ''
   startShiftForm: FormGroup = this.fb.group({
     startTime: [[], [Validators.required,]],
     type: [null, [Validators.required,]],
@@ -56,12 +56,14 @@ export class StartShiftModalComponent implements OnInit {
   ) { }
 
   ngOnInit() {
-    var dateNow = this.getCurrentIso8601Date()
+    var dateNow = this.getIso8601Date()
     this.startShiftForm.controls['startTime'].setValue(this.getDate(dateNow));
     //If there is a previous shift block and the current is lunch, load the values from the previous one
 
     if (this.previousShift) {
-      console.log(1)
+      this.minDatePicker = this.getIso8601Date(this.previousShift.startTime)
+      console.log(this.minDatePicker)
+      console.log(this.previousShift)
       if (this.modType == 'lunch') {
         this.startShiftForm.controls['workingPlace'].setValue(this.previousShift.workingPlace)
         this.startShiftForm.controls['details'].setValue(this.previousShift.details)
@@ -137,8 +139,10 @@ export class StartShiftModalComponent implements OnInit {
     return this.modalController.dismiss()
 
   }
-  getCurrentIso8601Date() {
-    const currentDate = new Date(Date.now());
+  getIso8601Date(value?: number) {
+    var date = Date.now()
+    if (value) { date = value }
+    const currentDate = new Date(date);
     const isoString = currentDate.toISOString();
     return isoString
   }

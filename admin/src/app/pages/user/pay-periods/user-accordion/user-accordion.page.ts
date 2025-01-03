@@ -25,7 +25,7 @@ export class UserAccordionPage implements OnInit {
   }
   getArrayWithSchedule() {
     //First
-    return this.generalServioce.createFortnightArray('biweekly', 1736424000000, this.userData.currentPaycheck)
+    return this.generalServioce.createFortnightArray('biweekly', 1735300800000, this.userData.currentPaycheck)
 
 
   }

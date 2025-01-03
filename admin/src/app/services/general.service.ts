@@ -61,7 +61,7 @@ export class GeneralService {
       { "name": "Wyoming", "code": "WY" }
     ]
   }
-  createFortnightArray(paymentSchedule: string, nextClosingDate: number, currentPaycheck: any) {
+  createFortnightArray(paymentSchedule: string, lastStartingDate: number, currentPaycheck: any) {
 
     /////FIRST format the array for the schedule
     var paycheckDays = 0;
@@ -73,8 +73,8 @@ export class GeneralService {
 
     for (let i = 0; i < paycheckDays; i++) {
       //get the previous date on each iteration, then fill the array with all the days possible on the paycheck
-      const previousDayMilliseconds = nextClosingDate - (i * 24 * 60 * 60 * 1000);
-      var dayData = previousDayMilliseconds
+      const nextDayMilliseconds = lastStartingDate + (i * 24 * 60 * 60 * 1000);
+      var dayData = nextDayMilliseconds
 
 
       days.unshift({
@@ -96,7 +96,7 @@ export class GeneralService {
       }
 
     }
-    return days
+    return days.reverse()
   }
 
 }

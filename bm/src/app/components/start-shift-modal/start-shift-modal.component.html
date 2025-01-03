@@ -23,7 +23,7 @@
         <ion-col size="12" class="d-flex ion-align-items-center ion-justify-content-center">
 
           <ion-datetime (ionChange)="updateStartTime($event)" presentation="time"
-            class="timePicker w-100"></ion-datetime>
+            class="timePicker w-100" [min]="minDatePicker"></ion-datetime>
 
         </ion-col>
       </ion-row>

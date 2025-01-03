@@ -60,7 +60,7 @@ export class DashboardPage implements OnInit {
           this.hourlyRate.set(this.userData.hourlyRate)
           //////
           this.resPublicConfig = resPublicConfig
-          this.paycheckClosingDate = this.shiftService.calculateEndOfPaycheck(this.resPublicConfig.paymentSchedule,this.resPublicConfig.paycheckStartingDate)
+          this.paycheckClosingDate = this.shiftService.calculateEndOfPaycheck(this.resPublicConfig.paymentSchedule,this.resPublicConfig.lastStartingDate)
           this.loadingData = false
         },
         error: (e) => {
