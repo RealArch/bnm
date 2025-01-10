@@ -1,5 +1,5 @@
 <ion-header>
-  <ion-toolbar>
+  <ion-toolbar color="primary">
     <ion-buttons slot="start">
       <ion-button (click)="cancel()">Cancel</ion-button>
     </ion-buttons>
@@ -22,7 +22,7 @@
       <ion-row class="w-100 h-100 ion-align-items-center ion-justify-content-center">
         <ion-col size="12" class="d-flex ion-align-items-center ion-justify-content-center">
 
-          <ion-datetime (ionChange)="updateStartTime($event)" presentation="time"
+          <ion-datetime [(ngModel)]="pickerTime" (ionChange)="updateStartTime($event)" presentation="time"
             class="timePicker w-100" [min]="minDatePicker"></ion-datetime>
 
         </ion-col>
@@ -65,8 +65,8 @@
                 <div slot="label">Working place<ion-text color="danger">*</ion-text></div>
 
                 @for (customer of customers; track customer) {
-                <ion-select-option value="{{customer.id}}">{{customer.name}}, {{customer.city}},
-                  {{customer.state}}</ion-select-option>
+                <ion-select-option value="{{customer.id}}">{{customer.companyName}}, {{customer.companyAddress.city}},
+                  {{customer.companyAddress.state}}</ion-select-option>
                 }
               </ion-select>
             </ion-item>

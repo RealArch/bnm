@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { IonicModule } from '@ionic/angular';
 import { addIcons } from 'ionicons';
-import { home, hourglass, person } from 'ionicons/icons';
+import { fileTrayFull, home, hourglass, person } from 'ionicons/icons';
 import { ActivatedRoute, Router } from '@angular/router';
 import { DocumentSnapshot } from '@angular/fire/firestore';
 import { AuthService } from 'src/app/services/auth.service';
@@ -22,7 +22,7 @@ export class UserPage implements OnInit {
     private authService: AuthService,
     private router: Router
   ) {
-    addIcons({ home, person, hourglass })
+    addIcons({ home, person, hourglass, fileTrayFull })
   }
 
   ngOnInit() {

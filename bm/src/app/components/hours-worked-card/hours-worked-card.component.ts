@@ -20,9 +20,7 @@ export class HoursWorkedCardComponent implements OnInit {
     })
   }
 
-  ngOnInit() { // Asegurarse de que totalWorkHours no sea undefined 
-
-    
+  ngOnInit() { 
 
   }
   calculateHoursWorked(){

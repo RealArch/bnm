@@ -1,3 +1,11 @@
+.iconButtons {
+    position: absolute;
+    top:10px;
+    z-index: 1;
+    right: 10px;
+}
+
+
 .card-status {
     background: radial-gradient(circle at 81.3% 37.8%, rgb(250, 250, 250) 0%, rgb(225, 234, 238) 90%);
     color: rgb(161, 161, 161);
@@ -15,7 +23,7 @@
         line-height: 23px;
 
         .hours-box-container {
-            height: 60px;
+            // height: 60px;
 
             ion-icon {
                 color: rgb(82, 82, 82);
@@ -23,16 +31,20 @@
             }
 
             div:nth-child(1) {
-                font-size: 22px;
-                font-weight: bolder;
+                font-size: 12px;
             }
 
             div:nth-child(2) {
                 font-size: 22px;
-                font-weight: 200;
+                font-weight: bolder;
             }
 
             div:nth-child(3) {
+                font-size: 22px;
+                font-weight: 200;
+            }
+
+            div:nth-child(4) {
                 font-size: 12px;
             }
         }
@@ -68,6 +80,27 @@
 .buttons {
     ion-button {
         font-size: 14px;
+    }
+}
+
+.lunch-time {
+    font-size: bold;
+    font-size: 0.8rem;
+}
+
+.fromText {
+    font-weight: 300;
+}
+
+.on-lunch {
+    .hours-box {
+        background-color: var(--ion-color-warning-shade);
+        color: var(--ion-color-light);
+    }
+
+
+    .status-info {
+        .current-status {}
     }
 }
 

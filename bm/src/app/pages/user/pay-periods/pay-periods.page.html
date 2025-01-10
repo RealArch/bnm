@@ -1,0 +1,105 @@
+<ion-header>
+  <ion-toolbar color="primary">
+    <ion-buttons slot="end">
+      <ion-button>
+        <ion-icon slot="icon-only" name="calendar"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+    <ion-title>Current period</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content color="light">
+  <!-- Headers of the list of time sheets -->
+  <!-- <ion-row class="row-headers">
+      <ion-col>
+        Date
+      </ion-col>
+      <ion-col>
+        Start
+      </ion-col>
+      <ion-col>
+        End
+      </ion-col>
+      <ion-col>
+        Lunch time
+      </ion-col>
+      <ion-col>
+        Total Hrs.
+      </ion-col>
+
+    </ion-row> -->
+  <!-- List of time sheets -->
+  @for (day of schedule ; track day){
+  <ion-card class="my-3" button (click)="viewShift(day.shiftObject)">
+      
+    <ion-card-header [color]="day.blocks.length > 0 ? 'success' : 'medium'"
+      class="p-1 text-center">
+     
+      <div>
+        <ion-text class="day">
+          {{day.day | date:'EE' }}
+        </ion-text>
+        <ion-text>
+          {{day.day | date:'LLL, d, YY'}}
+        </ion-text>
+      </div>
+
+    </ion-card-header>
+    <ion-card-content class="py-1 px-2">
+      <ion-row>
+        <!-- <ion-col class="">
+        <div class="day">
+          {{day.day | date:'EEEEEE' }}
+        </div>
+        <div>
+          {{day.day | date:'LLL, d, YY'}}
+        </div>
+      </ion-col> -->
+        <ion-col size="3">
+          <div class="title">Start</div>
+          <div class="data">
+            {{ day.start ? (day.start | date:'h:mm aaa') : '-' }}
+
+          </div>
+        </ion-col>
+        <ion-col size="3">
+          <div class="title">Lunch</div>
+          <div class="data">
+            {{ day.end ? (day.end | date:'h:mm aaa'): '-' }}
+
+          </div>
+        </ion-col>
+        <ion-col>
+          <div class="title">End</div>
+          <div class="data">
+            @if(day.timeWorked){
+            {{day.timeWorked.lunch | date:'H:mm':'UTC'}} Hrs
+            }@else{
+            -
+            }
+          </div>
+
+
+        </ion-col>
+        <ion-col>
+          <div class="title">Total Hrs.</div>
+          <div class="data">
+            @if(day.timeWorked){
+            {{day.timeWorked.work | date:'H:mm':'UTC'}} Hrs
+            }@else{
+            -
+            }
+          </div>
+
+        </ion-col>
+      </ion-row>
+    </ion-card-content>
+
+  </ion-card>
+
+  }
+
+
+
+</ion-content>

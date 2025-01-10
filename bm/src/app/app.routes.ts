@@ -7,24 +7,6 @@ import { isActiveGuard } from './guards/is-active-user.guard';
 const redirectToHome = () => redirectUnauthorizedTo(['/auth/login'])
 const redirectToDashboard = () => redirectLoggedInTo(['/user'])
 
-// const initialDataResolver: ResolveFn<any> = async (
-//   route: ActivatedRouteSnapshot,
-//   state: RouterStateSnapshot,
-
-// ) => {
-//   var authService = inject(AuthService)
-//    return authService.getAuthState().subscribe(auth => {
-//     return authService.getUserData(auth!.uid).subscribe(userData=>{
-//       return 'hola';
-
-//     })
-//   })
-//   //get uid
-
-//   //
-// };
-
-
 export const routes: Routes = [
 
   {
@@ -53,6 +35,11 @@ export const routes: Routes = [
         path: 'profile',
         loadComponent: () => import('./pages/user/profile/profile.page').then(m => m.ProfilePage)
       },
+      {
+        path: 'pay-periods',
+        loadComponent: () => import('./pages/user/pay-periods/pay-periods.page').then( m => m.PayPeriodsPage)
+      },
+    
 
     ]
   },
@@ -81,6 +68,14 @@ export const routes: Routes = [
   {
     path: 'edit-profile-modal',
     loadComponent: () => import('./pages/user/profile/edit-profile-modal/edit-profile-modal.page').then( m => m.EditProfileModalPage)
+  },
+  {
+    path: 'notifications',
+    loadComponent: () => import('./pages/user/dashboard/notifications/notifications.page').then( m => m.NotificationsPage)
+  },
+  {
+    path: 'view-blocks-modal',
+    loadComponent: () => import('./components/status-card/view-blocks-modal/view-blocks-modal.page').then( m => m.ViewBlocksModalPage)
   },
 
 

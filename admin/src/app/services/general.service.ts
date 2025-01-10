@@ -81,7 +81,8 @@ export class GeneralService {
         day: dayData,
         start: null,
         end: null,
-        timeWorked:null
+        timeWorked:null,
+        blocks:[]
       }); // Añade los días en orden ascendente
     }
 
@@ -91,7 +92,9 @@ export class GeneralService {
         if (currentPaycheck[j].day == days[i].day) {
           days[i].start = currentPaycheck[j].blocks[0].startTime
           days[i].end = currentPaycheck[j].blocks[currentPaycheck[j].blocks.length-1].endTime
-          days[i].timeWorked = currentPaycheck[j].timeWorked
+          days[i].timeWorked = currentPaycheck[j].timeWorked,
+          days[i].blocks = currentPaycheck[j].blocks
+
         }
       }
 

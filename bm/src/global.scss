@@ -62,3 +62,28 @@ ion-card {
     --width: 80%;
     --border-radius: 10px
 }
+
+//POPOVERS
+.notificationsPopover {
+    --width: 300px;
+}
+
+.no-items {
+    text-align: center;
+    height: 80%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    .text {
+        font-size: 1.2rem;
+        color: var(--ion-color-medium-tint);
+
+    }
+
+    ion-icon {
+        font-weight: 200;
+        color: var(--ion-color-medium);
+        font-size: 8rem;
+    }
+}

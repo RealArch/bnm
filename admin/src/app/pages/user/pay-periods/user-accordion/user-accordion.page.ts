@@ -3,6 +3,8 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { IonicModule } from '@ionic/angular';
 import { GeneralService } from 'src/app/services/general.service';
+import { addIcons } from 'ionicons';
+import { pencil } from 'ionicons/icons';
 
 @Component({
   selector: 'app-user-accordion',
@@ -16,7 +18,9 @@ export class UserAccordionPage implements OnInit {
   schedule: any;
   constructor(
     private generalServioce: GeneralService
-  ) { }
+  ) {
+    addIcons({pencil})
+   }
 
   ngOnInit() {
     console.log(this.userData)

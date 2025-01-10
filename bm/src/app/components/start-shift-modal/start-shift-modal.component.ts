@@ -4,8 +4,11 @@ import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } 
 import { IonicModule, ModalController, AlertController } from '@ionic/angular';
 import { Subscription } from 'rxjs';
 import { AuthService } from 'src/app/services/auth.service';
+import { CustomersService } from 'src/app/services/customers.service';
 import { PopupsService } from 'src/app/services/popups.service';
 import { ShiftsService } from 'src/app/services/shifts.service';
+import { TimeService } from 'src/app/services/time.service';
+import { Customer } from './../../interfaces/customers'
 
 @Component({
   selector: 'app-start-shift-modal',
@@ -20,63 +23,70 @@ export class StartShiftModalComponent implements OnInit {
   fb = inject(FormBuilder);
   sending: boolean = false;
   subscriptions: Subscription[] = [];
-  minDatePicker:string = ''
+  minDatePicker: string = ''
   startShiftForm: FormGroup = this.fb.group({
     startTime: [[], [Validators.required,]],
     type: [null, [Validators.required,]],
     workingPlace: [null, [Validators.required,]],
     details: null,
   })
-  customers: any = [
-    {
-      name: 'Gatorade',
-      id: '43124823',
-      location: '',
-      state: 'FL',
-      city: 'Kisseemee'
-    },
-    {
-      name: 'Sigma',
-      id: '431248234',
-      location: '',
-      state: 'FL',
-      city: 'Orlando'
+  loading: boolean = false;
+  customers: Customer[] = []
+  pickerTime: string = '';
+  ///////////
 
-    }
-  ]
   constructor(
     // private modal: IonModal,
     private modalController: ModalController,
     private alertController: AlertController,
     private datePipe: DatePipe,
-    private titelCasePipe: TitleCasePipe,
+    private timeServices: TimeService,
     private shiftsServices: ShiftsService,
     private popupService: PopupsService,
-    private authService: AuthService
+    private authService: AuthService,
+    private customersService: CustomersService
   ) { }
 
   ngOnInit() {
-    var dateNow = this.getIso8601Date()
-    this.startShiftForm.controls['startTime'].setValue(this.getDate(dateNow));
+    //Get custonmers (no live updates)
+    this.getCustomers()
+    //
+    this.pickerTime = this.timeServices.dateNowToIso8601Timezone()
+    this.startShiftForm.controls['startTime'].setValue(this.pickerTime);
     //If there is a previous shift block and the current is lunch, load the values from the previous one
 
     if (this.previousShift) {
-      this.minDatePicker = this.getIso8601Date(this.previousShift.startTime)
-      console.log(this.minDatePicker)
-      console.log(this.previousShift)
+      //if a previous shift exist, don't allow select a time before the start time. We dont want negative count hours
+      this.minDatePicker = this.timeServices.formatToIso8601(this.previousShift.startTime)
       if (this.modType == 'lunch') {
         this.startShiftForm.controls['workingPlace'].setValue(this.previousShift.workingPlace)
         this.startShiftForm.controls['details'].setValue(this.previousShift.details)
         this.startShiftForm.controls['type'].setValue('lunch')
 
       } else if (this.previousShift.type == 'lunch') {
-        console.log(2)
 
         this.startShiftForm.controls['workingPlace'].setValue(this.previousShift.workingPlace)
         this.startShiftForm.controls['details'].setValue(this.previousShift.details)
         this.startShiftForm.controls['type'].setValue('working')
       }
     }
+  }
+  getCustomers() {
+    this.loading = true
+    var customers: Customer[] = []
+    this.customersService.getAllCustomers()
+      .then(res => {
+        res.forEach(customer => {
+          customers.push({
+            ...customer.data(),
+            id: customer.id
+          } as Customer)
+        })
+        this.customers = customers
+      }).catch(e => {
+        console.log(e)
+        this.popupService.presentToast('bottom', 'danger', 'There was a problem trying to retrieve customers. Please try again.')
+      })
   }
   async startShiftAlert(modType: 'start' | 'commute' | 'lunch') {
     var header = 'Adding shift information'
@@ -135,32 +145,30 @@ export class StartShiftModalComponent implements OnInit {
     )
   }
   cancel() {
-    // this.getCurrentIso8601Date()
     return this.modalController.dismiss()
-
   }
-  getIso8601Date(value?: number) {
-    var date = Date.now()
-    if (value) { date = value }
-    const currentDate = new Date(date);
-    const isoString = currentDate.toISOString();
-    return isoString
-  }
+  // getIso8601Date(value?: number) {
+  //   var date = Date.now()
+  //   if (value) { date = value }
+  //   const currentDate = new Date(date);
+  //   const isoString = currentDate.toISOString();
+  //   return isoString
+  // }
   updateStartTime(ev: CustomEvent) {
-    var dateNow = ev.detail.value
-    this.startShiftForm.controls['startTime'].setValue(this.getDate(dateNow));
+    this.pickerTime = this.timeServices.formatToIso8601(ev.detail.value)
+    this.startShiftForm.controls['startTime'].setValue(this.pickerTime);
   }
   onTypeChange() {
     //reset next values
     this.startShiftForm.controls['workingPlace'].setValue(null);
     this.startShiftForm.controls['details'].setValue(null)
   }
-  getDate(date: string) {
-    return (new Date(date).getTime());
-  }
+  // getDate(date: string) {
+  //   return (new Date(date).getTime());
+  // }
   findNameById(id: string) {
     const item = this.customers.find((entry: any) => entry.id === id);
-    return item ? item.name : 'Name not found';
+    return item ? item.companyName : 'Name not found';
   }
   ngOnDestroy() {
     console.log('destroy StartShiftModalComponent')

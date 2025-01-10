@@ -1,4 +1,4 @@
-<div class="worker-box">
+<!-- <div class="worker-box">
 
   <ion-row class="ion-align-items-center">
     <ion-col size="auto">
@@ -64,6 +64,120 @@
       </ion-popover>
     </ion-col>
   </ion-row>
-  <!-- ALERTS -->
 
-</div>
+</div> -->
+<ion-card>
+  <ion-card-content class="p-1">
+
+    <ion-row class="w-100">
+      <ion-col size="1">
+        <div class="avatar">
+
+        </div>
+      </ion-col>
+      <ion-col size="3">
+        <div>
+          <div class="title">
+            Name
+          </div>
+          <div class="name">
+            {{userData.firstName + ' ' + userData.lastName | titlecase}}
+          </div>
+        </div>
+      </ion-col>
+
+      <ion-col size="2">
+        <div>
+          <div class="title">
+            Current status
+          </div>
+          @if(userData.active){
+          <div class="status" [ngClass]="{
+              'onShift': userData.status === 'onShift',
+              'outOfShift': userData.status === 'outOfShift'}">
+
+            @if(userData.status == "onShift"){
+            <ion-text color="success">On Shift</ion-text>
+            }@else if(userData.status == "outOfShift"){
+            <ion-text color="medium">Out of shift</ion-text>
+            }@else if(userData.status == "onLunch"){
+            <ion-text color="warning">On lunch</ion-text>
+            }
+          </div>
+          }@else{
+            <ion-text color="danger">
+              Pending approval
+            </ion-text>
+          }
+
+        </div>
+      </ion-col>
+
+      <!-- <ion-col size="2">
+        <div>
+          <div class="title">
+            Hours
+          </div>
+          <div class="earnings">
+            38:30
+          </div>
+        </div>
+      </ion-col> -->
+
+      <!-- <ion-col size="2">
+        <div>
+          <div class="title">
+            Earnings
+          </div>
+          <div class="earnings">
+            $1203
+          </div>
+        </div>
+      </ion-col> -->
+      <ion-col size="1" class="ms-auto">
+        <ion-buttons class="w-auto">
+          <ion-button id="menuTrigger">
+            <ion-icon slot="icon-only" name="ellipsis-vertical"></ion-icon>
+          </ion-button>
+        </ion-buttons>
+        <ion-popover trigger="menuTrigger" triggerAction="click" dismissOnSelect="true" showBackdrop="false">
+          <ng-template>
+            <ion-content>
+              <ion-list>
+                <ion-item button lines="none" id="active-alert">
+                  <ion-text *ngIf="userData.active">
+                    Deactivate
+                  </ion-text>
+                  <ion-text *ngIf="!userData.active">
+                    Activate
+                  </ion-text>
+  
+                  <ion-alert trigger="active-alert" header="{{updateActiveHeader}}" message="{{updateActiveMsg}}" [buttons]="updateActiveButtons">
+                  </ion-alert>
+  
+                </ion-item>
+                <ion-item button lines="none">
+                  <ion-text color="danger">
+                    Delete
+                  </ion-text>
+                </ion-item>
+              </ion-list>
+            </ion-content>
+          </ng-template>
+        </ion-popover>
+      </ion-col>
+  
+
+      <!-- <ion-col size="2" (click)="preventDefault($event)">
+      <div>
+        <ion-buttons>
+          <ion-button slot="icon-only">
+            <ion-icon name="ellipsis-vertical"></ion-icon>
+          </ion-button>
+        </ion-buttons>
+      </div>
+    </ion-col> -->
+
+    </ion-row>
+  </ion-card-content>
+</ion-card>

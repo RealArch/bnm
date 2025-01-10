@@ -86,7 +86,8 @@ router.post('/close', middlewares.verifyClientToken, async (req, res) => {
     var currentFortnight = null
     var dayName = null
     //INPUTS: closingTime,
-    if (body.closingTime === null || body.closingTime === undefined || body.closingTime.length < 1 || body.closingTime.length > 15) {
+    console.log(body.closingTime)
+    if (body.closingTime === null || body.closingTime === undefined || body.closingTime.length < 1 || body.closingTime.length > 150) {
         return res.status(500).json({
             msg: 'The "closingTime" field is required and must contain between 1 and 15 characters.',
             code: 'shifts/error-no-closing-time'
@@ -231,7 +232,7 @@ function getElapsedMinSec(blocks) {
     var totalTimeLunch = 0;
 
     blocks.forEach((block, index) => {
-        let timeDifference = block.endTime - block.startTime;
+        let timeDifference = new Date(block.endTime).getTime()  - new Date(block.startTime).getTime();
         if (block.type != "lunch") {
             totalTimeWorked += timeDifference
         } else {

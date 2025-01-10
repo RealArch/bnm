@@ -30,6 +30,8 @@
             On Shift
             }@else if(userData.status == "outOfShift"){
             Out of shift
+            }@else if(userData.status == "onLunch"){
+            On lunch
             }
           </div>
         </div>
@@ -88,6 +90,9 @@
       <ion-col>
         Total Hrs.
       </ion-col>
+      <ion-col class="d-flex justify-content-end">
+        Actions
+      </ion-col>
     </ion-row>
     <!-- List of time sheets -->
     @for (day of schedule ; track day){
@@ -121,6 +126,13 @@
         }@else{
         -
         }
+      </ion-col>
+      <ion-col class="d-flex justify-content-end py-0">
+        <ion-buttons >
+          <ion-button color="primary" class="small-button" mode="ios">
+            <ion-icon slot="icon-only" name="pencil"></ion-icon>
+          </ion-button>
+        </ion-buttons>
       </ion-col>
     </ion-row>
     }

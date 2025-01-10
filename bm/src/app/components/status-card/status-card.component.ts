@@ -2,7 +2,7 @@ import { CommonModule, NgIf } from '@angular/common';
 import { Component, EventEmitter, Input, OnInit, ViewChild, inject } from '@angular/core';
 import { IonicModule, ModalController, AlertController, IonModal } from '@ionic/angular';
 import { addIcons } from 'ionicons';
-import { bed } from 'ionicons/icons';
+import { bed, eye, pencil } from 'ionicons/icons';
 import { StartShiftModalComponent } from '../start-shift-modal/start-shift-modal.component';
 import { AuthService } from 'src/app/services/auth.service';
 import { AppComponent } from 'src/app/app.component';
@@ -10,12 +10,14 @@ import { ShiftsService } from 'src/app/services/shifts.service';
 import { Subscription } from 'rxjs';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { EndingShiftModalComponent } from './ending-shift-modal/ending-shift-modal.component';
+import { TimeService } from 'src/app/services/time.service';
+import { ViewBlocksModalPage } from './view-blocks-modal/view-blocks-modal.page';
 
 @Component({
-    selector: 'app-status-card',
-    templateUrl: './status-card.component.html',
-    styleUrls: ['./status-card.component.scss'],
-    imports: [IonicModule, CommonModule, NgIf, ReactiveFormsModule, FormsModule]
+  selector: 'app-status-card',
+  templateUrl: './status-card.component.html',
+  styleUrls: ['./status-card.component.scss'],
+  imports: [IonicModule, CommonModule, NgIf, ReactiveFormsModule, FormsModule]
 })
 export class StatusCardComponent implements OnInit {
   @Input() userData: any;
@@ -24,30 +26,52 @@ export class StatusCardComponent implements OnInit {
   appComponent = inject(AppComponent)
   alertController = inject(AlertController);
   interval: any;
-  elapsedTime!: { lunch: { hours: number; minutes: number; }; work: { hours: number; minutes: number; }; } | null;
+  elapsedTime: any;
   modType!: 'start' | 'commute' | 'lunch';
   copyElapseTime!: { lunch: { hours: number; minutes: number; }; work: { hours: number; minutes: number; }; } | null;
   updating: boolean = false;
   closingShiftTime: number = 0;
   // subscriptions: Subscription[] = [];
   datetimeValue: any = Date.now();
+  shiftTaken: boolean = false;
   constructor(
     //private authService: AuthService,
     private modalCtrl: ModalController,
-    private shiftsService: ShiftsService
+    private shiftsService: ShiftsService,
+    private timeService: TimeService
   ) {
-    addIcons({ bed })
+    addIcons({ bed, pencil, eye })
   }
 
   ngOnInit() {
+    //Verify if shift is null
+
+    //Determine if the shift was already taken
+    this.shiftTaken = this.shiftAlreadyTaken(this.userData.currentPaycheck)
+
+    //
     this.closingShiftTime = this.dateNow;
-    this.elapsedTime = this.getElapsedMinSec(this.userData.currentShift.blocks)
+    // this.elapsedTime = this.getElapsedMinSec(this.userData.currentShift.blocks)
+    this.elapsedTime = this.shiftsService.getElapsedMinSec2(this.userData.currentShift.blocks, this.userData.status)
     this.interval = window.setInterval(() => {
-      this.elapsedTime = this.getElapsedMinSec(this.userData.currentShift.blocks)
+      // this.elapsedTime = this.getElapsedMinSec(this.userData.currentShift.blocks)
+      this.elapsedTime = this.shiftsService.getElapsedMinSec2(this.userData.currentShift.blocks, this.userData.status)
+
+      //Determine if the shift was already taken
+      this.shiftTaken = this.shiftAlreadyTaken(this.userData.currentPaycheck)
+
     }, 1000);
 
   }
+  shiftAlreadyTaken(currentPaycheck: any[]) {
+    if (currentPaycheck.length == 0) return false;
+    const lastindex = currentPaycheck.length - 1
+    const dateToCompare = currentPaycheck[lastindex].blocks[0].startTime
+    return this.timeService.isSameDay(dateToCompare)
+  }
+  timeStringToMilliseconds(timeString: string) {
 
+  }
   getElapsedMinSec(blocks: any[]) {
     var res = {
       lunch: {
@@ -105,15 +129,7 @@ export class StatusCardComponent implements OnInit {
       }
     }
   }
-  // //Executes every time the date picker changes
-  // calculateClosingHour(value: any) {
-  //   console.log(value)
-  //   this.closingShiftTime = new Date(value).getTime()
 
-  //   var copyBlocks = JSON.parse(JSON.stringify(this.userData.currentShift.blocks));
-  //   copyBlocks[copyBlocks.length - 1].endTime = this.closingShiftTime;
-  //   this.copyElapseTime = this.getElapsedMinSec(copyBlocks)
-  // }
 
   closeModal() {
     this.modal.dismiss(null, 'cancel');
@@ -149,14 +165,24 @@ export class StatusCardComponent implements OnInit {
     // console.log(Date.now())
 
   }
-  //Opening endingShiftModal
+  //MODALS//
+  async editTimeSheetModal(currentShift: any) {
+    const modal = await this.modalCtrl.create({
+      component: ViewBlocksModalPage,
+      componentProps: {
+        'shift': currentShift,
+        'userData': this.userData
+      },
+    })
+    await modal.present()
+  }
   async openEndingShiftModal() {
     const modal = await this.modalCtrl.create({
       component: EndingShiftModalComponent,
       componentProps: {
         'userData': this.userData
       },
-      cssClass:'modal-box'
+      cssClass: 'modal-box'
     })
     await modal.present()
   }

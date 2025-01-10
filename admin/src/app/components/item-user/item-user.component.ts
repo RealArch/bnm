@@ -13,7 +13,7 @@ import { UsersService } from 'src/app/services/users.service';
 
 })
 export class ItemUserComponent implements OnInit {
-  @Input() user: any
+  @Input() userData: any
   authService = inject(UsersService)
   popupServices = inject(PopupService)
   updateActiveMsg = ''
@@ -29,14 +29,14 @@ export class ItemUserComponent implements OnInit {
       text: 'OK',
       role: 'confirm',
       handler: () => {
-        this.updateActive(this.user.active, this.user.id)
+        this.updateActive(this.userData.active, this.userData.id)
       },
     },
   ];
   constructor() { }
 
   ngOnInit() {
-    if (this.user.active) {
+    if (this.userData.active) {
       this.updateActiveMsg = "Are you sure you want to Deactivate this user?";
 
     } else {

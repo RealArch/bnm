@@ -1,7 +1,7 @@
 import { Component, OnInit, signal, Signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { IonicModule } from '@ionic/angular';
+import { IonicModule, PopoverController } from '@ionic/angular';
 import { StatusCardComponent } from 'src/app/components/status-card/status-card.component';
 import { addIcons } from 'ionicons';
 import { notifications } from 'ionicons/icons';
@@ -11,6 +11,7 @@ import { PopupsService } from 'src/app/services/popups.service';
 import { HoursWorkedCardComponent } from 'src/app/components/hours-worked-card/hours-worked-card.component';
 import { MoneyEarnedCardComponent } from 'src/app/components/money-earned-card/money-earned-card.component';
 import { ShiftsService } from 'src/app/services/shifts.service';
+import { NotificationsPage } from './notifications/notifications.page';
 
 @Component({
   selector: 'app-dashboard',
@@ -27,12 +28,13 @@ export class DashboardPage implements OnInit {
   timeWorked = signal(0); // Inicialización directa
   hourlyRate = signal(0);
   subscribe$ = new Subject<void>();
-  resPublicConfig:any;
+  resPublicConfig: any;
   paycheckClosingDate: any;
   constructor(
     private authService: AuthService,
     private popupService: PopupsService,
-    private shiftService:ShiftsService
+    private shiftService: ShiftsService,
+    private popoverController: PopoverController
   ) {
     addIcons({ notifications })
   }
@@ -60,7 +62,7 @@ export class DashboardPage implements OnInit {
           this.hourlyRate.set(this.userData.hourlyRate)
           //////
           this.resPublicConfig = resPublicConfig
-          this.paycheckClosingDate = this.shiftService.calculateEndOfPaycheck(this.resPublicConfig.paymentSchedule,this.resPublicConfig.lastStartingDate)
+          this.paycheckClosingDate = this.shiftService.calculateEndOfPaycheck(this.resPublicConfig.paymentSchedule, this.resPublicConfig.lastStartingDate)
           this.loadingData = false
         },
         error: (e) => {
@@ -73,17 +75,30 @@ export class DashboardPage implements OnInit {
 
   }
   calculateWorkedHours(currentPaycheck: any) {
-
+    console.log()
     let totalWorkHours = 0;
     let totalLunchHours = 0;
     currentPaycheck.forEach((paycheck: { timeWorked: { work: number; lunch: number; }; }) => {
-      totalWorkHours += paycheck.timeWorked.work; totalLunchHours += paycheck.timeWorked.lunch;
+
+      totalWorkHours += paycheck.timeWorked.work;
+      totalLunchHours += paycheck.timeWorked.lunch;
     });
     return { totalWorkHours, totalLunchHours };
   }
+  //POPOVERS
+  async notificationsPopover(e: Event) {
+    const popover = await this.popoverController.create({
+      component: NotificationsPage,
+      event: e,
+      animated:true,
+      cssClass:'notificationsPopover'
+    });
+
+    await popover.present();
+
+  }
 
   ngOnDestroy() {
-    console.log('destroy')
     this.subscribe$.next();
     this.subscribe$.complete()
   }

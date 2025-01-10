@@ -1,0 +1,22 @@
+.blockType{
+    font-weight: bold;
+}
+.lineBlock{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    ion-icon{
+        font-size: 1.1rem;
+        color: white;
+    }
+}
+.success{
+    background-color: var(--ion-color-success);
+}
+.warning{
+    background-color: var(--ion-color-warning);
+}
+.dark{
+    background-color: var(--ion-color-dark);
+}

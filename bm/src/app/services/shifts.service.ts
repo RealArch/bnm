@@ -1,13 +1,17 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { environment as global } from '../../environments/environment'
+import { environment as global } from '../../environments/environment';
+import { Block } from './../interfaces/user';
+import moment from 'moment';
+import { TimeService } from './time.service';
 @Injectable({
   providedIn: 'root'
 })
 export class ShiftsService {
 
   constructor(
-    private http: HttpClient
+    private http: HttpClient,
+    private timeService: TimeService
   ) { }
 
   startShift(startTime: number, type: 'working' | 'traveling' | 'other' | 'lunch', workingPlace: string, details: string, afAuthToken: string | null) {
@@ -20,7 +24,7 @@ export class ShiftsService {
     }
     return this.http.post(`${global.api}/shifts/start`, data)
   }
-  closeShift(closingTime: number, afAuthToken: any) {
+  closeShift(closingTime: string, afAuthToken: any) {
     console.log(closingTime)
     var data = {
       closingTime: closingTime,
@@ -40,7 +44,8 @@ export class ShiftsService {
   //UTILITIES
 
   //get a block[] and return lunch and work hours
-  getElapsedMinSec(blocks: any[], status: String) {
+  getElapsedMinSec(blocks: Block[], status: String) {
+    console.log(blocks)
     var res = {
       lunch: {
         hours: 0,
@@ -61,10 +66,11 @@ export class ShiftsService {
     var totalTimeWorked = 0;
     var totalTimeLunch = 0;
     //Otra opcion para hacer esto mas facil seria sumar todos los elementos que tengan fecha de inicio y de final y que no sean lunch
-    blocks.forEach((block, index) => {
+    blocks.forEach((block: any, index) => {
       //Count all the laps with end time. if lunch to totalTimeLunch, if not to  totalTimeWorked
       if (block.endTime != null) {
-        let timeDifference = block.endTime - block.startTime;
+        //const milliseconds = new Date(block.startTime).getTime();
+        let timeDifference = new Date(block.endTime).getTime() - new Date(block.startTime).getTime()
         //If it is the last lap, count the time till now. only if it is not lunch time
         if (block.type != "lunch") {
           totalTimeWorked += timeDifference
@@ -72,7 +78,7 @@ export class ShiftsService {
           totalTimeLunch += timeDifference
         }
       } else if (block.endTime == null) {
-        let timeDifference = dateNow - block.startTime;
+        let timeDifference = dateNow - new Date(block.startTime).getTime();
         if (block.type != "lunch") {
           totalTimeWorked += timeDifference;
         } else {
@@ -80,7 +86,7 @@ export class ShiftsService {
         }
       }
     });
-
+    console.log(totalTimeWorked)
     diffWorkHours = Math.floor(totalTimeWorked / (1000 * 60 * 60));
     diffWorkMinutes = Math.floor((totalTimeWorked % (1000 * 60 * 60)) / (1000 * 60));
 
@@ -105,14 +111,97 @@ export class ShiftsService {
     let startDate: Date;
     if (paymentSchedule === 'biweekly') {
       // Restar 14 días (2 semanas) para obtener el día de inicio 
-      startDate = new Date(nextPaymentDate + 14 * 24 * 60 * 60 * 1000);
+      startDate = new Date(nextPaymentDate + 13 * 24 * 60 * 60 * 1000);
     } else if (paymentSchedule === 'weekly') {
       // Restar 7 días (1 semana) para obtener el día de inicio 
-      startDate = new Date(nextPaymentDate + 7 * 24 * 60 * 60 * 1000);
+      startDate = new Date(nextPaymentDate + 6 * 24 * 60 * 60 * 1000);
     } else {
       throw new Error('Invalid payment schedule. Use "biweekly" or "weekly".');
     }
     return startDate;
   }
 
+  getElapsedMinSec2(blocks: Block[], status: string) {
+    if (status === "outOfShift") return null;
+    let totalTimeWorked = 0;
+    let totalTimeLunch = 0;
+    const dateNow = moment().toISOString();
+    blocks.forEach((block) => {
+      if (block.endTime != null) {
+        const timeDifference = moment(block.endTime).diff(moment(block.startTime));
+        if (block.type !== "lunch") {
+          totalTimeWorked += timeDifference;
+        } else {
+          totalTimeLunch += timeDifference;
+        }
+      } else if (block.endTime == null) {
+        const timeDifference = moment(dateNow).diff(moment(block.startTime));
+        if (block.type !== "lunch") {
+          totalTimeWorked += timeDifference;
+        } else {
+          totalTimeLunch += timeDifference;
+        }
+      }
+    });
+    const formatTime = (totalMilliseconds: number) => {
+      const totalMinutes = Math.floor(totalMilliseconds / (1000 * 60));
+      let hours: any = Math.floor(totalMinutes / 60);
+      let minutes: any = totalMinutes % 60;
+      // var hours = `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}`
+      // var minutes = this.timeService.timeStringToMilliseconds(time)
+      hours = parseInt(`${hours.toString().padStart(2, '0')}`)
+      minutes = parseInt(`${minutes.toString().padStart(2, '0')}`)
+      return {
+        hours: hours,
+        minutes: minutes
+      };
+    };
+    const res = {
+      lunch: formatTime(totalTimeLunch),
+      work: formatTime(totalTimeWorked)
+    };
+    return res;
+
+  }
+  createFortnightArray(paymentSchedule: string, lastStartingDate: number, currentPaycheck: any) {
+
+    /////FIRST format the array for the schedule
+    var paycheckDays = 0;
+    var fortnight;
+    var days = []
+
+    if (paymentSchedule == 'biweekly') paycheckDays = 14
+    if (paymentSchedule == 'weekly') paycheckDays = 7
+
+    for (let i = 0; i < paycheckDays; i++) {
+      //get the previous date on each iteration, then fill the array with all the days possible on the paycheck
+      const nextDayMilliseconds = lastStartingDate + (i * 24 * 60 * 60 * 1000);
+      var dayData = nextDayMilliseconds
+
+
+      days.unshift({
+        day: dayData,
+        start: null,
+        end: null,
+        timeWorked: null,
+        blocks: [],
+        shiftObject: { blocks: [] }
+      }); // Añade los días en orden ascendente
+    }
+
+    //////SECOND insert user currentPaycheck to schedule
+    for (let i = 0; i < days.length; i++) {
+      for (let j = 0; j < currentPaycheck.length; j++) {
+        if (currentPaycheck[j].day == days[i].day) {
+          days[i].start = currentPaycheck[j].blocks[0].startTime
+          days[i].end = currentPaycheck[j].blocks[currentPaycheck[j].blocks.length - 1].endTime
+          days[i].timeWorked = currentPaycheck[j].timeWorked
+          days[i].blocks = currentPaycheck[j].blocks
+          days[i].shiftObject = currentPaycheck[j]
+        }
+      }
+
+    }
+    return days.reverse()
+  }
 }

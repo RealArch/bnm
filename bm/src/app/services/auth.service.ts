@@ -7,6 +7,8 @@ import { Firestore, doc, docData, docSnapshots, getDoc, getFirestore } from '@an
 import { Router } from '@angular/router';
 import { NavController } from '@ionic/angular';
 import { map } from 'rxjs'
+import { PublicConfig } from 'src/app/interfaces/public-config';
+
 @Injectable({
   providedIn: 'root'
 })
@@ -43,11 +45,11 @@ export class AuthService {
     var ref = doc(getFirestore(), 'general', 'settings')
     return docSnapshots(ref).pipe(
       map(snapshot => ({
-        id: snapshot.id,
         ...snapshot.data()
-      }))
+      } as any))
     )
   }
+  // ({ id: snapshot.id, 
   logout() {
     localStorage.removeItem('userUid')
     // this.router.navigate(["/auth/login"])
@@ -71,5 +73,6 @@ export class AuthService {
       }))
     )
   }
+
 
 }

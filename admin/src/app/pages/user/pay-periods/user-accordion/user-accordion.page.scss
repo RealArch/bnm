@@ -46,6 +46,7 @@ ion-accordion {
     .onShift {
         color: var(--ion-color-success);
     }
+
     .outOfShift {
         color: var(--ion-color-dark);
     }
@@ -75,4 +76,9 @@ ion-accordion {
 
 .row-list:nth-child(odd) {
     background-color: rgb(241, 241, 241);
+}
+
+.small-button{
+    height: 5px!important;
+    font-size: 8px;
 }
