@@ -44,7 +44,8 @@ export class DashboardPage implements OnInit {
 
     this.getUserData()
   }
-
+  //TODO Send notification 30 minutes prior closing global payCheck if shift's open.
+  //Saying he will lost his shift if not closing before 11:59
   getUserData() {
     this.userUid = localStorage.getItem('userUid')
     console.log(this.userUid)

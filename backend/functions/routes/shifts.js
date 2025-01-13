@@ -15,7 +15,15 @@ const middlewares = require('../middlewares/verifyAuthTokens');
 const { createFortnightArray } = require('../utilities/utilities');
 
 
+router.get('/closePaycheck', async (req, res) => {
+    try {
+        await closePaycheck()
+        return res.send('ok')
 
+    } catch (e) {
+        return res.status(500).send(e)
+    }
+})
 router.post('/start', middlewares.verifyClientToken, async (req, res) => {
     //todo: Valitade if user is ACTIVE
     //declarations
@@ -213,6 +221,48 @@ router.post('/close', middlewares.verifyClientToken, async (req, res) => {
 module.exports = router;
 exports.app = functions.https.onRequest(app);
 
+//Automatic function simulation
+//Execute it every day at 11:59 new york timezone
+async function closePaycheck() {
+    //If today is closing date (omitted when simulation)
+    //read all users
+    let usersRef = db.collection('users')
+    try {
+        await db.runTransaction(async (t) => {
+            const users = await t.get(usersRef);
+            //Delete all open shifts, and send a notification to those
+            for (let i = 0; i < users.length; i++) {
+                const j = users[i].data().currentPaycheck.length;
+                const lastBlock = users[i].data().currentPaycheck[j-1].blocks[users[i].data().currentPaycheck[j-1].blocks.length - 1];
+                if(lastBlock.endTime == null){
+                    console.log(user[i].data().currentPaycheck.length)
+                    users[i].data().currentPaycheck.splice(0, 1);
+                    console.log(users[i].data().currentPaycheck.length)
+
+                    console.log(users[i].data().currentPaycheck)
+
+                }
+            }
+            // users.forEach(user => {
+            //     //get last block worked of the paycheck
+                
+            //     // console.log(user.data().currentPaycheck[1])
+            //     // if (user.data().currentPaycheck[l < 1].block)
+            // });
+            
+            // const newPopulation = doc.data().population + 1;
+            // t.update(cityRef, { population: newPopulation });
+        });
+
+        console.log('Transaction success!');
+    } catch (e) {
+        console.log('Transaction failure:', e);
+    }
+
+
+    //Copy data from userData to collection payChecks and add a new doc with id= openingDay-closingDay Ex 12-27-24/1-9-25
+    //set lastStartingDate with 12pm set
+}
 
 //Functions
 function alreadyHasLunch(currentShift) {
@@ -232,7 +282,7 @@ function getElapsedMinSec(blocks) {
     var totalTimeLunch = 0;
 
     blocks.forEach((block, index) => {
-        let timeDifference = new Date(block.endTime).getTime()  - new Date(block.startTime).getTime();
+        let timeDifference = new Date(block.endTime).getTime() - new Date(block.startTime).getTime();
         if (block.type != "lunch") {
             totalTimeWorked += timeDifference
         } else {
