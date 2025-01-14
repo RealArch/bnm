@@ -228,14 +228,16 @@ async function closePaycheck() {
     //read all users
     let usersRef = db.collection('users')
     try {
+
         await db.runTransaction(async (t) => {
-            const users = await t.get(usersRef);
+            let users = await t.get(usersRef);
+            users = users.docs
             //Delete all open shifts, and send a notification to those
             for (let i = 0; i < users.length; i++) {
                 const j = users[i].data().currentPaycheck.length;
                 const lastBlock = users[i].data().currentPaycheck[j-1].blocks[users[i].data().currentPaycheck[j-1].blocks.length - 1];
                 if(lastBlock.endTime == null){
-                    console.log(user[i].data().currentPaycheck.length)
+                    console.log(users[i].data().currentPaycheck.length)
                     users[i].data().currentPaycheck.splice(0, 1);
                     console.log(users[i].data().currentPaycheck.length)
 
