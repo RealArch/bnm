@@ -107,18 +107,17 @@ export class ShiftsService {
   }
 
   calculateEndOfPaycheck(paymentSchedule: string, paycheckStartingDate: number) {
-    const nextPaymentDate = paycheckStartingDate;
-    let startDate: Date;
+    let endDate: Date;
     if (paymentSchedule === 'biweekly') {
       // Restar 14 días (2 semanas) para obtener el día de inicio 
-      startDate = new Date(nextPaymentDate + 13 * 24 * 60 * 60 * 1000);
+      endDate = new Date(paycheckStartingDate + 13 * 24 * 60 * 60 * 1000);
     } else if (paymentSchedule === 'weekly') {
       // Restar 7 días (1 semana) para obtener el día de inicio 
-      startDate = new Date(nextPaymentDate + 6 * 24 * 60 * 60 * 1000);
+      endDate = new Date(paycheckStartingDate + 6 * 24 * 60 * 60 * 1000);
     } else {
       throw new Error('Invalid payment schedule. Use "biweekly" or "weekly".');
     }
-    return startDate;
+    return endDate;
   }
 
   getElapsedMinSec2(blocks: Block[], status: string) {

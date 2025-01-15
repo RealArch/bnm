@@ -12,13 +12,14 @@ const express = require('express');
 const app = express();
 
 const middlewares = require('../middlewares/verifyAuthTokens');
-const { createFortnightArray } = require('../utilities/utilities');
+const { createFortnightArray, calculateEndOfPaycheck } = require('../utilities/utilities');
+const utilities = require('../utilities/utilities');
 
 
 router.get('/closePaycheck', async (req, res) => {
     try {
-        await closePaycheck()
-        return res.send('ok')
+        var paychecks = await closePaycheck()
+        return res.json(paychecks)
 
     } catch (e) {
         return res.status(500).send(e)
@@ -224,42 +225,102 @@ exports.app = functions.https.onRequest(app);
 //Automatic function simulation
 //Execute it every day at 11:59 new york timezone
 async function closePaycheck() {
+    let users
+    let paychecks
+    let settings
+    let settingsRef = db.collection('general').doc('settings')
+    let paymentSchedule
+    let lastStartingDate
     //If today is closing date (omitted when simulation)
-    //read all users
-    let usersRef = db.collection('users')
     try {
+        //Read configurations
+        settings = (await settingsRef.get()).data()
+        paymentSchedule = settings.paymentSchedule
+        lastStartingDate = settings.lastStartingDate
+        paychecks = {
+            paymentScheme: paymentSchedule,
+            usersPaychecks: [],
+            startDate: lastStartingDate,
+            endDate: calculateEndOfPaycheck(paymentSchedule, lastStartingDate)
+        }
+        //Read all users to see if some of then have any open shift, then remove the shift
+        //Read all users
+        let usersDocs = await db.collection('users').get()
+        let batch = db.batch();
+        usersDocs.forEach(doc => {
+            let userRef = db.collection('users').doc(doc.id)
+            let user = doc.data()
+            const lastBlockLength = user.currentShift.blocks[user.currentShift.blocks.length - 1];
 
-        await db.runTransaction(async (t) => {
-            let users = await t.get(usersRef);
-            users = users.docs
-            //Delete all open shifts, and send a notification to those
-            for (let i = 0; i < users.length; i++) {
-                const j = users[i].data().currentPaycheck.length;
-                const lastBlock = users[i].data().currentPaycheck[j-1].blocks[users[i].data().currentPaycheck[j-1].blocks.length - 1];
-                if(lastBlock.endTime == null){
-                    console.log(users[i].data().currentPaycheck.length)
-                    users[i].data().currentPaycheck.splice(0, 1);
-                    console.log(users[i].data().currentPaycheck.length)
+            //Then, add the current paycheck formatted for this user to the collection paychecks
+            //the id will be the start date
+            let userPaycheck = {
+                userId: doc.id,
+                days: user.currentPaycheck,
 
-                    console.log(users[i].data().currentPaycheck)
-
-                }
             }
-            // users.forEach(user => {
-            //     //get last block worked of the paycheck
-                
-            //     // console.log(user.data().currentPaycheck[1])
-            //     // if (user.data().currentPaycheck[l < 1].block)
-            // });
-            
-            // const newPopulation = doc.data().population + 1;
-            // t.update(cityRef, { population: newPopulation });
-        });
+            if (user.currentPaycheck.length > 0) {
+                paychecks.usersPaychecks.push(userPaycheck)
+            }
+            //if the shift is still open (endTime == null), remove day shift
+            if (lastBlockLength != undefined && lastBlockLength.endTime == null) {
 
-        console.log('Transaction success!');
-    } catch (e) {
-        console.log('Transaction failure:', e);
+                batch.update(userRef, {
+                    currentShift: { blocks: [], lunchTaken: false },
+                    status: 'outOfShift',
+                    // paycheckHistory: FieldValue.arrayUnion()
+                    //****currentPaycheck:[]
+                })
+            }
+            //
+
+        });
+        //Update next lastStartingDate
+        let lastStartingDateUpdated = utilities.calculateNextPaycheckStart(settings.paymentSchedule, settings.lastStartingDate)
+        // ****batch.update(settingsRef, { lastStartingDate: lastStartingDateUpdated })
+        //TODO Create a doc in collection 'paychecks' with id 'lastStartingDate'
+        batch.set(db.collection('paycheckHistory').doc(lastStartingDate.toString()), paychecks)
+        await batch.commit()
+    } catch (error) {
+
+        console.log(error)
+
     }
+    return paychecks
+    // let usersRef = db.collection('users')
+    // try {
+
+    //     await db.runTransaction(async (t) => {
+    //         let users = await t.get(usersRef);
+    //         users = users.docs
+    //         //Delete all open shifts, and send a notification to those
+    //         for (let i = 0; i < users.length; i++) {
+    //             const j = users[i].data().currentPaycheck.length;
+    //             const lastBlock = users[i].data().currentPaycheck[j-1].blocks[users[i].data().currentPaycheck[j-1].blocks.length - 1];
+    //             if(lastBlock.endTime == null){
+    //                 console.log(users[i].data().currentPaycheck.length)
+    //                 users[i].data().currentPaycheck.splice(0, 1);
+    //                 console.log(users[i].data().currentPaycheck.length)
+
+    //                 console.log(users[i].data().currentPaycheck)
+
+    //             }
+    //         }
+    //         // users.forEach(user => {
+    //         //     //get last block worked of the paycheck
+
+    //         //     // console.log(user.data().currentPaycheck[1])
+    //         //     // if (user.data().currentPaycheck[l < 1].block)
+    //         // });
+
+    //         // const newPopulation = doc.data().population + 1;
+    //         // t.update(cityRef, { population: newPopulation });
+    //     });
+
+    //     console.log('Transaction success!');
+    // } catch (e) {
+    //     console.log('Transaction failure:', e);
+    // }
 
 
     //Copy data from userData to collection payChecks and add a new doc with id= openingDay-closingDay Ex 12-27-24/1-9-25
