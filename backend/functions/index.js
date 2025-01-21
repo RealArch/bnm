@@ -15,7 +15,12 @@ const logger = require("firebase-functions/logger");
 var express = require('express');
 var app = express();
 const { onInit } = require('firebase-functions/v2/core');
+var serviceAccount = require('./adminKeyFirebase.json');
 
+initializeApp({
+    credential: cert(serviceAccount),
+    storageBucket: "bnm-01-abd4b.appspot.com"
+})
 const { defineSecret } = require('firebase-functions/params');
 const algoliasearch = require('algoliasearch');
 
@@ -24,8 +29,8 @@ const ALGOLIA_ADMIN_KEY = defineSecret("ALGOLIA_ADMIN_KEY");
 const ALGOLIA_APP_ID = defineSecret("ALGOLIA_APP_ID")
 
 //This is for the env variables
-var serviceAccount = require('./adminKeyFirebase.json');
-const customersTrigger = require('./routes/customers')
+const customersTrigger = require('./routes/customers');
+const shiftsTriggers = require('./routes/shifts')
 
 // let client;
 // onInit(() => {
@@ -38,10 +43,7 @@ const customersTrigger = require('./routes/customers')
 //     client = algoliasearch.searchClient(algoliaAppIdValue, algoliaAdminKeyValue);
 //     return
 // });
-initializeApp({
-    credential: cert(serviceAccount),
-    storageBucket: "bnm-01-abd4b.appspot.com"
-})
+
 
 //RUTAS
 const authRoute = require("./routes/auth")
@@ -59,9 +61,21 @@ app.use((req, res, next) => {
     next();
 });
 
+let client = null;
+function getAlgoliaClient() {
+    if (!client) {
+        const algoliaAppIdValue = functions.config().algolia.app_id;
+        const algoliaAdminKeyValue = functions.config().algolia.admin_key;
+        client = algoliasearch(algoliaAppIdValue, algoliaAdminKeyValue);
+
+    } return client;
+}
+
 
 exports.api = onRequest({ secrets: [ALGOLIA_APP_ID, ALGOLIA_ADMIN_KEY] }, app);
 exports.customersTrigger = customersTrigger;
+exports.shiftsTriggers = shiftsTriggers;
+
 //AUTOMATIC FUNCTIONS
 
 

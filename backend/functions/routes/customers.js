@@ -1,27 +1,31 @@
 const { auth } = require('firebase-admin');
 const router = require('express').Router();
 const { onDocumentUpdated, onDocumentCreated, onDocumentDeleted, onDocumentWritten } = require('firebase-functions/v2/firestore');
-const { defineSecret } = require('firebase-functions/params');
 //Algolia config
-const algoliasearch = require('algoliasearch');
-const { onInit } = require('firebase-functions/v2/core');
+const { defineSecret } = require('firebase-functions/params');
+const { algoliasearch } = require('algoliasearch');
 const ALGOLIA_APP_ID = defineSecret("ALGOLIA_APP_ID")
 const ALGOLIA_ADMIN_KEY = defineSecret("ALGOLIA_ADMIN_KEY");
 
 
 
 // const client = algoliasearch(algoliaAppId.value(), algoliaAdminKey.value());
-var client;
-onInit(() => {
+// const algoliaAppIdValue = ALGOLIA_APP_ID.value();
+// const algoliaAdminKeyValue = ALGOLIA_ADMIN_KEY.value();
+// const client = algoliasearch(algoliaAppIdValue, algoliaAdminKeyValue)
 
-    console.log(ALGOLIA_ADMIN_KEY.value())
-    console.log(ALGOLIA_APP_ID.value())
+// function getClient(){
+//     return client
+// }
+// function getAlgolia(){
+//     console.log(ALGOLIA_ADMIN_KEY.value())
+//     console.log(ALGOLIA_APP_ID.value())
 
-    const algoliaAppIdValue = ALGOLIA_APP_ID.value()
-    const algoliaAdminKeyValue = ALGOLIA_ADMIN_KEY.value();
-    client = algoliasearch.searchClient(algoliaAppIdValue, algoliaAdminKeyValue);
-    return
-});
+//     const algoliaAppIdValue = ALGOLIA_APP_ID.value()
+//     const algoliaAdminKeyValue = ALGOLIA_ADMIN_KEY.value();
+
+//     return client
+// }
 
 router.get('/', (req, res) => {
     return res.send("Hola customers")
@@ -31,7 +35,8 @@ router.get('/', (req, res) => {
 const update = exports.customerUpdated = onDocumentUpdated({ document: 'customers/{customerId}', secrets: [ALGOLIA_ADMIN_KEY, ALGOLIA_APP_ID] },
     async (event) => {
         const ALGOLIA_INDEX_NAME = !process.env.FUNCTIONS_EMULATOR ? 'customers_prod' : 'customers_dev';
-        console.log(event.data.after.id)
+        client = algoliasearch(ALGOLIA_APP_ID.value(), ALGOLIA_ADMIN_KEY.value());
+
         client.saveObject({
             indexName: ALGOLIA_INDEX_NAME,
             body: {
@@ -43,9 +48,15 @@ const update = exports.customerUpdated = onDocumentUpdated({ document: 'customer
         return
     }
 )
-const created =exports.customer = onDocumentCreated({ document: 'customers/{customerId}', secrets: [ALGOLIA_ADMIN_KEY, ALGOLIA_APP_ID] },
-    (event) => {
+const created = exports.customer = onDocumentCreated({ document: 'customers/{customerId}', secrets: [ALGOLIA_ADMIN_KEY, ALGOLIA_APP_ID] },
+    async (event) => {
+
         const ALGOLIA_INDEX_NAME = !process.env.FUNCTIONS_EMULATOR ? 'customers_prod' : 'customers_dev';
+
+        // const client = await getAlgoliaClient();
+
+        client = algoliasearch(ALGOLIA_APP_ID.value(), ALGOLIA_ADMIN_KEY.value());
+
         client.saveObject({
             indexName: ALGOLIA_INDEX_NAME,
             body: {
@@ -58,8 +69,10 @@ const created =exports.customer = onDocumentCreated({ document: 'customers/{cust
     }
 )
 const deleted = exports.customer = onDocumentDeleted({ document: 'customers/{customerId}', secrets: [ALGOLIA_ADMIN_KEY, ALGOLIA_APP_ID] },
-    (event) => {
+    async (event) => {
         const ALGOLIA_INDEX_NAME = !process.env.FUNCTIONS_EMULATOR ? 'customers_prod' : 'customers_dev';
+        client = algoliasearch(ALGOLIA_APP_ID.value(), ALGOLIA_ADMIN_KEY.value());
+
         client.deleteObject({
             indexName: ALGOLIA_INDEX_NAME, objectID: event.data.id
         });

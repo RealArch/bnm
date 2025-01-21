@@ -1,9 +1,35 @@
 <ion-header>
   <ion-toolbar color="primary">
     <ion-buttons slot="end">
-      <ion-button>
+      <ion-button id="PaycheckHistory" *ngIf="!loading">
         <ion-icon slot="icon-only" name="calendar"></ion-icon>
       </ion-button>
+      <!-- Popover Paycheck History -->
+      <ion-popover class="paycheckHistoryPopover" *ngIf="!loading" trigger="PaycheckHistory" triggerAction="click"
+        [dismissOnSelect]="true">
+        <ng-template>
+          <ion-content>
+            <ion-list class="my-2" lines="none">
+              <ion-item button [detail]="false" >
+                  <div class="d-flex justify-content-center align-items-center w-100">
+                    <div>
+                      @for(date of userData.paycheckHistory ; track userData.paycheckHistory){
+                        <strong>{{date.split('-')[0] | date:'MM-dd-yy'}}</strong> to 
+                        <strong>{{date.split('-')[1] | date:'MM-dd-yy'}}</strong>
+                        }
+                        <ion-icon class="checkmark ms-2" name="checkmark"></ion-icon>
+                    </div>
+                   
+                  </div>
+              </ion-item>
+            </ion-list>
+            <div class="tip px-3 py-2">
+              Only the periods in which you submitted a report are displayed.
+            </div>
+          </ion-content>
+        </ng-template>
+      </ion-popover>
+      <!-- END -->
     </ion-buttons>
     <ion-title>Current period</ion-title>
   </ion-toolbar>
@@ -32,10 +58,9 @@
   <!-- List of time sheets -->
   @for (day of schedule ; track day){
   <ion-card class="my-3" button (click)="viewShift(day.shiftObject)">
-      
-    <ion-card-header [color]="day.blocks.length > 0 ? 'success' : 'medium'"
-      class="p-1 text-center">
-     
+
+    <ion-card-header [color]="day.blocks.length > 0 ? 'success' : 'medium'" class="p-1 text-center">
+
       <div>
         <ion-text class="day">
           {{day.day | date:'EE' }}

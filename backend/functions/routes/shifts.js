@@ -1,19 +1,20 @@
 const { auth } = require('firebase-admin');
-const { getFirestore, FieldValue } = require('firebase-admin/firestore');
-const functions = require('firebase-functions/v2');
-const { firestore } = require('firebase-functions/v2');
-const { onDocumentUpdated } = require('firebase-functions/v2/firestore');
 const router = require('express').Router();
+const { onDocumentUpdated } = require('firebase-functions/v2/firestore');
+const { initializeApp } = require('firebase-admin/app');
+
+const { getFirestore, FieldValue } = require('firebase-admin/firestore');
 const db = getFirestore()
 
 
-const express = require('express');
 
-const app = express();
 
 const middlewares = require('../middlewares/verifyAuthTokens');
 const { createFortnightArray, calculateEndOfPaycheck } = require('../utilities/utilities');
 const utilities = require('../utilities/utilities');
+
+
+
 
 
 router.get('/closePaycheck', async (req, res) => {
@@ -218,10 +219,25 @@ router.post('/close', middlewares.verifyClientToken, async (req, res) => {
 
 
 })
+//TRIGGER FUNCTIONS
+// const created = exports.customer = onDocumentUpdated({ document: 'customers/{customerId}', secrets: [ALGOLIA_ADMIN_KEY, ALGOLIA_APP_ID] },
+//     (event) => {
+//         const ALGOLIA_INDEX_NAME = !process.env.FUNCTIONS_EMULATOR ? 'customers_prod' : 'customers_dev';
+//         client.saveObject({
+//             indexName: ALGOLIA_INDEX_NAME,
+//             body: {
+//                 "objectID": event.data.id,
+//                 "id": event.data.id,
+//                 ...event.data.data(),
+//             },
+//         })
+//         return
+//     }
+// )
 
-module.exports = router;
-exports.app = functions.https.onRequest(app);
 
+// module.exports = router;
+module.exports = [router]
 //Automatic function simulation
 //Execute it every day at 11:59 new york timezone
 async function closePaycheck() {
@@ -231,17 +247,29 @@ async function closePaycheck() {
     let settingsRef = db.collection('general').doc('settings')
     let paymentSchedule
     let lastStartingDate
-    //If today is closing date (omitted when simulation)
+    let endDate
+    let paycheckHistoryId
     try {
         //Read configurations
         settings = (await settingsRef.get()).data()
         paymentSchedule = settings.paymentSchedule
         lastStartingDate = settings.lastStartingDate
+        //Calculate next closing date
+        endDate = calculateEndOfPaycheck(paymentSchedule, lastStartingDate)
+        paycheckHistoryId = lastStartingDate.toString() + '-' + endDate.toString()
+
+        //If today is closing date or > (omitted when simulation)
+
+        // console.log(endDate)
+        // if (Date.now() < endDate) {
+        //     return console.log('nop')
+        // }
+
         paychecks = {
             paymentScheme: paymentSchedule,
             usersPaychecks: [],
             startDate: lastStartingDate,
-            endDate: calculateEndOfPaycheck(paymentSchedule, lastStartingDate)
+            endDate: endDate
         }
         //Read all users to see if some of then have any open shift, then remove the shift
         //Read all users
@@ -268,18 +296,20 @@ async function closePaycheck() {
                 batch.update(userRef, {
                     currentShift: { blocks: [], lunchTaken: false },
                     status: 'outOfShift',
-                    // paycheckHistory: FieldValue.arrayUnion()
-                    //****currentPaycheck:[]
+                    //***currentPaycheck: []
                 })
             }
+            batch.update(userRef, {
+                paycheckHistory: FieldValue.arrayUnion(paycheckHistoryId)
+            })
             //
 
         });
         //Update next lastStartingDate
         let lastStartingDateUpdated = utilities.calculateNextPaycheckStart(settings.paymentSchedule, settings.lastStartingDate)
-        // ****batch.update(settingsRef, { lastStartingDate: lastStartingDateUpdated })
-        //TODO Create a doc in collection 'paychecks' with id 'lastStartingDate'
-        batch.set(db.collection('paycheckHistory').doc(lastStartingDate.toString()), paychecks)
+        //***batch.update(settingsRef, { lastStartingDate: lastStartingDateUpdated })
+        //Create a doc in collection 'paychecks' with id 'lastStartingDate'
+        batch.set(db.collection('paycheckHistory').doc(paycheckHistoryId), paychecks)
         await batch.commit()
     } catch (error) {
 
@@ -360,3 +390,4 @@ function getElapsedMinSec(blocks) {
         work: workedHours
     }
 }
+

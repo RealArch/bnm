@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { IonicModule, ModalController } from '@ionic/angular';
 import { addIcons } from 'ionicons';
-import { calendar, eye } from 'ionicons/icons';
+import { calendar, checkmark, eye } from 'ionicons/icons';
 import { AuthService } from 'src/app/services/auth.service';
 import { combineLatest, Subject, takeUntil } from 'rxjs';
 import { ShiftsService } from 'src/app/services/shifts.service';
@@ -31,7 +31,7 @@ export class PayPeriodsPage implements OnInit {
     private modalCtrl: ModalController,
 
   ) {
-    addIcons({ calendar, eye })
+    addIcons({ calendar, eye, checkmark })
   }
 
   ngOnInit() {
