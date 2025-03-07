@@ -38,13 +38,19 @@ const utilities = {
         }
         return endDate.getTime();
     },
-    calculateNextPaycheckStart(paymentSchedule, paycheckStartingDate){
+    calculateNextPaycheckStart(paycheckEndDate){
+        let endDate;
+        endDate = new Date(paycheckEndDate + 1 * 24 * 60 * 60 * 1000);
+
+        return endDate.getTime();
+    },
+    calculateNextPaycheckEnd(paymentSchedule, paycheckStartingDate){
         let endDate;
         if (paymentSchedule === 'biweekly') {
-            // Restar 14 días (2 semanas) para obtener el día de inicio 
+            // sumar 14 días (2 semanas) para obtener el día de inicio 
             endDate = new Date(paycheckStartingDate + 14 * 24 * 60 * 60 * 1000);
         } else if (paymentSchedule === 'weekly') {
-            // Restar 7 días (1 semana) para obtener el día de inicio 
+            // sumar 7 días (1 semana) para obtener el día de inicio 
             endDate = new Date(paycheckStartingDate + 7 * 24 * 60 * 60 * 1000);
         } else {
             throw new Error('Invalid payment schedule. Use "biweekly" or "weekly".');

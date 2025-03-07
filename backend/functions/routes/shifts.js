@@ -1,6 +1,6 @@
 const { auth } = require('firebase-admin');
 const router = require('express').Router();
-const { onDocumentUpdated } = require('firebase-functions/v2/firestore');
+const { onDocumentUpdated, onDocumentCreated } = require('firebase-functions/v2/firestore');
 const { initializeApp } = require('firebase-admin/app');
 
 const { getFirestore, FieldValue } = require('firebase-admin/firestore');
@@ -13,7 +13,11 @@ const middlewares = require('../middlewares/verifyAuthTokens');
 const { createFortnightArray, calculateEndOfPaycheck } = require('../utilities/utilities');
 const utilities = require('../utilities/utilities');
 
-
+//Algolia config
+const { algoliasearch } = require('algoliasearch');
+const { defineSecret } = require('firebase-functions/params');
+const ALGOLIA_APP_ID = defineSecret("ALGOLIA_APP_ID")
+const ALGOLIA_ADMIN_KEY = defineSecret("ALGOLIA_ADMIN_KEY");
 
 
 
@@ -220,24 +224,42 @@ router.post('/close', middlewares.verifyClientToken, async (req, res) => {
 
 })
 //TRIGGER FUNCTIONS
-// const created = exports.customer = onDocumentUpdated({ document: 'customers/{customerId}', secrets: [ALGOLIA_ADMIN_KEY, ALGOLIA_APP_ID] },
-//     (event) => {
-//         const ALGOLIA_INDEX_NAME = !process.env.FUNCTIONS_EMULATOR ? 'customers_prod' : 'customers_dev';
-//         client.saveObject({
-//             indexName: ALGOLIA_INDEX_NAME,
-//             body: {
-//                 "objectID": event.data.id,
-//                 "id": event.data.id,
-//                 ...event.data.data(),
-//             },
-//         })
-//         return
-//     }
-// )
+const paycheckHistoryCreated = exports.paycheckHistory = onDocumentCreated({ document: 'paycheckHistory/{paycheckHistoryId}', secrets: [ALGOLIA_ADMIN_KEY, ALGOLIA_APP_ID] },
+    (event) => {
+        const ALGOLIA_INDEX_NAME = !process.env.FUNCTIONS_EMULATOR ? 'paycheckHistory_prod' : 'paycheckHistory_dev';
+        const client = algoliasearch(ALGOLIA_APP_ID.value(), ALGOLIA_ADMIN_KEY.value());
+
+        client.saveObject({
+            indexName: ALGOLIA_INDEX_NAME,
+            body: {
+                "objectID": event.data.id,
+                "id": event.data.id,
+                ...event.data.data(),
+            },
+        })
+        return
+    }
+)
+const paycheckHistoryUpdated = exports.paycheckHistory = onDocumentUpdated({ document: 'paycheckHistory/{paycheckHistoryId}', secrets: [ALGOLIA_ADMIN_KEY, ALGOLIA_APP_ID] },
+    (event) => {
+        const ALGOLIA_INDEX_NAME = !process.env.FUNCTIONS_EMULATOR ? 'paycheckHistory_prod' : 'paycheckHistory_dev';
+        const client = algoliasearch(ALGOLIA_APP_ID.value(), ALGOLIA_ADMIN_KEY.value());
+
+        client.saveObject({
+            indexName: ALGOLIA_INDEX_NAME,
+            body: {
+                "objectID": event.data.after.id,
+                "id": event.data.after.id,
+                ...event.data.after.data(),
+            },
+        })
+        return
+    }
+)
 
 
 // module.exports = router;
-module.exports = [router]
+module.exports = [router,paycheckHistoryCreated,paycheckHistoryUpdated]
 //Automatic function simulation
 //Execute it every day at 11:59 new york timezone
 async function closePaycheck() {
@@ -285,29 +307,35 @@ async function closePaycheck() {
             let userPaycheck = {
                 userId: doc.id,
                 days: user.currentPaycheck,
-
+                hourlyRate: user.hourlyRate
             }
             if (user.currentPaycheck.length > 0) {
                 paychecks.usersPaychecks.push(userPaycheck)
-            }
-            //if the shift is still open (endTime == null), remove day shift
-            if (lastBlockLength != undefined && lastBlockLength.endTime == null) {
-
                 batch.update(userRef, {
-                    currentShift: { blocks: [], lunchTaken: false },
-                    status: 'outOfShift',
-                    //***currentPaycheck: []
+                    paycheckHistory: FieldValue.arrayUnion(paycheckHistoryId)
                 })
             }
             batch.update(userRef, {
-                paycheckHistory: FieldValue.arrayUnion(paycheckHistoryId)
+                currentShift: { blocks: [], lunchTaken: false },
+                status: 'outOfShift',
+                currentPaycheck: []
             })
+            //if the shift is still open (endTime == null), remove day shift
+            // if (lastBlockLength != undefined && lastBlockLength.endTime == null) {
+
+            //     batch.update(userRef, {
+            //         currentShift: { blocks: [], lunchTaken: false },
+            //         status: 'outOfShift',
+            //         currentPaycheck: []
+            //     })
+            // }
+           
             //
 
         });
         //Update next lastStartingDate
-        let lastStartingDateUpdated = utilities.calculateNextPaycheckStart(settings.paymentSchedule, settings.lastStartingDate)
-        //***batch.update(settingsRef, { lastStartingDate: lastStartingDateUpdated })
+        let lastStartingDateUpdated = utilities.calculateNextPaycheckStart(endDate)
+        batch.update(settingsRef, { lastStartingDate: lastStartingDateUpdated })
         //Create a doc in collection 'paychecks' with id 'lastStartingDate'
         batch.set(db.collection('paycheckHistory').doc(paycheckHistoryId), paychecks)
         await batch.commit()
