@@ -3,7 +3,12 @@ import { Injectable } from '@angular/core';
 import { environment as global } from '../../environments/environment';
 import { Block } from './../interfaces/user';
 import moment from 'moment';
+import { environment } from './../../environments/environment';
+import { algoliasearch } from 'algoliasearch';
 import { TimeService } from './time.service';
+
+const client = algoliasearch(environment.algolia.appID, environment.algolia.searchKey)
+
 @Injectable({
   providedIn: 'root'
 })
@@ -15,6 +20,7 @@ export class ShiftsService {
   ) { }
 
   startShift(startTime: number, type: 'working' | 'traveling' | 'other' | 'lunch', workingPlace: string, details: string, afAuthToken: string | null) {
+
     var data = {
       startTime: startTime,
       type: type,
@@ -32,6 +38,19 @@ export class ShiftsService {
     }
     return this.http.post(`${global.api}/shifts/close`, data)
   }
+  async getUserWorkPaycheck(objectId: string) {
+    // var currentUser = localStorage.getItem('userUid')
+    try {
+      const res = await client.getObject({
+        indexName: environment.algolia.indexes.paycheckHistory,
+        objectID: objectId
+      })
+      return res
+    } catch (error) {
+      console.error('Error searching user paycheck history:', error);
+      return error;
+    }
+  }
   alreadyHasLunch(currentShiftBlocks: any[]) {
     var alreadyHasLunch = false;
     currentShiftBlocks.forEach((element) => {
@@ -40,6 +59,9 @@ export class ShiftsService {
       }
     });
     return alreadyHasLunch
+  }
+  getPaycheckHistory() {
+    // const ref = 
   }
   //UTILITIES
 
@@ -162,6 +184,12 @@ export class ShiftsService {
     return res;
 
   }
+  userPaycheckById(usersPaychecks: any[], userId: any) {
+
+    const userPaycheck = usersPaychecks.find(userPaycheck => userPaycheck.userId === userId);
+    return userPaycheck;
+  }
+
   createFortnightArray(paymentSchedule: string, lastStartingDate: number, currentPaycheck: any) {
 
     /////FIRST format the array for the schedule

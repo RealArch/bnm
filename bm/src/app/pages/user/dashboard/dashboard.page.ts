@@ -76,7 +76,7 @@ export class DashboardPage implements OnInit {
 
   }
   calculateWorkedHours(currentPaycheck: any) {
-    console.log()
+    console.log(currentPaycheck)
     let totalWorkHours = 0;
     let totalLunchHours = 0;
     currentPaycheck.forEach((paycheck: { timeWorked: { work: number; lunch: number; }; }) => {

@@ -1,28 +1,28 @@
 import { Component, OnInit, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
+import { AbstractControl, FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, ValidationErrors, ValidatorFn, Validators } from '@angular/forms';
 import { IonicModule, NavController } from '@ionic/angular';
 import { AuthService } from 'src/app/services/auth.service';
 import { PopupsService } from 'src/app/services/popups.service';
 import { Router, RouterLinkWithHref } from '@angular/router';
 import { addIcons } from 'ionicons';
-import { checkmarkCircle, closeCircle } from 'ionicons/icons';
+import { alertCircleOutline, checkmarkCircle, closeCircle } from 'ionicons/icons';
 
 @Component({
-    selector: 'app-signup',
-    templateUrl: './signup.page.html',
-    styleUrls: ['./signup.page.scss'],
-    imports: [IonicModule, CommonModule, FormsModule, ReactiveFormsModule, RouterLinkWithHref]
+  selector: 'app-signup',
+  templateUrl: './signup.page.html',
+  styleUrls: ['./signup.page.scss'],
+  imports: [IonicModule, CommonModule, FormsModule, ReactiveFormsModule, RouterLinkWithHref]
 })
 export class SignupPage implements OnInit {
   authService = inject(AuthService);
   popupService = inject(PopupsService)
   signinForm: FormGroup = this.fb.group({
-    firstName: [null, [Validators.required, Validators.minLength(3), Validators.maxLength(50)]],
-    lastName: [null, [Validators.required, Validators.minLength(3), Validators.maxLength(50)]],
-    email: [null, [Validators.required, Validators.minLength(3), Validators.maxLength(50)]],
-    password: [null, [Validators.required,]],
-    passwordConfirm: [null, [Validators.required,]]
+    firstName: [null, [Validators.required, Validators.minLength(2), Validators.maxLength(50)]],
+    lastName: [null, [Validators.required, Validators.minLength(2), Validators.maxLength(50)]],
+    email: [null, [Validators.required, Validators.email, Validators.minLength(5), Validators.maxLength(256)]],
+    password: [null, [Validators.required, Validators.minLength(6), Validators.maxLength(24)]],
+    confirmPassword: [null, [Validators.required, this.passwordMatchValidator()]]
 
   });
   sending: boolean = false;
@@ -32,7 +32,7 @@ export class SignupPage implements OnInit {
     private navController: NavController
   ) {
     //Icons useds
-    addIcons({ checkmarkCircle });
+    addIcons({ checkmarkCircle, alertCircleOutline });
     addIcons({ closeCircle });
   }
 
@@ -69,7 +69,7 @@ export class SignupPage implements OnInit {
           } else {
             this.popupService.presentToast('bottom', 'danger', 'Something went wrong. Please contact administrator. ')
             console.log(err.error)
-           
+
 
             //Create a DB entry with this error
           }
@@ -79,23 +79,18 @@ export class SignupPage implements OnInit {
           this.sending = false;
         }
       })
-
-    // .then(res => {
-    //   console.log(res)
-    // }).catch(err => {
-    //   if (err.code == "auth/user-not-found") {
-    //     this.popupService.presentToast("bottom", "danger", "The email address you entered is not registered.")
-    //   } else if (err.code == "auth/user-not-found") {
-
-    //     console.log('error de pass')
-
-    //   } else {
-    //     console.log('error inesperado')
-
-    //   }
-    // }).finally(() => {
-    //   this.sending = false;
-    // })
   }
+  // VALIDATORS
 
+
+  passwordMatchValidator(): ValidatorFn {
+    return (control: AbstractControl): ValidationErrors | null => {
+      const password = control.parent?.get('password')?.value;
+      const confirmPassword = control.value;
+      console.log(password)
+      console.log(confirmPassword)
+      // return {mismatch: true}
+      return password  === confirmPassword ? null : { mismatch: true };
+    };
+  }
 }

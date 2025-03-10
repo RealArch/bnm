@@ -1,7 +1,17 @@
 .upside-box {
     background-color: var(--ion-color-primary);
-    height: 30%;
+    .main-text{
+        font-weight: bold;
+        font-size: 2rem;
+        margin: 70px 20px;
+        color: var(--ion-color-light);
+        max-width: 50%;
+        line-height: normal;
+    }
 }
+
+
+
 
 .divider {
     display: flex;
@@ -28,8 +38,15 @@
 }
 
 ion-item{
-    --padding-start	: 10px;
-    --padding-end	: 10px;
+    --padding-start	: 0px;
+    --padding-end	: 0px;
     margin-bottom: 7px;
     --border-radius :10px
 }
+// .valid-box{
+//     height: 100%;
+//     width: 10px;
+//     position: absolute;
+//     background-color: red;
+//     left: 0px;
+// }

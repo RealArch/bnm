@@ -1,26 +1,40 @@
 <ion-header>
   <ion-toolbar color="primary">
     <ion-buttons slot="end">
-      <ion-button id="PaycheckHistory" *ngIf="!loading">
+      <ion-button id="PaycheckHistory">
         <ion-icon slot="icon-only" name="calendar"></ion-icon>
       </ion-button>
       <!-- Popover Paycheck History -->
-      <ion-popover class="paycheckHistoryPopover" *ngIf="!loading" trigger="PaycheckHistory" triggerAction="click"
+      <ion-popover class="paycheckHistoryPopover" trigger="PaycheckHistory" triggerAction="click"
         [dismissOnSelect]="true">
         <ng-template>
           <ion-content>
-            <ion-list class="my-2" lines="none">
-              <ion-item button [detail]="false" >
-                  <div class="d-flex justify-content-center align-items-center w-100">
-                    <div>
-                      @for(date of userData.paycheckHistory ; track userData.paycheckHistory){
-                        <strong>{{date.split('-')[0] | date:'MM-dd-yy'}}</strong> to 
-                        <strong>{{date.split('-')[1] | date:'MM-dd-yy'}}</strong>
-                        }
-                        <ion-icon class="checkmark ms-2" name="checkmark"></ion-icon>
-                    </div>
-                   
+            <ion-list class="my-2" lines="none" *ngIf="!loading">
+              @for(date of userData.paycheckHistory ; track userData.paycheckHistory){
+
+              <ion-item button [detail]="false" (click)="getUserWorkPaycheck(date)">
+                <div class="d-flex justify-content-center align-items-center w-100">
+                  <div>
+                    <strong>{{date.split('-')[0] | date:'MM-dd-yy'}}</strong> to
+                    <strong>{{date.split('-')[1] | date:'MM-dd-yy'}}</strong>
+
+                    <ion-icon *ngIf="date == selectedPeriodId" class="checkmark ms-2" name="checkmark"></ion-icon>
                   </div>
+
+                </div>
+              </ion-item>
+              }
+              <!-- CURRENT PERIOD -->
+              <ion-item button [detail]="false" (click)="getUserWorkPaycheck('current')">
+                <div class="d-flex justify-content-center align-items-center w-100">
+                  <div>
+                    <!-- <strong>{{date.split('-')[0] | date:'MM-dd-yy'}}</strong> to
+                    <strong>{{date.split('-')[1] | date:'MM-dd-yy'}}</strong> -->
+                    Current
+                    <ion-icon *ngIf="selectedPeriodId == 'current'" class="checkmark ms-2" name="checkmark"></ion-icon>
+                  </div>
+
+                </div>
               </ion-item>
             </ion-list>
             <div class="tip px-3 py-2">
@@ -31,32 +45,41 @@
       </ion-popover>
       <!-- END -->
     </ion-buttons>
-    <ion-title>Current period</ion-title>
+    <ion-title>
+      @if(selectedPeriodId == 'current'){
+      Current period
+      } @else {
+      <strong>{{selectedPeriodId.split('-')[0] | date:'MM-dd-yy'}}</strong> to
+      <strong>{{selectedPeriodId.split('-')[1] | date:'MM-dd-yy'}}</strong>
+      }
+    </ion-title>
   </ion-toolbar>
 </ion-header>
 
 <ion-content color="light">
-  <!-- Headers of the list of time sheets -->
-  <!-- <ion-row class="row-headers">
-      <ion-col>
-        Date
-      </ion-col>
-      <ion-col>
-        Start
-      </ion-col>
-      <ion-col>
-        End
-      </ion-col>
-      <ion-col>
-        Lunch time
-      </ion-col>
-      <ion-col>
-        Total Hrs.
-      </ion-col>
+  @if(loading){
+  <div class="loading">
+    <ion-spinner></ion-spinner>
+  </div>
+  }@else{
 
-    </ion-row> -->
-  <!-- List of time sheets -->
-  @for (day of schedule ; track day){
+  <!-- SUMMARY DATA -->
+  <!-- <ion-row class="" style="margin: 10px ">
+  <ion-col size="6">
+    <div class="mb-1">
+      <app-hours-worked-card [timeWorked]="timeWorked">
+      </app-hours-worked-card>
+    </div>
+  </ion-col>
+  <ion-col size="6">
+    <div class="mb-1">
+      <app-money-earned-card [hourlyRate]="hourlyRate" [timeWorked]="timeWorked"></app-money-earned-card>
+    </div>
+  </ion-col>
+</ion-row> -->
+  <!--  -->
+
+  @for (day of selectedPeriod ; track day){
   <ion-card class="my-3" button (click)="viewShift(day.shiftObject)">
 
     <ion-card-header [color]="day.blocks.length > 0 ? 'success' : 'medium'" class="p-1 text-center">
@@ -73,14 +96,6 @@
     </ion-card-header>
     <ion-card-content class="py-1 px-2">
       <ion-row>
-        <!-- <ion-col class="">
-        <div class="day">
-          {{day.day | date:'EEEEEE' }}
-        </div>
-        <div>
-          {{day.day | date:'LLL, d, YY'}}
-        </div>
-      </ion-col> -->
         <ion-col size="3">
           <div class="title">Start</div>
           <div class="data">
@@ -89,14 +104,16 @@
           </div>
         </ion-col>
         <ion-col size="3">
-          <div class="title">Lunch</div>
+          <div class="title">End</div>
+
           <div class="data">
             {{ day.end ? (day.end | date:'h:mm aaa'): '-' }}
 
           </div>
         </ion-col>
         <ion-col>
-          <div class="title">End</div>
+          <div class="title">Lunch</div>
+
           <div class="data">
             @if(day.timeWorked){
             {{day.timeWorked.lunch | date:'H:mm':'UTC'}} Hrs
@@ -124,7 +141,7 @@
   </ion-card>
 
   }
-
+  }
 
 
 </ion-content>

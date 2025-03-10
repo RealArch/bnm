@@ -22,13 +22,17 @@ export class PayPeriodsPage implements OnInit {
   userUid: any = localStorage.getItem('userUid');
   subscribe$ = new Subject<void>();
   userData: any;
-  configData: PublicConfig | undefined;
-  schedule: any;
+  configData!: PublicConfig;
+  currentSchedule: any;
+  selectedPeriodId: string = 'current'
+  selectedPeriod: any;
+  fixedHourlyRate: any = null;
 
   constructor(
     private authService: AuthService,
     private shiftService: ShiftsService,
     private modalCtrl: ModalController,
+    private shifts: ShiftsService
 
   ) {
     addIcons({ calendar, eye, checkmark })
@@ -37,7 +41,7 @@ export class PayPeriodsPage implements OnInit {
   ngOnInit() {
     //get userData
     this.getUserData()
-    //format the currentPaycheck
+
   }
   getUserData() {
     this.loading = true;
@@ -51,12 +55,16 @@ export class PayPeriodsPage implements OnInit {
           //User data
           console.log(resUserData)
           this.userData = resUserData;
+
           //Config data
           this.configData = resConfigData as PublicConfig
 
           //After gettingg date, format it
-          this.schedule = this.shiftService.createFortnightArray(this.configData.paymentSchedule, this.configData.lastStartingDate, this.userData.currentPaycheck)
-
+          this.currentSchedule = this.shiftService.createFortnightArray(this.configData.paymentSchedule, this.configData.lastStartingDate, this.userData.currentPaycheck)
+          console.log(this.currentSchedule)
+          if (this.selectedPeriodId == "current") {
+            this.selectedPeriod = this.currentSchedule
+          }
           this.loading = false
 
         },
@@ -66,13 +74,53 @@ export class PayPeriodsPage implements OnInit {
         }
       })
   }
+
+  calculateWorkedHours(currentPaycheck: any) {
+    console.log(currentPaycheck)
+    let totalWorkHours = 0;
+    let totalLunchHours = 0;
+    currentPaycheck.forEach((paycheck: { timeWorked: { work: number; lunch: number; }; }) => {
+
+      totalWorkHours += paycheck.timeWorked.work;
+      totalLunchHours += paycheck.timeWorked.lunch;
+    });
+    return { totalWorkHours, totalLunchHours };
+  }
+
+  setTotalWorkingHours(currentPaycheck: any) {
+    let totals = this.calculateWorkedHours(currentPaycheck)
+    console.log(totals)
+  }
+  async getUserWorkPaycheck(objectId: string) {
+    if (objectId == this.selectedPeriodId) return
+    this.loading = true
+    if (objectId == 'current') {
+      this.selectedPeriodId = 'current'
+      this.selectedPeriod = this.currentSchedule
+      this.fixedHourlyRate = null
+      return this.loading = false
+    }
+    var res: any = await this.shifts.getUserWorkPaycheck(objectId)
+    let userId = localStorage.getItem('userUid')
+    let userPaycheck = this.shiftService.userPaycheckById(res.usersPaychecks, userId)
+    this.selectedPeriod = this.shiftService.createFortnightArray(res.paymentScheme, res.startDate, userPaycheck.days)
+    this.selectedPeriodId = objectId
+    console.log(this.selectedPeriod)
+    this.fixedHourlyRate = userPaycheck.hourlyRate
+
+    this.setTotalWorkingHours(userPaycheck.days)
+    this.loading = false
+    return
+  }
   //MODALS
   async viewShift(shift: any) {
+    console.log(this.fixedHourlyRate)
     const modal = await this.modalCtrl.create({
       component: ViewBlocksModalPage,
       componentProps: {
         'shift': shift,
-        'userData':this.userData
+        'userData': this.userData,
+        'fixedHourlyRate': this.fixedHourlyRate
       },
     })
     await modal.present()

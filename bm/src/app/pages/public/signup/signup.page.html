@@ -1,80 +1,108 @@
 <ion-content color="light">
   <ion-grid class="upside-box">
-
+    <div class="main-text">
+      Create an account
+    </div>
   </ion-grid>
   <ion-grid class="p-3">
     <form autocomplete="off" [formGroup]="signinForm" (ngSubmit)="sendForm(signinForm)">
       <ion-row>
 
-        <ion-col>
+        <ion-col size="12" class="pb-0">
 
           <ion-item lines="none">
-            <ion-input formControlName="firstName" label="First name" label-placement="stacked" fill="outline"
-              placeholder="Between 3 and 50 Char." required="true" minlength="3" maxlength="50">
+            <!-- <div class="valid-box"></div> -->
+            <ion-input formControlName="firstName" label-placement="stacked" fill="outline" placeholder="Ex. John"
+              required="true" minlength="2" maxlength="50" class="ps-3 pe-0 py-2">
+              <div slot="label">First name <ion-text
+                  [color]="signinForm.controls['firstName'].invalid && signinForm.controls['firstName'].touched ? 'danger' : 'primary'">(2-50
+                  Char.)</ion-text></div>
               <!-- IF touched -->
               @if(signinForm.controls['firstName'].touched) {
               <!-- Then select the right icon -->
               @if(signinForm.controls['firstName'].invalid){
-              <ion-icon slot="end" color="danger" name="close-circle"></ion-icon>
+              <ion-icon slot="end" color="danger" name="alert-circle-outline"></ion-icon>
               }@else {
               <ion-icon slot="end" color="success" name="checkmark-circle"></ion-icon>
               }
               }
             </ion-input>
           </ion-item>
+        </ion-col>
+
+        <ion-col size="12" class="pb-0">
           <ion-item lines="none">
-            <ion-input formControlName="lastName" label="First name" label-placement="stacked" fill="outline"
-              placeholder="Enter you last name">
-              @if(signinForm.value.lastName !=null && signinForm.controls['lastName'].invalid){
-              <ion-icon slot="end" color="danger" name="close-circle"></ion-icon>
+            <ion-input formControlName="lastName" label-placement="stacked" fill="outline"
+              placeholder="Enter you last name" minlength="2" maxlength="50" class="ps-3 pe-0 py-2">
+              <div slot="label">Last name <ion-text
+                  [color]="signinForm.controls['lastName'].invalid && signinForm.controls['lastName'].touched ? 'danger' : 'primary'">(2-50
+                  Char.)</ion-text></div>
+              @if(signinForm.value.lastName !=null && signinForm.controls['lastName'].invalid && signinForm.controls['lastName'].touched){
+              <ion-icon slot="end" color="danger" name="alert-circle-outline"></ion-icon>
               }
               @if(signinForm.value.lastName !=null && !signinForm.controls['lastName'].invalid){
               <ion-icon slot="end" color="success" name="checkmark-circle"></ion-icon>
               }
             </ion-input>
           </ion-item>
-
+        </ion-col>
+        <ion-col size="12" class="pb-0">
           <ion-item lines="none">
-            <ion-input formControlName="email" label="Email" label-placement="stacked" fill="outline"
-              placeholder="Enter your Email">
-              @if(signinForm.value.email !=null && signinForm.controls['email'].invalid){
-              <ion-icon slot="end" color="danger" name="close-circle"></ion-icon>
+            <ion-input formControlName="email" label-placement="stacked" fill="outline"
+              placeholder="Enter your Email" class="ps-3 pe-0 py-2">
+              <div slot="label">Email <ion-text
+                [color]="signinForm.controls['email'].invalid && signinForm.controls['email'].touched ? 'danger' : 'primary'">(5-256
+                Char.)</ion-text></div>
+              
+              @if(signinForm.value.email !=null && signinForm.controls['email'].invalid && signinForm.controls['email'].touched){
+              <ion-icon slot="end" color="danger" name="alert-circle-outline"></ion-icon>
               }
               @if(signinForm.value.email !=null && !signinForm.controls['email'].invalid){
               <ion-icon slot="end" color="success" name="checkmark-circle"></ion-icon>
               }
             </ion-input>
           </ion-item>
+        </ion-col>
+        <ion-col size="12" class="pb-0">
 
           <ion-item lines="none">
-            <ion-input formControlName="password" type="password" label="Password" label-placement="stacked"
-              fill="outline" placeholder="Enter your password" autocomplete="off">
-              @if(signinForm.value.password !=null && signinForm.controls['password'].invalid){
-              <ion-icon slot="end" color="danger" name="close-circle"></ion-icon>
+            <ion-input formControlName="password" type="password" label-placement="stacked"
+              fill="outline" placeholder="Enter your password" autocomplete="off" class="ps-3 pe-0 py-2"
+              minlength="6" maxlength="24">
+              <div slot="label">Password <ion-text
+                [color]="signinForm.controls['password'].invalid && signinForm.controls['password'].touched ? 'danger' : 'primary'">(6-24
+                Char.)</ion-text></div>
+              
+              @if(signinForm.value.password !=null && signinForm.controls['password'].invalid && signinForm.controls['password'].touched){
+              <ion-icon slot="end" color="danger" name="alert-circle-outline"></ion-icon>
               }
               @if(signinForm.value.password !=null && !signinForm.controls['password'].invalid){
               <ion-icon slot="end" color="success" name="checkmark-circle"></ion-icon>
               }
             </ion-input>
           </ion-item>
+        </ion-col>
 
+        <ion-col size="12" class="pb-0">
           <ion-item lines="none" autocomplete="off">
-            <ion-input formControlName="passwordConfirm" type="password" label="Confirm password"
-              label-placement="stacked" fill="outline" placeholder="Confirm your password" autocomplete="off">
-              @if(signinForm.value.touched !=null && signinForm.controls['passwordConfirm'].invalid){
-              <ion-icon slot="end" color="danger" name="close-circle"></ion-icon>
+            <ion-input formControlName="confirmPassword" type="password" label="Confirm password"
+              label-placement="stacked" fill="outline" placeholder="Confirm your password" autocomplete="off"
+              class="ps-3 pe-0 py-2">
+              @if(signinForm.value.confirmPassword !=null && signinForm.controls['confirmPassword'].invalid){
+              <ion-icon slot="end" color="danger" name="alert-circle-outline"></ion-icon>
               }
-              @if(signinForm.value.passwordConfirm !=null && !signinForm.controls['passwordConfirm'].invalid){
+              @if(signinForm.value.confirmPassword !=null && !signinForm.controls['confirmPassword'].invalid){
               <ion-icon slot="end" color="success" name="checkmark-circle"></ion-icon>
               }
             </ion-input>
           </ion-item>
-
-          <!-- <div class="w-100 text-end py-3">
+        </ion-col>
+        <!-- <div class="w-100 text-end py-3">
             <ion-text color="primary" class="strong text-end">
               Olvide mi contraseña
             </ion-text>
           </div> -->
+        <ion-col size="12">
 
           <div>
             <ion-button expand="block" type="submit" [disabled]="sending || signinForm.invalid">

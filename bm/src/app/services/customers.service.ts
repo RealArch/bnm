@@ -23,6 +23,7 @@ export class CustomersService {
         // searchParams: { query: value },
 
       });
+      
       return response.hits.map((result) => this.mapToCustomer(result));
 
     } catch (error) {

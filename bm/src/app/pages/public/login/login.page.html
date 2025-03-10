@@ -1,36 +1,54 @@
 <ion-content color="light">
   <ion-grid class="upside-box">
-
+    <div class="main-text">
+      Welcome to B&M's app
+    </div>
   </ion-grid>
   <ion-grid class="p-3">
     <form [formGroup]="signinForm" (ngSubmit)="sendForm(signinForm)">
       <ion-row>
 
-        <ion-col>
+        <ion-col size="12" class="pb-0">
           <ion-item lines="none">
-            <ion-input formControlName="email" label="Email" label-placement="stacked" fill="outline"
-              placeholder="Enter your Email" [counter]="true" maxlength="256">
-             
+            <ion-input formControlName="email" label-placement="stacked" fill="outline"
+              placeholder="Enter your Email" class="ps-3 pe-0 py-2">
+              <div slot="label">Email <ion-text
+                [color]="signinForm.controls['email'].invalid && signinForm.controls['email'].touched ? 'danger' : 'primary'">(5-256
+                Char.)</ion-text></div>
+              
+              @if(signinForm.value.email !=null && signinForm.controls['email'].invalid && signinForm.controls['email'].touched){
+              <ion-icon slot="end" color="danger" name="alert-circle-outline"></ion-icon>
+              }
+              @if(signinForm.value.email !=null && !signinForm.controls['email'].invalid){
+              <ion-icon slot="end" color="success" name="checkmark-circle"></ion-icon>
+              }
             </ion-input>
           </ion-item>
+        </ion-col>
+        <ion-col size="12" class="pb-0">
 
           <ion-item lines="none">
-            <ion-input formControlName="password" type="password" label="Password" label-placement="stacked"
-              fill="outline" placeholder="Enter your password" autocomplete="off">
-              <ion-input-password-toggle slot="end"></ion-input-password-toggle>
-
-              @if(signinForm.value.password !=null && signinForm.controls['password'].invalid){
-              <ion-icon slot="end" color="danger" name="close-circle"></ion-icon>
+            <ion-input formControlName="password" type="password" label-placement="stacked"
+              fill="outline" placeholder="Enter your password" autocomplete="off" class="ps-3 pe-0 py-2"
+              minlength="6" maxlength="24">
+              <div slot="label">Password <ion-text
+                [color]="signinForm.controls['password'].invalid && signinForm.controls['password'].touched ? 'danger' : 'primary'">(6-24
+                Char.)</ion-text></div>
+              
+              @if(signinForm.value.password !=null && signinForm.controls['password'].invalid && signinForm.controls['password'].touched){
+              <ion-icon slot="end" color="danger" name="alert-circle-outline"></ion-icon>
               }
               @if(signinForm.value.password !=null && !signinForm.controls['password'].invalid){
               <ion-icon slot="end" color="success" name="checkmark-circle"></ion-icon>
               }
             </ion-input>
           </ion-item>
+        </ion-col>
+        <ion-col size="12" class="pb-0">
 
           <div class="w-100 text-end py-3">
             <ion-text color="primary" class="strong text-end">
-              Olvide mi contraseña
+              Forgot your password?
             </ion-text>
           </div>
 
