@@ -38,7 +38,7 @@ bootstrapApplication(AppComponent, {
     }),
 
     //AUTHENTICATION INIT
-provideAuth(() => {
+    provideAuth(() => {
       if (environment.useEmulators) {
         const fireauth = getAuth();
         connectAuthEmulator(fireauth, 'http://localhost:9099');

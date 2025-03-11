@@ -1,12 +1,9 @@
-import { CapacitorConfig } from '@capacitor/cli';
+import type { CapacitorConfig } from '@capacitor/cli';
 
 const config: CapacitorConfig = {
-  appId: 'io.ionic.starter',
-  appName: 'bm',
-  webDir: 'www',
-  server: {
-    androidScheme: 'https'
-  }
+  appId: 'com.bnm.app',
+  appName: 'B&M App',
+  webDir: 'www/browser'
 };
 
 export default config;
