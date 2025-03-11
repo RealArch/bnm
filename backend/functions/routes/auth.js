@@ -118,7 +118,7 @@ router.get('/createAdminUser', async (req, res) => {
         await db.collection('general').doc('settings').set({
             lastStartingDate: 1736424000000,
             paymentSchedule: "biweekly",
-            paycheckStartingDay: "friday"
+            paycheckHistory:[]
         })
 
         return res.json({ message: 'Admin user created' })

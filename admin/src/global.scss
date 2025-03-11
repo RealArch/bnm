@@ -62,6 +62,14 @@ ion-popover::part(content) {
     border-radius: 15px !important;
     box-shadow: rgba(149, 157, 165, 0.2) 0px 8px 24px;
 }
+ion-popover{
+    // --box-shadow: rgba(149, 157, 165, 0.2) 0px 8px 24px;
+    --box-shadow: 0 5px 10px 0 rgba(0, 0, 0, 0.6);
+}
+
+ion-button{
+    --border-radius:8px!important;
+}
 ion-card, ion-modal {
     border-radius: 15px !important;
     box-shadow: rgba(149, 157, 165, 0.2) 0px 8px 24px;
@@ -96,4 +104,8 @@ ion-card, ion-modal {
 //ALERT STYLES
 .alert-cancel-button {
     color:var(--ion-color-danger)!important
+}
+//Pay periods popover select period
+.paycheckHistoryPopover {
+    --width: 300px;
 }

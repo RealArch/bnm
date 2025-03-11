@@ -1,4 +1,4 @@
-<ion-accordion value="1" class=" box-shadow  " style="border-width: none;">
+<ion-accordion  class=" box-shadow  " style="border-width: none;">
   <ion-item slot="header">
     <ion-row class="w-100">
       <ion-col size="1">
@@ -43,7 +43,7 @@
             Hours
           </div>
           <div class="earnings">
-            38:30
+            {{hours}}:{{timeWorked.totalWorkHours | date:'mm'}}
           </div>
         </div>
       </ion-col>
@@ -54,7 +54,17 @@
             Earnings
           </div>
           <div class="earnings">
-            $1203
+            {{calculateEarnings(timeWorked.totalWorkHours, userData.hourlyRate) | currency}}
+          </div>
+        </div>
+      </ion-col>
+      <ion-col size="2">
+        <div>
+          <div class="title">
+            Paid
+          </div>
+          <div>
+            <ion-checkbox style="--size: 15px;" class="w-auto" (click)="alertPaid($event)"></ion-checkbox>
           </div>
         </div>
       </ion-col>
@@ -90,9 +100,9 @@
       <ion-col>
         Total Hrs.
       </ion-col>
-      <ion-col class="d-flex justify-content-end">
+      <!-- <ion-col class="d-flex justify-content-end">
         Actions
-      </ion-col>
+      </ion-col> -->
     </ion-row>
     <!-- List of time sheets -->
     @for (day of schedule ; track day){
@@ -127,13 +137,15 @@
         -
         }
       </ion-col>
-      <ion-col class="d-flex justify-content-end py-0">
+      <!-- Paid -->
+      <!-- actions -->
+      <!-- <ion-col class="d-flex justify-content-end py-0">
         <ion-buttons >
           <ion-button color="primary" class="small-button" mode="ios">
             <ion-icon slot="icon-only" name="pencil"></ion-icon>
           </ion-button>
         </ion-buttons>
-      </ion-col>
+      </ion-col> -->
     </ion-row>
     }
 

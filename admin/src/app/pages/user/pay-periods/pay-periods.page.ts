@@ -3,10 +3,12 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { IonicModule } from '@ionic/angular';
 import { addIcons } from 'ionicons';
-import { ellipsisVertical } from 'ionicons/icons';
+import { calendar, ellipsisVertical } from 'ionicons/icons';
 import { UserAccordionPage } from './user-accordion/user-accordion.page';
 import { UsersService } from 'src/app/services/users.service';
-import { Subject, takeUntil } from 'rxjs';
+import { combineLatest, Subject, takeUntil } from 'rxjs';
+import { AuthService } from 'src/app/services/auth.service';
+import { PaychecksService } from 'src/app/services/paychecks.service';
 
 @Component({
   selector: 'app-pay-periods',
@@ -17,11 +19,20 @@ import { Subject, takeUntil } from 'rxjs';
 })
 export class PayPeriodsPage implements OnInit {
   usersService = inject(UsersService)
+  authService = inject(AuthService)
+  paycheckService = inject(PaychecksService)
   private unsubscribe$ = new Subject<void>();
-  usersData: { id: string; }[] = [];
+  currentUsersData: { id: string; }[] = [];
   loading: boolean = true;
+  loadingPaychecks: any
+  configs: any;
+  selectedPeriodId: string = 'current'
+  currentSchedule: any;
+  usersData: any;
+  currentClosingDate: any;
+
   constructor() {
-    addIcons({ ellipsisVertical })
+    addIcons({ ellipsisVertical, calendar })
   }
 
   ngOnInit() {
@@ -33,11 +44,23 @@ export class PayPeriodsPage implements OnInit {
   }
   readUsers() {
     this.loading = true;
-    this.usersService.getUsers()
+    combineLatest([
+      this.usersService.getUsers(),
+      this.authService.getPublicConfigData()
+    ])
       .pipe(takeUntil(this.unsubscribe$))
       .subscribe({
-        next: (resUserData) => {
-          this.usersData = resUserData;
+        next: ([resUserData, configs]) => {
+
+          this.currentUsersData = resUserData;
+          if (this.selectedPeriodId == 'current') {
+            this.usersData = this.currentUsersData
+          }
+
+          this.configs = configs
+          //Calculate current closing date 
+          this.currentClosingDate = this.paycheckService.calculateEndOfPaycheck(this.configs.paymentSchedule, this.configs.lastStartingDate)
+
           this.loading = false;
         },
         error: (e) => {
@@ -45,6 +68,56 @@ export class PayPeriodsPage implements OnInit {
         }
       })
   }
+  async setPreviousData(period: string) {
+    this.loading = true
+
+    if (period == "current") {
+      this.selectedPeriodId = 'current'
+      this.usersData = this.currentUsersData
+      this.loading = false
+
+      return
+    }
+    try {
+      this.selectedPeriodId = period;
+      const paycheckPeriod = await this.paycheckService.getPaycheckPeriodAlgolia(period)
+      let format = await this.paycheckService.addDataToUsersData(this.usersData, paycheckPeriod['usersPaychecks'])
+      this.usersData = format
+      this.loading = false
+
+
+
+
+    } catch (error) {
+
+    }
+    //Leer el paycheck solicitado
+
+    //Inyectar el paycheck buscado en el currentPaycheck de cada uno de los users
+  }
+  //Get data for the paychecks
+  // async getUserWorkPaycheck(objectId: string) {
+  //   if (objectId == this.selectedPeriodId) return
+  //   this.loading = true
+  //   if (objectId == 'current') {
+  //     this.selectedPeriodId = 'current'
+  //     this.selectedPeriod = this.currentSchedule
+  //     this.fixedHourlyRate = null
+  //     return this.loading = false
+  //   }
+  //   var res: any = await this.shifts.getUserWorkPaycheck(objectId)
+  //   let userId = localStorage.getItem('userUid')
+  //   let userPaycheck = this.shiftService.userPaycheckById(res.usersPaychecks, userId)
+  //   this.selectedPeriod = this.shiftService.createFortnightArray(res.paymentScheme, res.startDate, userPaycheck.days)
+  //   this.selectedPeriodId = objectId
+  //   console.log(this.selectedPeriod)
+  //   this.fixedHourlyRate = userPaycheck.hourlyRate
+
+  //   this.setTotalWorkingHours(userPaycheck.days)
+  //   this.loading = false
+  //   return
+  // }
+
   ngOnDestroy() {
     this.unsubscribe$.next();
     this.unsubscribe$.complete()

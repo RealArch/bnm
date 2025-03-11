@@ -28,6 +28,28 @@ export class UsersService {
     })
 
   }
+  updateAndActivateWorker(uid: any, firstName: string, lastName: string, hourlyRate: number) {
+    const userRef = doc(getFirestore(), 'users', uid)
+    return updateDoc(userRef, {
+      active: true,
+      firstName: firstName,
+      lastName: lastName,
+      hourlyRate: hourlyRate
+    })
+  }
+  updateWorker(uid: any, formData: any) {
+    const userRef = doc(getFirestore(), 'users', uid)
+    return updateDoc(userRef, formData)
+  }
+  calculateEarnings(hoursWorked: number, hourlyRate: number) {
+    // Convertir milisegundos a horas 
+    const totalHoursWorked = hoursWorked / (1000 * 60 * 60);
+    // Calcular el dinero adquirido 
+    const earnings = hourlyRate * totalHoursWorked;
+    const moneyEarned = earnings.toFixed(2);
+    return moneyEarned
+  }
+
   getUsers() {
     const usersRef = collection(getFirestore(), 'users')
     return collectionSnapshots(usersRef).pipe(
@@ -38,4 +60,5 @@ export class UsersService {
       }))
     )
   }
+
 }

@@ -28,7 +28,7 @@ lib-cov
 
 # Coverage directory used by tools like istanbul
 coverage
-
+ 
 # nyc test coverage
 .nyc_output
 
@@ -64,3 +64,5 @@ node_modules/
 
 # dotenv environment variables file
 .env
+#ddd
+*adminKeyFirebase.json

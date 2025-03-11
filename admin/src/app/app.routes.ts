@@ -18,7 +18,7 @@ export const routes: Routes = [
     children: [
       {
         path: '',
-        redirectTo: 'dashboard',
+        redirectTo: 'pay-periods',
         pathMatch: 'full',
       },
       {
@@ -81,6 +81,14 @@ export const routes: Routes = [
   {
     path: 'add-customer-modal',
     loadComponent: () => import('./pages/user/customers/add-customer-modal/add-customer-modal.page').then( m => m.AddCustomerModalPage)
+  },
+  {
+    path: 'edit-and-activate-modal',
+    loadComponent: () => import('./components/item-user/edit-and-activate-modal/edit-and-activate-modal.page').then( m => m.EditAndActivateModalPage)
+  },
+  {
+    path: 'edit-user',
+    loadComponent: () => import('./components/item-user/edit-user/edit-user.page').then( m => m.EditUserPage)
   },
  
 

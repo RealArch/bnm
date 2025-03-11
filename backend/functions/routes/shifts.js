@@ -259,7 +259,7 @@ const paycheckHistoryUpdated = exports.paycheckHistory = onDocumentUpdated({ doc
 
 
 // module.exports = router;
-module.exports = [router,paycheckHistoryCreated,paycheckHistoryUpdated]
+module.exports = [router, paycheckHistoryCreated, paycheckHistoryUpdated]
 //Automatic function simulation
 //Execute it every day at 11:59 new york timezone
 async function closePaycheck() {
@@ -329,7 +329,7 @@ async function closePaycheck() {
             //         currentPaycheck: []
             //     })
             // }
-           
+
             //
 
         });
@@ -338,6 +338,11 @@ async function closePaycheck() {
         batch.update(settingsRef, { lastStartingDate: lastStartingDateUpdated })
         //Create a doc in collection 'paychecks' with id 'lastStartingDate'
         batch.set(db.collection('paycheckHistory').doc(paycheckHistoryId), paychecks)
+        //Add the referencia of the paycheck generated to configs
+        //TODO tal vez sea bueno anadir una validacion que confirma si existe el valor en el array paycheckHistory. Asi no haya pie para dublicados
+        batch.set(db.collection('general').doc('settings'), {
+            paycheckHistory: FieldValue.arrayUnion(paycheckHistoryId)
+        }, { merge: true })
         await batch.commit()
     } catch (error) {
 

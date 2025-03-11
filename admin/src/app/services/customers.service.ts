@@ -39,9 +39,6 @@ export class CustomersService {
         searchParams: { query: value },
 
       });
-
-      console.log(response);
-
       return response.hits.map((result) => this.mapToCustomer(result));
 
     } catch (error) {

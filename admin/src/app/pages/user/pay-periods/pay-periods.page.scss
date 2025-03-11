@@ -7,3 +7,13 @@
         height: 150px;
     }
 }
+.paycheckHistoryPopover{
+    --box-shadow: rgba(149, 157, 165, 0.2) 0px 8px 24px;
+
+}
+.tip {
+    color: var(--ion-color-medium-shade);
+    font-size: 0.8rem;
+    text-align: center;
+    background-color: var(--ion-color-light);
+}
