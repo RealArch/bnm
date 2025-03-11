@@ -6,13 +6,14 @@ import { DocumentSnapshot } from '@angular/fire/firestore';
 import { BehaviorSubject, filter, Subject, takeUntil } from 'rxjs';
 import { authState, getAuth, onAuthStateChanged } from '@angular/fire/auth';
 import { fileTray } from 'ionicons/icons';
-
+import { Platform } from '@ionic/angular';
+import { Keyboard } from '@capacitor/keyboard';
 @Component({
-    selector: 'app-root',
-    templateUrl: 'app.component.html',
-    imports: [IonApp, IonRouterOutlet]
+  selector: 'app-root',
+  templateUrl: 'app.component.html',
+  imports: [IonApp, IonRouterOutlet]
 })
-export class AppComponent implements OnDestroy{
+export class AppComponent implements OnDestroy {
   //Injects
   authService = inject(AuthService);
   router = inject(Router);
@@ -20,7 +21,7 @@ export class AppComponent implements OnDestroy{
   currentPath: any;
   //Variables;
   private unsubscribe$ = new Subject<void>();
-  constructor() {
+  constructor(private platform: Platform) {
     //todo:Pause app loading if can't find userData
 
     console.log(' app')
@@ -76,15 +77,28 @@ export class AppComponent implements OnDestroy{
 
       this.navController.navigateRoot('/auth/login')
 
-     
+      
 
     }
   }
-  ngOnDestroy() {
-    console.log('destroy')
-    this.unsubscribe$.next();
-    this.unsubscribe$.complete();
+  //PLUG IN KEYBOARD
+  // initializeApp() {
+  //   this.platform.ready().then(() => {
+  //     if (this.platform.is('ios') || this.platform.is('android')) {
+  //       Keyboard.setAccessoryBarVisible({ isVisible: false }); // Opcional: oculta la barra de accesorios
+  //       Keyboard.setScroll({ isDisabled: false }); // Permite que la vista se desplace con el teclado
+  //       Keyboard.setResizeMode({mode:native}); // Ajusta el tamaño de la ventana automáticamente
+  //     }
+  //   });
+  // }
+
+
+
+    ngOnDestroy() {
+      console.log('destroy')
+      this.unsubscribe$.next();
+      this.unsubscribe$.complete();
+    }
+
+
   }
-
-
-}
