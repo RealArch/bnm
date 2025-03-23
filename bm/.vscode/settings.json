@@ -1,5 +1,0 @@
-{
-  "typescript.preferences.autoImportFileExcludePatterns": ["@ionic/angular/common", "@ionic/angular"],
-  "workbench.colorTheme": "Solarized Dark"
-
-}

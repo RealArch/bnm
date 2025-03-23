@@ -1,7 +1,0 @@
-{
-  "name": "bm",
-  "integrations": {
-    "capacitor": {}
-  },
-  "type": "angular-standalone"
-}
