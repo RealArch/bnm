@@ -39,6 +39,10 @@ router.post('/start', middlewares.verifyClientToken, async (req, res) => {
     var userData = null;
     var body = req.body
     //todo: Validate data
+    //Validate Geolocation
+    if (body.startGeolocation == null || body.startGeolocation.lat == null || body.startGeolocation.lng == null) {
+        return res.status(500).json({ 'success': false, msg: 'Geolocation not provided', code: 'g-001' })
+    }
     try {
         //todo: get current user data from transaction
         await db.runTransaction((transaction) => {
@@ -50,6 +54,7 @@ router.post('/start', middlewares.verifyClientToken, async (req, res) => {
                 //if there is a previous block, close that block adding the actual startTime as the previous endTime
                 if (userData.currentShift.blocks.length > 0) {
                     userData.currentShift.blocks[userData.currentShift.blocks.length - 1].endTime = body.startTime
+                    userData.currentShift.blocks[userData.currentShift.blocks.length - 1].endGeolocation = body.startGeolocation
                     //if the current block is lunch and there is a lunch block already, send an error
 
                     // if(alreadyHasLunch(userData.currentShift)){
@@ -64,7 +69,9 @@ router.post('/start', middlewares.verifyClientToken, async (req, res) => {
                     endTime: null,
                     type: body.type,
                     workingPlace: body.workingPlace,
-                    details: body.details
+                    details: body.details,
+                    startGeolocation: body.startGeolocation,
+                    endGeolocation: null
                 })
                 userData.status = 'onShift';
                 if (body.type == 'lunch') {
@@ -107,6 +114,9 @@ router.post('/close', middlewares.verifyClientToken, async (req, res) => {
             code: 'shifts/error-no-closing-time'
         });
     }
+    if (body.endGeolocation == null || body.endGeolocation.lat == null || body.endGeolocation.lng == null) {
+        return res.status(500).json({ 'success': false, msg: 'Geolocation not provided', code: 'g-001' })
+    }
 
     //Close de previous block
     try {
@@ -118,6 +128,8 @@ router.post('/close', middlewares.verifyClientToken, async (req, res) => {
                 userData = userDoc.data();
                 blocksLength = userData.currentShift.blocks.length;
                 userData.currentShift.blocks[blocksLength - 1].endTime = body.closingTime;
+                userData.currentShift.blocks[blocksLength - 1].endGeolocation = body.endGeolocation;
+
                 //Change the status of the user to 'outOfShift'
                 userData.status = 'outOfShift';
                 userData.lastUpdate = dateNow;
