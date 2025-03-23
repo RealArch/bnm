@@ -1,0 +1,17 @@
+.profile-box{
+    .avatar{
+        background-color: var(--ion-color-dark);
+        aspect-ratio: 1 / 1;
+        width: 150px;
+        border-radius: 100%;
+        img{
+            width: 100%;
+        }
+    }
+   
+}
+.lock-message{
+    font-size: 0.8rem;
+    color: var(--ion-color-dark-tint);
+    text-align: center;
+}

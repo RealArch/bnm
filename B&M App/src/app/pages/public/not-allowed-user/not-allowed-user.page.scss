@@ -1,0 +1,22 @@
+.central-box {
+    background-color: var(--ion-color-primary);
+    color: var(--ion-color-light-shade);
+
+    .title {
+        font-weight: 700;
+        font-size: 1.7rem;
+    }
+
+    .subtitle {
+        font-weight: 400;
+        font-size: 1rem;
+    }
+}
+
+ion-header {
+    position: fixed;
+}
+
+.icon{
+    font-size: 6rem;
+}

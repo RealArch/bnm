@@ -1,0 +1,92 @@
+/*
+ * App Global CSS
+ * ----------------------------------------------------------------------------
+ * Put style rules here that you want to apply globally. These styles are for
+ * the entire app and not just one component. Additionally, this file can be
+ * used as an entry point to import other CSS/Sass files to be included in the
+ * output CSS.
+ * For more information on global stylesheets, visit the documentation:
+ * https://ionicframework.com/docs/layout/global-stylesheets
+ */
+
+/* Core CSS required for Ionic components to work properly */
+@import "@ionic/angular/css/core.css";
+
+/* Basic CSS for apps built with Ionic */
+@import "@ionic/angular/css/normalize.css";
+@import "@ionic/angular/css/structure.css";
+@import "@ionic/angular/css/typography.css";
+@import "@ionic/angular/css/display.css";
+
+/* Optional CSS utils that can be commented out */
+@import "@ionic/angular/css/padding.css";
+@import "@ionic/angular/css/float-elements.css";
+@import "@ionic/angular/css/text-alignment.css";
+@import "@ionic/angular/css/text-transformation.css";
+@import "@ionic/angular/css/flex-utils.css";
+
+.ion-padding {
+    padding: 20px;
+}
+
+.firebase-emulator-warning {
+    display: none;
+}
+
+ion-popover::part(content),
+ion-card {
+    border-radius: 15px !important;
+    box-shadow: rgba(149, 157, 165, 0.2) 0px 8px 24px;
+}
+
+.radius {
+    border-radius: 10px;
+}
+
+//Loading full screen
+.loading {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+}
+
+//endingShiftModal styles
+.modal-box {
+    --height: auto;
+    --width: 80%;
+    --border-radius: 10px
+}
+
+//POPOVERS
+.notificationsPopover {
+    --width: 300px;
+}
+.paycheckHistoryPopover {
+    --width: 300px;
+}
+
+.no-items {
+    text-align: center;
+    height: 80%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    .text {
+        font-size: 1.2rem;
+        color: var(--ion-color-medium-tint);
+
+    }
+
+    ion-icon {
+        font-weight: 200;
+        color: var(--ion-color-medium);
+        font-size: 8rem;
+    }
+}

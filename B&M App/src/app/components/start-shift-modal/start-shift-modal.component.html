@@ -1,0 +1,106 @@
+<ion-header>
+  <ion-toolbar color="primary">
+    <ion-buttons slot="start">
+      <ion-button (click)="cancel()">Cancel</ion-button>
+    </ion-buttons>
+    <ion-title>
+      <ion-text *ngIf="modType == 'start'">
+        Start Shift
+      </ion-text>
+      <ion-text *ngIf="modType == 'commute'">
+        Commute
+      </ion-text>
+      <ion-text *ngIf="modType == 'lunch'">
+        Starting lunch
+      </ion-text>
+    </ion-title>
+  </ion-toolbar>
+</ion-header>
+<ion-content color="light">
+  <ion-grid>
+    <ion-card class="mt-3 mx-auto time-picker-card">
+      <ion-row class="w-100 h-100 ion-align-items-center ion-justify-content-center">
+        <ion-col size="12" class="d-flex ion-align-items-center ion-justify-content-center">
+
+          <ion-datetime [(ngModel)]="pickerTime" (ionChange)="updateStartTime($event)" presentation="time"
+            class="timePicker w-100" [min]="minDatePicker"></ion-datetime>
+
+        </ion-col>
+      </ion-row>
+    </ion-card>
+    <ion-card>
+
+      <form [formGroup]="startShiftForm">
+        <ion-row>
+
+          <ion-col size="12" *ngIf="modType != 'lunch'">
+            <div class="label-1">
+              Shift information
+            </div>
+          </ion-col>
+
+          <ion-col size="12" *ngIf="modType == 'start'">
+            <ion-item color="light">
+              <ion-input disabled="true" value="{{startShiftForm.value.startTime | date:'shortTime'}}"
+                label="Start time" labelPlacement="stacked"></ion-input>
+            </ion-item>
+          </ion-col>
+
+          <ion-col size="12" *ngIf="modType != 'lunch'">
+            <ion-item color="light">
+              <ion-select formControlName="type" interface="popover" placeholder="Select One"
+                (ionChange)="onTypeChange()">
+                <div slot="label">Shift type<ion-text color="danger">*</ion-text></div>
+
+                <ion-select-option value="working">Working</ion-select-option>
+                <ion-select-option value="traveling">Traveling</ion-select-option>
+                <ion-select-option value="other">Other</ion-select-option>
+              </ion-select>
+            </ion-item>
+          </ion-col>
+
+          <ion-col size="12" *ngIf="startShiftForm.value.type=='working' || startShiftForm.value.type=='traveling'">
+            <ion-item color="light">
+              <ion-select formControlName="workingPlace" interface="action-sheet" placeholder="Select One">
+                <div slot="label">Working place<ion-text color="danger">*</ion-text></div>
+
+                @for (customer of customers; track customer) {
+                <ion-select-option value="{{customer.id}}">{{customer.companyName}}, {{customer.companyAddress.city}},
+                  {{customer.companyAddress.state}}</ion-select-option>
+                }
+              </ion-select>
+            </ion-item>
+          </ion-col>
+
+          <ion-col size="12" *ngIf="startShiftForm.value.type=='other'">
+            <ion-item color="light">
+              <ion-input formControlName="details" label="Add details" labelPlacement="stacked"></ion-input>
+            </ion-item>
+          </ion-col>
+
+        </ion-row>
+      </form>
+    </ion-card>
+    <!-- {{startShiftForm.value | json}} -->
+    <ion-row class="justify-content-center">
+      <ion-col size="auto">
+        <ion-button (click)="startShiftAlert(modType)" [disabled]="!startShiftForm.valid || sending">
+          @if (sending){
+          <ion-spinner name="circular"></ion-spinner>
+          } @else {
+          <ion-text *ngIf="modType == 'start'">
+            Start Shift
+          </ion-text>
+          <ion-text *ngIf="modType == 'commute'">
+            Start Commute
+          </ion-text>
+          <ion-text *ngIf="modType == 'lunch'">
+            Start lunch
+          </ion-text>
+          }
+        </ion-button>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
+
+</ion-content>

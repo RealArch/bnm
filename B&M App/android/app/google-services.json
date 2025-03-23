@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "1040575377552",
+    "project_id": "bnm-01-abd4b",
+    "storage_bucket": "bnm-01-abd4b.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1040575377552:android:65f959816be8ef06766815",
+        "android_client_info": {
+          "package_name": "com.bnm.app"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCuBuhZwUeRo5xaPShNBU1_Css9oD0x39c"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

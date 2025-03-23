@@ -1,0 +1,7 @@
+{
+  "name": "bnm app",
+  "integrations": {
+    "capacitor": {}
+  },
+  "type": "angular-standalone"
+}
