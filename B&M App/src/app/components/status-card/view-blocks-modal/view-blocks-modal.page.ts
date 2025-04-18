@@ -63,7 +63,7 @@ export class ViewBlocksModalPage implements OnInit {
       return e
     }
   }
-  
+   
   getCompanyInfoById(id: string): string {
     console.log(id)
     console.log(this.customers)
