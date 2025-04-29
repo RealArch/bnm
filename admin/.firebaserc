@@ -1,14 +1,16 @@
 {
+  "projects": {
+    "default": "bnm-01-abd4b",
+    "admin-bnm": "bnm-01-abd4b"
+  },
   "targets": {
     "bnm-01-abd4b": {
       "hosting": {
-        "app": [
+        "admin-bnm": [
           "admin-bnm"
         ]
       }
     }
   },
-  "projects": {
-    "default": "bnm-01-abd4b"
-  }
+  "etags": {}
 }

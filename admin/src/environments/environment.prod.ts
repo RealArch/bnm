@@ -1,7 +1,7 @@
 export const environment = {
   production: true,
   useEmulators: false,
-  api: 'http://127.0.0.1:5001/bnm-01-abd4b/us-central1/api',
+  api: 'https://us-central1-bnm-01-abd4b.cloudfunctions.net/api',
   firebaseConfig: {
     apiKey: "AIzaSyA0LMo7LR0QcHf_ZOy5ozuG_KT4hnGx51k",
     authDomain: "bnm-01-abd4b.firebaseapp.com",

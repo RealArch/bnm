@@ -1,9 +1,11 @@
 {
   "hosting": [
     {
-      "target": "app",
+      "target": "admin-bnm", 
       "source": ".",
-      "frameworksBackend": {}
+      "frameworksBackend": {
+        "buildCommand": "ng build --prod"
+      }
     }
   ]
 }

@@ -17,6 +17,9 @@ var app = express();
 const { onInit } = require('firebase-functions/v2/core');
 var serviceAccount = require('./adminKeyFirebase.json');
 
+var cors = require('cors');
+app.use(cors({ origin: true }));
+
 initializeApp({
     credential: cert(serviceAccount),
     storageBucket: "bnm-01-abd4b.appspot.com"
@@ -49,7 +52,7 @@ const shiftsTriggers = require('./routes/shifts')
 const authRoute = require("./routes/auth")
 app.use('/auth', authRoute)
 //SHIFTS
-const shiftRoute = require("./routes/shifts");
+const { router: shiftRoute, paycheckHistoryCreated, paycheckHistoryUpdated, closePaychecks } = require('./routes/shifts');
 app.use('/shifts', shiftRoute)
 //CUSTOMERS
 const customersRoute = require("./routes/customers")
@@ -74,7 +77,10 @@ function getAlgoliaClient() {
 
 exports.api = onRequest({ secrets: [ALGOLIA_APP_ID, ALGOLIA_ADMIN_KEY] }, app);
 exports.customersTrigger = customersTrigger;
-exports.shiftsTriggers = shiftsTriggers;
+//Auto functions shifts
+exports.paycheckHistoryCreated = paycheckHistoryCreated;
+exports.paycheckHistoryUpdated = paycheckHistoryUpdated;
+exports.closePaychecks = closePaychecks;
 
 //AUTOMATIC FUNCTIONS
 

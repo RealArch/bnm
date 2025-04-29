@@ -1,4 +1,4 @@
-<ion-content color="light">
+<ion-content color="dark">
   <ion-grid class="upside-box">
     <div class="main-text">
       Create an account
@@ -10,10 +10,10 @@
 
         <ion-col size="12" class="pb-0">
 
-          <ion-item lines="none">
+          <ion-item lines="none" class="item-black">
             <!-- <div class="valid-box"></div> -->
             <ion-input formControlName="firstName" label-placement="stacked" fill="outline" placeholder="Ex. John"
-              required="true" minlength="2" maxlength="50" class="ps-3 pe-0 py-2">
+              required="true" minlength="2" maxlength="50" class="p-2">
               <div slot="label">First name <ion-text
                   [color]="signinForm.controls['firstName'].invalid && signinForm.controls['firstName'].touched ? 'danger' : 'primary'">(2-50
                   Char.)</ion-text></div>
@@ -26,14 +26,14 @@
               <ion-icon slot="end" color="success" name="checkmark-circle"></ion-icon>
               }
               }
-            </ion-input>
+            </ion-input> 
           </ion-item>
         </ion-col>
 
         <ion-col size="12" class="pb-0">
-          <ion-item lines="none">
+          <ion-item lines="none" class="item-black">
             <ion-input formControlName="lastName" label-placement="stacked" fill="outline"
-              placeholder="Enter you last name" minlength="2" maxlength="50" class="ps-3 pe-0 py-2">
+              placeholder="Enter you last name" minlength="2" maxlength="50" class="p-2">
               <div slot="label">Last name <ion-text
                   [color]="signinForm.controls['lastName'].invalid && signinForm.controls['lastName'].touched ? 'danger' : 'primary'">(2-50
                   Char.)</ion-text></div>
@@ -47,9 +47,9 @@
           </ion-item>
         </ion-col>
         <ion-col size="12" class="pb-0">
-          <ion-item lines="none">
+          <ion-item lines="none" class="item-black">
             <ion-input formControlName="email" label-placement="stacked" fill="outline"
-              placeholder="Enter your Email" class="ps-3 pe-0 py-2">
+              placeholder="Enter your Email" class="p-2">
               <div slot="label">Email <ion-text
                 [color]="signinForm.controls['email'].invalid && signinForm.controls['email'].touched ? 'danger' : 'primary'">(5-256
                 Char.)</ion-text></div>
@@ -65,9 +65,9 @@
         </ion-col>
         <ion-col size="12" class="pb-0">
 
-          <ion-item lines="none">
+          <ion-item lines="none" class="item-black">
             <ion-input formControlName="password" type="password" label-placement="stacked"
-              fill="outline" placeholder="Enter your password" autocomplete="off" class="ps-3 pe-0 py-2"
+              fill="outline" placeholder="Enter your password" autocomplete="off" class="p-2"
               minlength="6" maxlength="24">
               <div slot="label">Password <ion-text
                 [color]="signinForm.controls['password'].invalid && signinForm.controls['password'].touched ? 'danger' : 'primary'">(6-24
@@ -83,11 +83,11 @@
           </ion-item>
         </ion-col>
 
-        <ion-col size="12" class="pb-0">
-          <ion-item lines="none" autocomplete="off">
+        <ion-col size="12" class="pb-0" >
+          <ion-item lines="none" autocomplete="off" class="item-black">
             <ion-input formControlName="confirmPassword" type="password" label="Confirm password"
               label-placement="stacked" fill="outline" placeholder="Confirm your password" autocomplete="off"
-              class="ps-3 pe-0 py-2">
+              class="p-2">
               @if(signinForm.value.confirmPassword !=null && signinForm.controls['confirmPassword'].invalid){
               <ion-icon slot="end" color="danger" name="alert-circle-outline"></ion-icon>
               }

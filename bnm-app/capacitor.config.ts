@@ -6,10 +6,11 @@ const config: CapacitorConfig = {
   appId: 'com.bnm.app',
   appName: 'bnm app',
   webDir: 'www',
-  server: {
-    androidScheme: 'http',
-    cleartext: true,
-  },
+  // server: {
+  //   androidScheme: 'http',
+  //   cleartext: true,
+  //   url: "http://192.168.50.46:8100",
+  // },
   android: {
     allowMixedContent: true
   },
@@ -20,7 +21,8 @@ const config: CapacitorConfig = {
   plugins: {
     Keyboard: {
       resize: KeyboardResize.Native,
-      style: KeyboardStyle.Dark
+      style: KeyboardStyle.Dark,
+      resizeOnFullScreen: true
     },
     StatusBar: {
       style: "Default", // O "Light" o "Dark" según el tema

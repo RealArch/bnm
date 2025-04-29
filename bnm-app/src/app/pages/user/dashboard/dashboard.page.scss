@@ -1,7 +1,7 @@
 .welcome-box {
     line-height: 22px;
-    background: rgb(56, 128, 255);
-    background: linear-gradient(180deg, rgba(56, 128, 255, 1) 0%, rgba(49, 110, 218, 1) 100%);
+    background: #C10A31;
+    background: linear-gradient(180deg, rgba(193, 10, 49, 1) 0%, rgba(122, 6, 31, 1) 100%);
     color: white;
     height: 250px;
     display: flex;
@@ -22,4 +22,7 @@
 .card-subtitle{
     font-size: 0.8rem;
     font-weight: bold;
+}
+ion-header{
+    box-shadow: none;
 }

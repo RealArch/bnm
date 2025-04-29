@@ -1,6 +1,8 @@
 const { auth } = require('firebase-admin');
 const router = require('express').Router();
 const { onDocumentUpdated, onDocumentCreated } = require('firebase-functions/v2/firestore');
+const { onSchedule } = require("firebase-functions/v2/scheduler");
+const { logger } = require("firebase-functions");
 const { initializeApp } = require('firebase-admin/app');
 
 const { getFirestore, FieldValue } = require('firebase-admin/firestore');
@@ -271,7 +273,33 @@ const paycheckHistoryUpdated = exports.paycheckHistory = onDocumentUpdated({ doc
 
 
 // module.exports = router;
-module.exports = [router, paycheckHistoryCreated, paycheckHistoryUpdated]
+
+const closePaychecks = exports.closePaychecks = onSchedule({
+    schedule: "21 23 * * *",
+    timeZone: "America/New_York"
+},
+    async (event) => {
+        console.log('Ejecutando auto')
+        try {
+            await closePaycheck()
+            return
+
+        } catch (e) {
+            console.log(e)
+            logger.error(e)
+            return res.status(500).send(e)
+        }
+    });
+module.exports = {
+    router, // Exporta el router para las rutas de Express
+    paycheckHistoryCreated, // Exporta la función de Firebase
+    paycheckHistoryUpdated, // Exporta la función de Firebase
+    closePaychecks // Exporta la función de Firebase
+};
+//   module.exports = [paycheckHistoryCreated, paycheckHistoryUpdated, closePaychecks]
+//   module.exports =[paycheckHistoryCreated]
+//   module.exports = [router, paycheckHistoryCreated, paycheckHistoryUpdated]
+//   exports.closePaychecks = closePaychecks
 //Automatic function simulation
 //Execute it every day at 11:59 new york timezone
 async function closePaycheck() {

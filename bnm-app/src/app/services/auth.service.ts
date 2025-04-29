@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Auth, IdTokenResult, authState, getAuth, getIdToken, idToken, onAuthStateChanged, signInWithCustomToken, signInWithEmailAndPassword, signOut } from '@angular/fire/auth';
+import { Auth, IdTokenResult, authState, getAuth, getIdToken, idToken, onAuthStateChanged, sendPasswordResetEmail, signInWithCustomToken, signInWithEmailAndPassword, signOut } from '@angular/fire/auth';
 import { HttpClient } from '@angular/common/http';
 import { environment } from '../../environments/environment';
 import { idTokenResult } from '@angular/fire/auth-guard';
@@ -72,6 +72,9 @@ export class AuthService {
         ...snapshot.data()
       }))
     )
+  }
+  sendPasswordResetEmail(email: string) {
+    return sendPasswordResetEmail(this.auth, email)
   }
 
 

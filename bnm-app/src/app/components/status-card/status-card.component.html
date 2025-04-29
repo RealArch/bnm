@@ -57,22 +57,22 @@
               <br>
         </div>
 
-        <div>
-          <ion-buttons class="ion-justify-content-end buttons mt-auto">
-            <ion-button *ngIf="userData.status != 'onLunch'" (click)="openModal('commute')" color="warning">
+        <div class="mt-4">
+          <div class="d-flex ion-justify-content-end buttons mt-auto">
+            <ion-button size="small" *ngIf="userData.status != 'onLunch'" (click)="openModal('commute')" color="warning">
               Commute
             </ion-button>
-            <ion-button *ngIf="userData.status != 'onLunch'" color="success" (click)="openModal('lunch')">
+            <ion-button *ngIf="userData.status != 'onLunch'" color="success" (click)="openModal('lunch')" fill="solid" shape="round">
               Start lunch
             </ion-button>
-            <ion-button size="samll" *ngIf="userData.status == 'onLunch'" color="primary"
+            <ion-button size="small" *ngIf="userData.status == 'onLunch'" color="primary" fill="solid" shape="round"
               (click)="openModal('commute')">
               Finish lunch
             </ion-button>
-            <ion-button *ngIf="userData.status !== 'onLunch'" color="danger" (click)="openEndingShiftModal()">
+            <ion-button size="small" *ngIf="userData.status !== 'onLunch'" color="danger" (click)="openEndingShiftModal()" fill="solid" shape="round">
               End shift
             </ion-button>
-          </ion-buttons>
+          </div>
         </div>
 
       </ion-col>
@@ -89,7 +89,7 @@
 
 
         <div class="text-center hours-box-container d-flex justify-content-center align-items-center">
-          <ion-icon name="bed"></ion-icon>
+          <ion-icon color="dark" name="bed"></ion-icon>
         </div>
 
       </ion-col>
@@ -105,19 +105,19 @@
           }
         </div>
 
-        <div>
-          <ion-buttons class="ion-justify-content-end buttons mt-auto">
+        <div class="mt-4">
+          <div class="d-flex ion-justify-content-end buttons mt-auto">
             @if(this.shiftTaken){
-            <ion-button color="primary" (click)="editTimeSheetModal(userData.currentPaycheck[userData.currentPaycheck.length-1])">
+            <ion-button size="small" color="primary" fill="solid" shape="round"  (click)="editTimeSheetModal(userData.currentPaycheck[userData.currentPaycheck.length-1])">
               Review shift
             </ion-button>
             } @else {
-            <ion-button color="primary" (click)="openModal('start')">
+            <ion-button size="small" color="primary" fill="solid" shape="round" (click)="openModal('start')">
               Start shift
             </ion-button>
             }
 
-          </ion-buttons>
+          </div>
         </div>
 
       </ion-col>

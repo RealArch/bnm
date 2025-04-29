@@ -20,7 +20,7 @@ export class AuthPage implements OnInit {
       .subscribe({
         next: (user: any) => {
           if (user) {
-            this.router.navigate(['/user/dashboard'])
+            this.router.navigate(['/user'])
           }
         }
       })

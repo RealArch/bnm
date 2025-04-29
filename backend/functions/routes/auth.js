@@ -14,6 +14,7 @@ router.get('/',(req,res)=>{
     return res.send("ok")
 })
 router.post('/signup', async (req, res) => {
+    console.log('entre a crear')
     var body = req.body
     var dateNow = Date.now()
     if (body.firstName === null || body.firstName === undefined || body.firstName.length < 3 || body.firstName.length > 50 || body.firstName === '') {
@@ -116,7 +117,7 @@ router.get('/createAdminUser', async (req, res) => {
         })
         //Setear la DB
         await db.collection('general').doc('settings').set({
-            lastStartingDate: 1736424000000,
+            lastStartingDate: 1743764400000,
             paymentSchedule: "biweekly",
             paycheckHistory:[]
         })

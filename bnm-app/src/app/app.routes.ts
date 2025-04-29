@@ -56,6 +56,10 @@ export const routes: Routes = [
         path: 'signup',
         loadComponent: () => import('./pages/public/signup/signup.page').then(m => m.SignupPage)
       },
+      {
+        path: 'forgot-password',
+        loadComponent: () => import('./pages/public/forgot-password/forgot-password.page').then( m => m.ForgotPasswordPage)
+      },
 
     ]
 
@@ -85,6 +89,8 @@ export const routes: Routes = [
     path: 'request-gps',
     loadComponent: () => import('./pages/public/request-gps/request-gps.page').then( m => m.RequestGpsPage)
   },
+
+
 
 
 

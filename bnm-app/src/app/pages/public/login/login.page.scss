@@ -36,7 +36,7 @@
 
 ion-item{
     --padding-start	: 0px;
-    --padding-end	: 0px;
     margin-bottom: 7px;
-    --border-radius :10px
+    --border-radius :10px;
+    --inner-padding-end:0px;
 }

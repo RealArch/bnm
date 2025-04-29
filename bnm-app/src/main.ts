@@ -35,7 +35,7 @@ bootstrapApplication(AppComponent, {
     provideFirestore(() => {
       if (environment.useEmulators) {
         var host = 'localhost'
-        if (Capacitor.getPlatform() === 'android')  host ='10.0.2.2';
+        if (Capacitor.getPlatform() === 'android')  host ='192.168.50.46';
         const firestore = getFirestore();
         connectFirestoreEmulator(firestore, host, 8080)
         return firestore
@@ -61,7 +61,7 @@ bootstrapApplication(AppComponent, {
       }
 
       if (environment.useEmulators) {
-        const authHost = Capacitor.getPlatform() === 'android' ? 'http://10.0.2.2:9099' : 'http://localhost:9099';
+        const authHost = Capacitor.getPlatform() === 'android' ? 'http://192.168.50.46:9099' : 'http://localhost:9099';
         console.log(`Using Auth Emulator at ${authHost}`);
         connectAuthEmulator(auth, authHost);
       }

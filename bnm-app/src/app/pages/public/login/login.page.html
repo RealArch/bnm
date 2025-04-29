@@ -1,7 +1,7 @@
-<ion-content color="light">
+<ion-content color="dark">
   <ion-grid class="upside-box">
     <div class="main-text">
-      Welcome to B&M's app
+      Welcome to B&M's app 5
     </div>
   </ion-grid>
   <ion-grid class="p-3">
@@ -9,9 +9,9 @@
       <ion-row>
 
         <ion-col size="12" class="pb-0">
-          <ion-item lines="none">
+          <ion-item lines="none" class="item-black">
             <ion-input formControlName="email" label-placement="stacked" fill="outline"
-              placeholder="Enter your Email" class="ps-3 pe-0 py-2">
+              placeholder="Enter your Email" class="p-2">
               <div slot="label">Email <ion-text
                 [color]="signinForm.controls['email'].invalid && signinForm.controls['email'].touched ? 'danger' : 'primary'">(5-256
                 Char.)</ion-text></div>
@@ -27,9 +27,9 @@
         </ion-col>
         <ion-col size="12" class="pb-0">
 
-          <ion-item lines="none">
+          <ion-item lines="none" class="item-black pe-0">
             <ion-input formControlName="password" type="password" label-placement="stacked"
-              fill="outline" placeholder="Enter your password" autocomplete="off" class="ps-3 pe-0 py-2"
+              fill="outline" placeholder="Enter your password" autocomplete="off" class="p-2"
               minlength="6" maxlength="24">
               <div slot="label">Password <ion-text
                 [color]="signinForm.controls['password'].invalid && signinForm.controls['password'].touched ? 'danger' : 'primary'">(6-24
@@ -47,7 +47,7 @@
         <ion-col size="12" class="pb-0">
 
           <div class="w-100 text-end py-3">
-            <ion-text color="primary" class="strong text-end">
+            <ion-text color="primary" class="strong text-end" routerLink="/auth/forgot-password">
               Forgot your password?
             </ion-text>
           </div>
