@@ -4,13 +4,14 @@ import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } 
 import { IonicModule } from '@ionic/angular';
 import { AuthService } from 'src/app/services/auth.service';
 import { PopupService } from 'src/app/services/popup.service';
+import { IONIC_STANDALONE_MODULES } from 'src/app/ionic-standalone-components';
 
 @Component({
   selector: 'app-login',
   templateUrl: './login.page.html',
   styleUrls: ['./login.page.scss'],
   standalone: true,
-  imports: [IonicModule, CommonModule, FormsModule, ReactiveFormsModule]
+  imports: [IonicModule, CommonModule, FormsModule, ReactiveFormsModule, IONIC_STANDALONE_MODULES]
 })
 export class LoginPage implements OnInit {
   authService = inject(AuthService);
