@@ -14,7 +14,7 @@ import { IONIC_STANDALONE_MODULES } from 'src/app/ionic-standalone-components';
   templateUrl: './user.page.html',
   styleUrls: ['./user.page.scss'],
   standalone: true,
-  imports: [CommonModule, FormsModule, RouterLinkWithHref, RouterLinkActive, IONIC_STANDALONE_MODULES],
+  imports: [FormsModule, RouterLinkWithHref, RouterLinkActive, IONIC_STANDALONE_MODULES],
 })
 export class UserPage implements OnInit {
   authService = inject(AuthService)

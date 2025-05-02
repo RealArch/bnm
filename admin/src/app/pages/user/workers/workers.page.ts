@@ -1,15 +1,14 @@
 import { Component, OnInit, inject } from '@angular/core';
-import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { IonicModule } from '@ionic/angular';
 import { NavigationEnd, Router, RouterLinkWithHref } from '@angular/router';
+import { IONIC_STANDALONE_MODULES } from 'src/app/ionic-standalone-components';
 
 @Component({
   selector: 'app-workers',
   templateUrl: './workers.page.html',
   styleUrls: ['./workers.page.scss'],
   standalone: true,
-  imports: [IonicModule, CommonModule, FormsModule, RouterLinkWithHref]
+  imports: [FormsModule, RouterLinkWithHref, IONIC_STANDALONE_MODULES]
 })
 export class WorkersPage implements OnInit {
   router = inject(Router)

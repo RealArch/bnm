@@ -1,7 +1,6 @@
 import { Component, inject, OnInit } from '@angular/core';
-import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, FormsModule, Validators } from '@angular/forms';
-import { IonicModule, ModalController, AlertController, SearchbarCustomEvent } from '@ionic/angular';
+import { ModalController, AlertController, SearchbarCustomEvent } from '@ionic/angular/standalone';
 import { addIcons } from 'ionicons';
 import { add, ellipsisVertical, pencil, search, trash } from 'ionicons/icons';
 import { AddCustomerModalPage } from './add-customer-modal/add-customer-modal.page';
@@ -9,13 +8,14 @@ import { CustomersService } from 'src/app/services/customers.service';
 import { Customer } from 'src/app/interfaces/customers';
 import { NavigationStart, Router } from '@angular/router';
 import { PopupService } from 'src/app/services/popup.service';
+import { IONIC_STANDALONE_MODULES } from 'src/app/ionic-standalone-components';
 
 @Component({
   selector: 'app-customers',
   templateUrl: './customers.page.html',
   styleUrls: ['./customers.page.scss'],
   standalone: true,
-  imports: [IonicModule, CommonModule, FormsModule]
+  imports: [ FormsModule, IONIC_STANDALONE_MODULES]
 })
 export class CustomersPage implements OnInit {
   loading: boolean = false;

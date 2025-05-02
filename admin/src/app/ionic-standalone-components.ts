@@ -45,7 +45,7 @@ import {
   IonRow,
   IonSegment, IonSegmentButton, IonCardSubtitle, IonTitle, IonPopover,
   IonButtons, IonRouterOutlet, IonMenuToggle,
-  IonSplitPane
+  IonSplitPane, IonAlert
 } from '@ionic/angular/standalone';
 
 // Exporta todos los módulos en un arreglo
@@ -104,5 +104,7 @@ export const IONIC_STANDALONE_MODULES = [
   IonButtons,
   IonRouterOutlet,
   IonMenuToggle,
-  IonSplitPane
+  IonSplitPane,
+  IonRouterOutlet,
+  IonAlert
 ];

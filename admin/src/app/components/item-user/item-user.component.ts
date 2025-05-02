@@ -1,17 +1,18 @@
-import { CommonModule } from '@angular/common';
 import { Component, Input, OnInit, inject } from '@angular/core';
-import { IonicModule, ModalController } from '@ionic/angular';
+import { ModalController } from '@ionic/angular/standalone';
 import { PopupService } from 'src/app/services/popup.service';
 import { UsersService } from 'src/app/services/users.service';
 import { EditAndActivateModalPage } from './edit-and-activate-modal/edit-and-activate-modal.page';
 import { EditUserPage } from './edit-user/edit-user.page';
+import { IONIC_STANDALONE_MODULES } from 'src/app/ionic-standalone-components';
+import { NgClass, NgIf, TitleCasePipe } from '@angular/common';
 
 @Component({
   selector: 'app-item-user',
   templateUrl: './item-user.component.html',
   styleUrls: ['./item-user.component.scss'],
   standalone: true,
-  imports: [IonicModule, CommonModule]
+  imports: [IONIC_STANDALONE_MODULES, TitleCasePipe, NgClass, NgIf]
 
 })
 export class ItemUserComponent implements OnInit {
