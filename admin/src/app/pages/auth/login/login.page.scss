@@ -1,8 +1,18 @@
-
-
-
-
 ion-input {
  
     margin-bottom: 7px;
 }
+.title{
+    font-size: 25px;
+
+}
+.background{
+    background: url('/assets/images/background-login-forklift-batteries.webp') no-repeat center center fixed;
+    background-size: cover;
+    height: 100vh;
+    width: 100vw;
+
+}
+// ion-input{
+//     --background: var(--ion-color-success);
+// }

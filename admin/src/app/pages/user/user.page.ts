@@ -7,13 +7,14 @@ import { addIcons } from 'ionicons';
 import { home, people, logOut, business } from 'ionicons/icons'
 import { AuthService } from 'src/app/services/auth.service';
 import { Subject, takeUntil } from 'rxjs';
+import { IONIC_STANDALONE_MODULES } from 'src/app/ionic-standalone-components';
 
 @Component({
   selector: 'app-user',
   templateUrl: './user.page.html',
   styleUrls: ['./user.page.scss'],
   standalone: true,
-  imports: [IonicModule, CommonModule, FormsModule, RouterLinkWithHref, RouterLinkActive]
+  imports: [CommonModule, FormsModule, RouterLinkWithHref, RouterLinkActive, IONIC_STANDALONE_MODULES],
 })
 export class UserPage implements OnInit {
   authService = inject(AuthService)

@@ -1,4 +1,4 @@
-<ion-content >
+<ion-content color="dark">
 
   <ion-grid class="ion-no-padding h-100">
     <form [formGroup]="signInForm" class="h-100">
@@ -8,21 +8,24 @@
 
           <ion-row class="ion-justify-content-center">
             <ion-col size="auto" class="my-5 mx-4">
-              <!-- <img class="img-fluid" src="/assets/logos/logo_dinistore_2.png" alt="logo"> -->
+              <img class="img-fluid" width="300px" src="/assets/images/logo-svg.svg" alt="logo">
             </ion-col>
           </ion-row>
           <ion-row class="ion-justify-content-center">
 
             <ion-col size="12" size-md="12" size-lg="8" size-xl="6" class="p-0 m-0">
-              <ion-title>Log in</ion-title>
-              <ion-input label="Email" label-placement="floating" fill="solid" placeholder="example@example.com"
+              <div class="title mb-3 text-center">
+                <ion-title>Log in</ion-title>
+              </div>
+              
+              <ion-input color="light" label="Email*" label-placement="floating" fill="outline" placeholder="example@example.com"
                 formControlName="email"></ion-input>
-              <ion-input label="Password" label-placement="floating" fill="solid" placeholder="******"
+              <ion-input color="light" label="Password*" label-placement="floating" fill="outline" placeholder="******"
                 formControlName="password"></ion-input>
 
 
-              <ion-button [disabled]="!signInForm.valid || sending" expand="full"
-                (click)="signIn(signInForm)">Sign in</ion-button>
+              <ion-button class="mx-0 mt-2" [disabled]="!signInForm.valid || sending" expand="block" (click)="signIn(signInForm)">Sign
+                in</ion-button>
               <!-- <a href="#!" class="forgot-password-link">Forgot password?</a> -->
               <!-- <p class="login-wrapper-footer-text">Don't have an account? <a href="#!" class="text-reset">Register
                     here</a></p> -->
@@ -32,7 +35,7 @@
 
 
         </ion-col>
-        <ion-col size="12" size-md="6" class="px-0 d-none d-lg-block h-100"
+        <ion-col size="12" size-md="6" class="px-0 d-none d-lg-block h-100 background"
           style="background-color: var(--ion-color-primary);">
 
         </ion-col>

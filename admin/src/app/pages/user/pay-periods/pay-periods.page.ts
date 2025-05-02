@@ -1,7 +1,6 @@
 import { Component, inject, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { IonicModule } from '@ionic/angular';
 import { addIcons } from 'ionicons';
 import { calendar, ellipsisVertical } from 'ionicons/icons';
 import { UserAccordionPage } from './user-accordion/user-accordion.page';
@@ -9,13 +8,14 @@ import { UsersService } from 'src/app/services/users.service';
 import { combineLatest, Subject, takeUntil } from 'rxjs';
 import { AuthService } from 'src/app/services/auth.service';
 import { PaychecksService } from 'src/app/services/paychecks.service';
+import { IONIC_STANDALONE_MODULES } from 'src/app/ionic-standalone-components';
 
 @Component({
   selector: 'app-pay-periods',
   templateUrl: './pay-periods.page.html',
   styleUrls: ['./pay-periods.page.scss'],
   standalone: true,
-  imports: [IonicModule, CommonModule, FormsModule, UserAccordionPage]
+  imports: [CommonModule, FormsModule, UserAccordionPage, IONIC_STANDALONE_MODULES]
 })
 export class PayPeriodsPage implements OnInit {
   usersService = inject(UsersService)
