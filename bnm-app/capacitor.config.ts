@@ -3,14 +3,14 @@ import { KeyboardResize, KeyboardStyle } from '@capacitor/keyboard';
 import { resize } from 'ionicons/icons';
 
 const config: CapacitorConfig = {
-  appId: 'com.bnm.app',
-  appName: 'bnm app',
+  appId: 'com.bmips.app',
+  appName: 'B&M App',
   webDir: 'www',
-  // server: {
-  //   androidScheme: 'http',
-  //   cleartext: true,
-  //   url: "http://192.168.50.46:8100",
-  // },
+  server: { //Activar esto para emular en android
+    androidScheme: 'http',
+    cleartext: true,
+    url: "http://192.168.50.46:8100",
+  },
   android: {
     allowMixedContent: true
   },
@@ -27,7 +27,7 @@ const config: CapacitorConfig = {
     StatusBar: {
       style: "Default", // O "Light" o "Dark" según el tema
       // overlaysWebView: false, // Evita que el status bar se superponga al contenido
-      backgroundColor: '#3880ff'
+      backgroundColor: '#C10A31'
     }
   }
 };

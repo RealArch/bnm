@@ -1,7 +1,6 @@
 import { Component, OnInit, inject } from '@angular/core';
-import { CommonModule } from '@angular/common';
 import { AbstractControl, FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, ValidationErrors, ValidatorFn, Validators } from '@angular/forms';
-import { IonicModule, NavController } from '@ionic/angular';
+import { NavController } from '@ionic/angular/standalone';
 import { AuthService } from 'src/app/services/auth.service';
 import { PopupsService } from 'src/app/services/popups.service';
 import { Router, RouterLinkWithHref } from '@angular/router';
@@ -13,7 +12,7 @@ import { IONIC_STANDALONE_MODULES } from 'src/app/ionic-standalone-components';
   selector: 'app-signup',
   templateUrl: './signup.page.html',
   styleUrls: ['./signup.page.scss'],
-  imports: [ CommonModule, FormsModule, ReactiveFormsModule, RouterLinkWithHref, ...IONIC_STANDALONE_MODULES]
+  imports: [ ReactiveFormsModule, RouterLinkWithHref, ...IONIC_STANDALONE_MODULES]
 })
 export class SignupPage implements OnInit {
   authService = inject(AuthService);

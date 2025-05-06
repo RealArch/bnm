@@ -1,24 +1,27 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { AlertController } from '@ionic/angular/standalone';
+import { AlertController, ModalController } from '@ionic/angular/standalone';
 import { GeneralService } from 'src/app/services/general.service';
 import { addIcons } from 'ionicons';
-import { pencil } from 'ionicons/icons';
+import { navigateCircle, pencil } from 'ionicons/icons';
 import { TimeService } from 'src/app/services/time.service';
 import { UsersService } from 'src/app/services/users.service';
 import { IONIC_STANDALONE_MODULES } from 'src/app/ionic-standalone-components';
-import { CurrencyPipe, DatePipe, NgClass, TitleCasePipe } from '@angular/common';
+import { CurrencyPipe, DatePipe, JsonPipe, NgClass, NgFor, NgIf, TitleCasePipe } from '@angular/common';
+import { TimeSheetModalPage } from './time-sheet-modal/time-sheet-modal.page';
+import { Customer } from 'src/app/interfaces/customers';
 
 @Component({
   selector: 'app-user-accordion',
   templateUrl: './user-accordion.page.html',
   styleUrls: ['./user-accordion.page.scss'],
   standalone: true,
-  imports: [FormsModule, IONIC_STANDALONE_MODULES, NgClass, CurrencyPipe, DatePipe, TitleCasePipe]
+  imports: [FormsModule, IONIC_STANDALONE_MODULES, NgClass, CurrencyPipe, DatePipe, TitleCasePipe, NgFor, NgIf, JsonPipe]
 })
 export class UserAccordionPage implements OnInit {
   @Input() userData: any;
   @Input() configs: any;
+  @Input() customers: Customer[] = [];
   schedule: any;
   loading: boolean = false;
   timeWorked: any;
@@ -28,13 +31,13 @@ export class UserAccordionPage implements OnInit {
     private generalService: GeneralService,
     private timeService: TimeService,
     private usersServices: UsersService,
-    private alertController: AlertController
+    private alertController: AlertController,
+    private modalController: ModalController
   ) {
-    addIcons({ pencil })
+    addIcons({ pencil, navigateCircle })
   }
 
   ngOnInit() {
-    console.log(this.userData)
     this.schedule = this.getArrayWithSchedule()
   }
   getArrayWithSchedule() {
@@ -46,6 +49,7 @@ export class UserAccordionPage implements OnInit {
 
     return this.generalService.createFortnightArray(this.configs.paymentSchedule, this.configs.lastStartingDate, this.userData.currentPaycheck)
   }
+  
   calculateWorkedHours(paycheck: any) {
     return this.timeService.calculateWorkedHours(paycheck)
   }
@@ -57,11 +61,23 @@ export class UserAccordionPage implements OnInit {
 
     event.stopPropagation()
     const alert = await this.alertController.create({
-      header:  "Update user's current paycheck",
+      header: "Update user's current paycheck",
       message: 'Do you want to mark this paycheck as Paid?',
-      buttons: ['No','Yes'],
+      buttons: ['No', 'Yes'],
     });
     await alert.present()
   }
-
+  //MODALS
+  async showTimeSheetModal(day: any) {
+    const modal = await this.modalController.create({
+      component: TimeSheetModalPage,
+      componentProps: {
+        day: day,
+        userData: this.userData,
+        customers: this.customers
+      },
+      cssClass: 'modal-fullscreen'
+    });
+    return await modal.present();
+  }
 }

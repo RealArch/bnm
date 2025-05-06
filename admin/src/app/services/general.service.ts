@@ -62,6 +62,9 @@ export class GeneralService {
     ]
   }
   createFortnightArray(paymentSchedule: string, lastStartingDate: number, currentPaycheck: any) {
+    console.log(paymentSchedule)   
+     console.log(lastStartingDate)
+     console.log(currentPaycheck)
 
     /////FIRST format the array for the schedule
     var paycheckDays = 0;
@@ -89,7 +92,9 @@ export class GeneralService {
     //////SECOND insert user currentPaycheck to schedule
     for (let i = 0; i < days.length; i++) {
       for (let j = 0; j < currentPaycheck.length; j++) {
+        console.log(currentPaycheck[j].day +' - ' + days[i].day)
         if (currentPaycheck[j].day == days[i].day) {
+          console.log('consegui uno igual')
           days[i].start = currentPaycheck[j].blocks[0].startTime
           days[i].end = currentPaycheck[j].blocks[currentPaycheck[j].blocks.length-1].endTime
           days[i].timeWorked = currentPaycheck[j].timeWorked,

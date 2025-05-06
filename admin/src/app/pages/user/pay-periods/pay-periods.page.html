@@ -76,7 +76,7 @@
             <ion-card-subtitle>
               @if(selectedPeriodId == 'current'){
               {{configs.lastStartingDate | date}} to
-              <!-- {{currentClosingDate | date}} -->
+              {{currentClosingDate | date}}
               }@else{
               <strong>{{selectedPeriodId.split('-')[0] | date}}</strong> to
               <strong>{{selectedPeriodId.split('-')[1] | date}}</strong>
@@ -99,7 +99,7 @@
             <ion-accordion-group expand="inset" value="1">
               @for (user of usersData; track user){
 
-              <app-user-accordion [userData]="user" [configs]="configs"></app-user-accordion>
+              <app-user-accordion [userData]="user" [configs]="configs" [customers]="customers"></app-user-accordion>
 
               }
 

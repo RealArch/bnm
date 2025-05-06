@@ -1,14 +1,14 @@
 import { Component, Input, OnInit } from '@angular/core';
-import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
-import { IonicModule, ModalController } from '@ionic/angular';
+import { ModalController } from '@ionic/angular/standalone';
 import { AuthService } from 'src/app/services/auth.service';
+import { IONIC_STANDALONE_MODULES } from 'src/app/ionic-standalone-components';
 
 @Component({
     selector: 'app-edit-profile-modal',
     templateUrl: './edit-profile-modal.page.html',
     styleUrls: ['./edit-profile-modal.page.scss'],
-    imports: [IonicModule, CommonModule, FormsModule, FormsModule, ReactiveFormsModule]
+    imports: [FormsModule, FormsModule, ReactiveFormsModule, IONIC_STANDALONE_MODULES]
 })
 export class EditProfileModalPage implements OnInit {
   @Input() userData: any;

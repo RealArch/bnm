@@ -1,23 +1,22 @@
-import { CommonModule, NgIf } from '@angular/common';
-import { Component, EventEmitter, Input, OnInit, ViewChild, inject } from '@angular/core';
-import { IonicModule, ModalController, AlertController, IonModal } from '@ionic/angular';
+import { DatePipe, NgClass, NgIf } from '@angular/common';
+import { Component, Input, OnInit, ViewChild, inject } from '@angular/core';
+import { ModalController, AlertController, IonModal } from '@ionic/angular/standalone';
 import { addIcons } from 'ionicons';
 import { bed, eye, pencil } from 'ionicons/icons';
 import { StartShiftModalComponent } from '../start-shift-modal/start-shift-modal.component';
-import { AuthService } from 'src/app/services/auth.service';
 import { AppComponent } from 'src/app/app.component';
 import { ShiftsService } from 'src/app/services/shifts.service';
-import { Subscription } from 'rxjs';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { EndingShiftModalComponent } from './ending-shift-modal/ending-shift-modal.component';
 import { TimeService } from 'src/app/services/time.service';
 import { ViewBlocksModalPage } from './view-blocks-modal/view-blocks-modal.page';
+import { IONIC_STANDALONE_MODULES } from 'src/app/ionic-standalone-components';
 
 @Component({
   selector: 'app-status-card',
   templateUrl: './status-card.component.html',
   styleUrls: ['./status-card.component.scss'],
-  imports: [IonicModule, CommonModule, NgIf, ReactiveFormsModule, FormsModule]
+  imports: [NgIf,NgClass, ReactiveFormsModule, FormsModule,DatePipe, IONIC_STANDALONE_MODULES]
 })
 export class StatusCardComponent implements OnInit {
   @Input() userData: any;

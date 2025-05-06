@@ -1,13 +1,12 @@
-import { CommonModule, NgIf } from '@angular/common';
+import { DatePipe, NgIf } from '@angular/common';
 import { Component, effect, Input, OnInit, signal, Signal } from '@angular/core';
-import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { IonicModule } from '@ionic/angular';
+import { IONIC_STANDALONE_MODULES } from 'src/app/ionic-standalone-components';
 
 @Component({
   selector: 'app-hours-worked-card',
   templateUrl: './hours-worked-card.component.html',
   styleUrls: ['./hours-worked-card.component.scss'],
-  imports: [IonicModule, CommonModule]
+  imports: [IONIC_STANDALONE_MODULES, DatePipe]
 })
 export class HoursWorkedCardComponent implements OnInit {
   @Input() timeWorked: Signal<number> = signal(0);

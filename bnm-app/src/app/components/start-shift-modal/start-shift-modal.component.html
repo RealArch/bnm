@@ -18,12 +18,12 @@
 </ion-header>
 <ion-content color="light">
   <ion-grid>
-    <ion-card class="mt-3 mx-auto time-picker-card">
+    <ion-card class="mt-3 mx-auto time-picker-card box-shadow">
       <ion-row class="w-100 h-100 ion-align-items-center ion-justify-content-center">
-        <ion-col size="12" class="d-flex ion-align-items-center ion-justify-content-center">
+        <ion-col size="12" class="d-flex ion-align-items-center ion-justify-content-center h-100">
 
           <ion-datetime [(ngModel)]="pickerTime" (ionChange)="updateStartTime($event)" presentation="time"
-            class="timePicker w-100" [min]="minDatePicker"></ion-datetime>
+            class="timePicker w-100 h-100" [min]="minDatePicker"></ion-datetime>
 
         </ion-col>
       </ion-row>

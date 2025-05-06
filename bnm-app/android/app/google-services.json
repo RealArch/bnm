@@ -7,9 +7,9 @@
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:1040575377552:android:65f959816be8ef06766815",
+        "mobilesdk_app_id": "1:1040575377552:android:c0d0df754b3ae4f9766815",
         "android_client_info": {
-          "package_name": "com.bnm.app"
+          "package_name": "com.bmips.app"
         }
       },
       "oauth_client": [],

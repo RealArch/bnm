@@ -74,6 +74,7 @@ export class AuthService {
     )
   }
   sendPasswordResetEmail(email: string) {
+    console.log(email)
     return sendPasswordResetEmail(this.auth, email)
   }
 

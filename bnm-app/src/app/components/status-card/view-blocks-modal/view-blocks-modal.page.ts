@@ -1,7 +1,6 @@
 import { Component, Input, OnInit, signal } from '@angular/core';
-import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { IonicModule, ModalController } from '@ionic/angular';
+import { ModalController } from '@ionic/angular/standalone';
 import { CustomersService } from 'src/app/services/customers.service';
 import { Customer } from 'src/app/interfaces/customers';
 import { PopupsService } from 'src/app/services/popups.service';
@@ -10,13 +9,15 @@ import { car, close, hammer, help, pizza } from 'ionicons/icons';
 import { HoursWorkedCardComponent } from '../../../components/hours-worked-card/hours-worked-card.component'
 import { MoneyEarnedCardComponent } from '../../money-earned-card/money-earned-card.component';
 import { ShiftsService } from 'src/app/services/shifts.service';
+import { IONIC_STANDALONE_MODULES } from 'src/app/ionic-standalone-components';
+import { DatePipe, NgClass, NgFor, NgIf, TitleCasePipe } from '@angular/common';
 
 @Component({
   selector: 'app-view-blocks-modal',
   templateUrl: './view-blocks-modal.page.html',
   styleUrls: ['./view-blocks-modal.page.scss'],
   standalone: true,
-  imports: [IonicModule, CommonModule, FormsModule, HoursWorkedCardComponent, MoneyEarnedCardComponent]
+  imports: [FormsModule, HoursWorkedCardComponent, MoneyEarnedCardComponent,DatePipe, NgClass, TitleCasePipe, IONIC_STANDALONE_MODULES, NgIf]
 })
 export class ViewBlocksModalPage implements OnInit {
   @Input() shift: any

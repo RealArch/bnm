@@ -1,7 +1,7 @@
-import { CommonModule, DatePipe, NgIf, TitleCasePipe } from '@angular/common';
+import { DatePipe, NgIf } from '@angular/common';
 import { Component, Inject, Input, OnInit, inject, viewChild } from '@angular/core';
 import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
-import { IonicModule, ModalController, AlertController } from '@ionic/angular';
+import { ModalController, AlertController } from '@ionic/angular/standalone';
 import { Subscription } from 'rxjs';
 import { AuthService } from 'src/app/services/auth.service';
 import { CustomersService } from 'src/app/services/customers.service';
@@ -10,11 +10,12 @@ import { ShiftsService } from 'src/app/services/shifts.service';
 import { TimeService } from 'src/app/services/time.service';
 import { Customer } from './../../interfaces/customers'
 import { Geolocation } from '@capacitor/geolocation';
+import { IONIC_STANDALONE_MODULES } from 'src/app/ionic-standalone-components';
 @Component({
   selector: 'app-start-shift-modal',
   templateUrl: './start-shift-modal.component.html',
   styleUrls: ['./start-shift-modal.component.scss'],
-  imports: [IonicModule, CommonModule, FormsModule, ReactiveFormsModule, DatePipe, NgIf]
+  imports: [FormsModule, ReactiveFormsModule, DatePipe, NgIf, IONIC_STANDALONE_MODULES]
 })
 export class StartShiftModalComponent implements OnInit {
   @Input() modType!: 'start' | 'commute' | 'lunch';
@@ -105,7 +106,7 @@ export class StartShiftModalComponent implements OnInit {
 
     const alert = await this.alertController.create({
       header: header,
-      message: msg,
+      // message: msg,
       buttons: [{
         text: 'Cancel',
         role: 'cancel',
@@ -120,20 +121,24 @@ export class StartShiftModalComponent implements OnInit {
         },
       },],
     });
+    // Usar innerHTML para renderizar el contenido HTML
+    const alertMessage = document.createElement('div');
+    alertMessage.innerHTML = msg;
+    alert.message = alertMessage.outerHTML;
 
     await alert.present();
   }
   async modifyShift(shiftForm: any) {
     this.sending = true
     var geolocation = await this.getGeoloc()
-    if (geolocation == null){
+    if (geolocation == null) {
       this.sending = false
-      return this.popupService.presentAlert('Location Access Required','To clock in and out, we need access to your location. Please enable GPS to continue.')
+      return this.popupService.presentAlert('Location Access Required', 'To clock in and out, we need access to your location. Please enable GPS to continue.')
     }
 
-    
+
     var afAuthToken = await this.authService.getIdToken()
-    this.subscriptions.push(this.shiftsServices.startShift(shiftForm.startTime, shiftForm.type, shiftForm.workingPlace, shiftForm.details,geolocation, afAuthToken)
+    this.subscriptions.push(this.shiftsServices.startShift(shiftForm.startTime, shiftForm.type, shiftForm.workingPlace, shiftForm.details, geolocation, afAuthToken)
       .subscribe({
         next: (res) => {
           this.popupService.presentToast('bottom', 'success', 'Shift information added successfully.')

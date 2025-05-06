@@ -9,6 +9,8 @@ import { AuthService } from 'src/app/services/auth.service';
 import { PaychecksService } from 'src/app/services/paychecks.service';
 import { IONIC_STANDALONE_MODULES } from 'src/app/ionic-standalone-components';
 import { DatePipe, NgIf } from '@angular/common';
+import { CustomersService } from 'src/app/services/customers.service';
+import { Customer } from 'src/app/interfaces/customers';
 
 @Component({
   selector: 'app-pay-periods',
@@ -21,6 +23,7 @@ export class PayPeriodsPage implements OnInit {
   usersService = inject(UsersService)
   authService = inject(AuthService)
   paycheckService = inject(PaychecksService)
+  customerService = inject(CustomersService)
   private unsubscribe$ = new Subject<void>();
   currentUsersData: { id: string; }[] = [];
   loading: boolean = true;
@@ -30,7 +33,7 @@ export class PayPeriodsPage implements OnInit {
   currentSchedule: any;
   usersData: any;
   currentClosingDate: any;
-
+  customers: Customer[] = []
   constructor() {
     addIcons({ ellipsisVertical, calendar })
   }
@@ -46,11 +49,12 @@ export class PayPeriodsPage implements OnInit {
     this.loading = true;
     combineLatest([
       this.usersService.getUsers(),
-      this.authService.getPublicConfigData()
+      this.authService.getPublicConfigData(),
+      this.customerService.getAllCustomers()
     ])
       .pipe(takeUntil(this.unsubscribe$))
       .subscribe({
-        next: ([resUserData, configs]) => {
+        next: ([resUserData, configs, customers]) => {
 
           this.currentUsersData = resUserData;
           if (this.selectedPeriodId == 'current') {
@@ -60,7 +64,8 @@ export class PayPeriodsPage implements OnInit {
           this.configs = configs
           //Calculate current closing date 
           this.currentClosingDate = this.paycheckService.calculateEndOfPaycheck(this.configs.paymentSchedule, this.configs.lastStartingDate)
-
+          //customers
+          this.customers = customers
           this.loading = false;
         },
         error: (e) => {

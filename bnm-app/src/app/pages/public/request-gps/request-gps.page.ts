@@ -1,5 +1,4 @@
 import { Component, inject, OnInit } from '@angular/core';
-import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { IonContent, IonHeader, IonTitle, IonToolbar, ModalController, AlertController, } from '@ionic/angular/standalone';
 import { navigate, navigateCircle } from 'ionicons/icons'
@@ -13,7 +12,7 @@ import { Capacitor } from '@capacitor/core';
   templateUrl: './request-gps.page.html',
   styleUrls: ['./request-gps.page.scss'],
   standalone: true,
-  imports: [IonContent, IonHeader, IonTitle, IonToolbar, CommonModule, FormsModule, IONIC_STANDALONE_MODULES]
+  imports: [FormsModule, IONIC_STANDALONE_MODULES]
 })
 export class RequestGpsPage implements OnInit {
   modalController = inject(ModalController)

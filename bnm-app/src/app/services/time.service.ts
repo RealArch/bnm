@@ -14,6 +14,7 @@ export class TimeService {
 
     // Fecha actual en UTC 
     const date = new Date();
+    date.setSeconds(0, 0);
     const clientTimeZone = this.getClientTimezone()
     // Convertir la fecha a la zona horaria deseada (por ejemplo, America/New_York) 
     const dateInTimeZone = moment(date).tz(clientTimeZone);
@@ -22,6 +23,7 @@ export class TimeService {
     console.log(isoStringWithTimeZone);
     return isoStringWithTimeZone;
   }
+
   convertDateToIso8601Timezone(iso8601: string) {
     const clientTimeZone = this.getClientTimezone()
     // Convertir la fecha a la zona horaria deseada (por ejemplo, America/New_York) 
@@ -42,5 +44,20 @@ export class TimeService {
     const inputDate = moment(isoDateString);
     const currentDate = moment();
     return inputDate.isSame(currentDate, 'day');
+  }
+  setSecondsToZeroFromMillis(milliseconds: number) {
+    const date = new Date(milliseconds); // Convierte los milisegundos a un objeto Date
+    date.setSeconds(0, 0); // Establece los segundos y milisegundos a cero
+    return date.getTime(); // Devuelve el tiempo en milisegundos con los segundos en cero
+  }
+
+  setMinMaxTime() {
+    const now = moment(); // Hora actual
+    const minDatePicker = now.clone().subtract(5, 'minutes').format('YYYY-MM-DDTHH:mm:ss.SSSZ'); // 5 minutos antes
+    const maxDatePicker = now.clone().add(5, 'minutes').format('YYYY-MM-DDTHH:mm:ss.SSSZ'); // 5 minutos después
+    return {
+      minDatePicker,
+      maxDatePicker
+    };
   }
 }

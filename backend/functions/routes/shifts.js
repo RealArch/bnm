@@ -320,6 +320,7 @@ async function closePaycheck() {
         endDate = calculateEndOfPaycheck(paymentSchedule, lastStartingDate)
         paycheckHistoryId = lastStartingDate.toString() + '-' + endDate.toString()
 
+
         //If today is closing date or > (omitted when simulation)
 
         // console.log(endDate)
@@ -337,42 +338,120 @@ async function closePaycheck() {
         //Read all users
         let usersDocs = await db.collection('users').get()
         let batch = db.batch();
-        usersDocs.forEach(doc => {
-            let userRef = db.collection('users').doc(doc.id)
-            let user = doc.data()
+        for (let i = 0; i < usersDocs.docs.length; i++) {
+            const doc = usersDocs.docs[i];
+            let userRef = db.collection('users').doc(doc.id);
+            let user = doc.data();
             const lastBlockLength = user.currentShift.blocks[user.currentShift.blocks.length - 1];
-
-            //Then, add the current paycheck formatted for this user to the collection paychecks
-            //the id will be the start date
+        
+            // Si no es día de pago, verifica si hay turnos abiertos y ciérralos
+            if (Date.now() < endDate) {
+                // NO ES DÍA DE PAGO
+                if (lastBlockLength != undefined && lastBlockLength.endTime == null) {
+                    // Cierra el último bloque y establece el estado en "outOfShift"
+                    await db.collection('users').doc(doc.id).update({
+                        currentShift: { blocks: [], lunchTaken: false },
+                        status: 'outOfShift',
+                        currentPaycheck: []
+                    }).then(() => {
+                        console.log('Shift closed successfully!');
+                    }).catch((error) => {
+                        console.error('Error closing shift: ', error);
+                    });
+                }
+                return console.log('it is not payday'); // Detiene la ejecución completa de la función
+            }
+        
+            // Agrega el cheque de pago actual formateado para este usuario a la colección de cheques de pago
             let userPaycheck = {
                 userId: doc.id,
                 days: user.currentPaycheck,
                 hourlyRate: user.hourlyRate
-            }
+            };
             if (user.currentPaycheck.length > 0) {
-                paychecks.usersPaychecks.push(userPaycheck)
+                paychecks.usersPaychecks.push(userPaycheck);
                 batch.update(userRef, {
                     paycheckHistory: FieldValue.arrayUnion(paycheckHistoryId)
-                })
+                });
             }
+        
             batch.update(userRef, {
                 currentShift: { blocks: [], lunchTaken: false },
                 status: 'outOfShift',
                 currentPaycheck: []
-            })
-            //if the shift is still open (endTime == null), remove day shift
-            // if (lastBlockLength != undefined && lastBlockLength.endTime == null) {
+            });
+        
+            // Si el turno aún está abierto (endTime == null), elimina el turno del día
+            if (lastBlockLength != undefined && lastBlockLength.endTime == null) {
+                batch.update(userRef, {
+                    currentShift: { blocks: [], lunchTaken: false },
+                    status: 'outOfShift',
+                    currentPaycheck: []
+                });
+            }
+        }
+        // usersDocs.forEach(doc => {
+        //     let userRef = db.collection('users').doc(doc.id)
+        //     let user = doc.data()
+        //     const lastBlockLength = user.currentShift.blocks[user.currentShift.blocks.length - 1];
 
-            //     batch.update(userRef, {
-            //         currentShift: { blocks: [], lunchTaken: false },
-            //         status: 'outOfShift',
-            //         currentPaycheck: []
-            //     })
-            // }
+        //     //if it is not payday, check if there is some open shift, if so, close it
+        //     if (Date.now() < endDate) {
+        //         //IT IS NOT PAYDAY
+        //         //close use has open shifts (endTime == null), close them
+        //         if (lastBlockLength != undefined && lastBlockLength.endTime == null) {
+        //             //close the last block and set the status to outOfShift
+        //             db.collection('users').doc(doc.id).update({
+        //                 currentShift: { blocks: [], lunchTaken: false },
+        //                 status: 'outOfShift',
+        //                 currentPaycheck: []
+        //             }).then(() => {
+        //                 console.log('Shift closed successfully!')
+        //             }).catch((error) => {
+        //                 console.error('Error closing shift: ', error);
+        //             })
+        //             // batch.update(userRef, {
+        //             //     currentShift: { blocks: [], lunchTaken: false },
+        //             //     status: 'outOfShift',
+        //             //     currentPaycheck: []
+        //             // })
+        //         }
+        //         return console.log('it is not payday')
+        //     }
 
-            //
 
-        });
+        //     //Then, add the current paycheck formatted for this user to the collection paychecks
+        //     //the id will be the start date
+        //     let userPaycheck = {
+        //         userId: doc.id,
+        //         days: user.currentPaycheck,
+        //         hourlyRate: user.hourlyRate
+        //     }
+        //     if (user.currentPaycheck.length > 0) {
+        //         paychecks.usersPaychecks.push(userPaycheck)
+        //         batch.update(userRef, {
+        //             paycheckHistory: FieldValue.arrayUnion(paycheckHistoryId)
+        //         })
+        //     }
+        //     batch.update(userRef, {
+        //         currentShift: { blocks: [], lunchTaken: false },
+        //         status: 'outOfShift',
+        //         currentPaycheck: []
+        //     })
+
+        //     //if the shift is still open (endTime == null), remove day shift
+        //     if (lastBlockLength != undefined && lastBlockLength.endTime == null) {
+
+        //         batch.update(userRef, {
+        //             currentShift: { blocks: [], lunchTaken: false },
+        //             status: 'outOfShift',
+        //             currentPaycheck: []
+        //         })
+        //     }
+
+
+
+        // });
         //Update next lastStartingDate
         let lastStartingDateUpdated = utilities.calculateNextPaycheckStart(endDate)
         batch.update(settingsRef, { lastStartingDate: lastStartingDateUpdated })
@@ -390,44 +469,6 @@ async function closePaycheck() {
 
     }
     return paychecks
-    // let usersRef = db.collection('users')
-    // try {
-
-    //     await db.runTransaction(async (t) => {
-    //         let users = await t.get(usersRef);
-    //         users = users.docs
-    //         //Delete all open shifts, and send a notification to those
-    //         for (let i = 0; i < users.length; i++) {
-    //             const j = users[i].data().currentPaycheck.length;
-    //             const lastBlock = users[i].data().currentPaycheck[j-1].blocks[users[i].data().currentPaycheck[j-1].blocks.length - 1];
-    //             if(lastBlock.endTime == null){
-    //                 console.log(users[i].data().currentPaycheck.length)
-    //                 users[i].data().currentPaycheck.splice(0, 1);
-    //                 console.log(users[i].data().currentPaycheck.length)
-
-    //                 console.log(users[i].data().currentPaycheck)
-
-    //             }
-    //         }
-    //         // users.forEach(user => {
-    //         //     //get last block worked of the paycheck
-
-    //         //     // console.log(user.data().currentPaycheck[1])
-    //         //     // if (user.data().currentPaycheck[l < 1].block)
-    //         // });
-
-    //         // const newPopulation = doc.data().population + 1;
-    //         // t.update(cityRef, { population: newPopulation });
-    //     });
-
-    //     console.log('Transaction success!');
-    // } catch (e) {
-    //     console.log('Transaction failure:', e);
-    // }
-
-
-    //Copy data from userData to collection payChecks and add a new doc with id= openingDay-closingDay Ex 12-27-24/1-9-25
-    //set lastStartingDate with 12pm set
 }
 
 //Functions
@@ -456,11 +497,20 @@ function getElapsedMinSec(blocks) {
         }
 
     });
-    var workedHours = totalTimeWorked
-    var lunchedHours = totalTimeLunch
+        //eliminar los segundos para que sean minutos exactos
+
+    var workedHours = setSecondsToZeroFromMillis(totalTimeWorked)
+    var lunchedHours = setSecondsToZeroFromMillis(totalTimeLunch)
+   
     return {
         lunch: lunchedHours,
         work: workedHours
     }
+}
+
+function setSecondsToZeroFromMillis(milliseconds) {
+    const date = new Date(milliseconds); // Convierte los milisegundos a un objeto Date
+    date.setSeconds(0, 0); // Establece los segundos y milisegundos a cero
+    return date.getTime(); // Devuelve el tiempo en milisegundos con los segundos en cero
 }
 

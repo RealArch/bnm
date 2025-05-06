@@ -1,13 +1,12 @@
 import { Component, OnInit } from '@angular/core';
-import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { IonicModule } from '@ionic/angular';
+import { IONIC_STANDALONE_MODULES } from 'src/app/ionic-standalone-components';
 
 @Component({
     selector: 'app-public',
     templateUrl: './public.page.html',
     styleUrls: ['./public.page.scss'],
-    imports: [IonicModule, CommonModule, FormsModule]
+    imports: [FormsModule, IONIC_STANDALONE_MODULES]
 })
 export class PublicPage implements OnInit {
 

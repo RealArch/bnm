@@ -1,4 +1,4 @@
-package com.bnm.app;
+package com.bmips.app;
 
 import com.getcapacitor.BridgeActivity;
 

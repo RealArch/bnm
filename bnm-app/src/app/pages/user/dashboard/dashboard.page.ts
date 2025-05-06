@@ -1,7 +1,6 @@
 import { Component, OnInit, signal, Signal } from '@angular/core';
-import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { IonicModule, PopoverController } from '@ionic/angular';
+import { PopoverController } from '@ionic/angular/standalone';
 import { StatusCardComponent } from 'src/app/components/status-card/status-card.component';
 import { addIcons } from 'ionicons';
 import { notifications } from 'ionicons/icons';
@@ -12,12 +11,14 @@ import { HoursWorkedCardComponent } from 'src/app/components/hours-worked-card/h
 import { MoneyEarnedCardComponent } from 'src/app/components/money-earned-card/money-earned-card.component';
 import { ShiftsService } from 'src/app/services/shifts.service';
 import { NotificationsPage } from './notifications/notifications.page';
+import { IONIC_STANDALONE_MODULES } from 'src/app/ionic-standalone-components';
+import { DatePipe, NgIf, TitleCasePipe } from '@angular/common';
 
 @Component({
   selector: 'app-dashboard',
   templateUrl: './dashboard.page.html',
   styleUrls: ['./dashboard.page.scss'],
-  imports: [IonicModule, CommonModule, FormsModule, StatusCardComponent, HoursWorkedCardComponent, MoneyEarnedCardComponent]
+  imports: [FormsModule, StatusCardComponent, HoursWorkedCardComponent,NgIf, DatePipe, TitleCasePipe, MoneyEarnedCardComponent, IONIC_STANDALONE_MODULES]
 })
 export class DashboardPage implements OnInit {
   subscriptions: Subscription[] = [];

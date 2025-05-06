@@ -9,13 +9,14 @@ import { Customer } from 'src/app/interfaces/customers';
 import { NavigationStart, Router } from '@angular/router';
 import { PopupService } from 'src/app/services/popup.service';
 import { IONIC_STANDALONE_MODULES } from 'src/app/ionic-standalone-components';
+import { NgIf } from '@angular/common';
 
 @Component({
   selector: 'app-customers',
   templateUrl: './customers.page.html',
   styleUrls: ['./customers.page.scss'],
   standalone: true,
-  imports: [ FormsModule, IONIC_STANDALONE_MODULES]
+  imports: [ FormsModule, IONIC_STANDALONE_MODULES, NgIf]
 })
 export class CustomersPage implements OnInit {
   loading: boolean = false;

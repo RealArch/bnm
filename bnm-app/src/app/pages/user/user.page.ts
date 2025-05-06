@@ -1,19 +1,18 @@
 import { Component, OnInit } from '@angular/core';
-import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { IonicModule } from '@ionic/angular';
 import { addIcons } from 'ionicons';
 import { fileTrayFull, home, hourglass, person } from 'ionicons/icons';
 import { ActivatedRoute, Router } from '@angular/router';
 import { DocumentSnapshot } from '@angular/fire/firestore';
 import { AuthService } from 'src/app/services/auth.service';
 import { onAuthStateChanged, getAuth } from '@angular/fire/auth';
+import { IONIC_STANDALONE_MODULES } from 'src/app/ionic-standalone-components';
 
 @Component({
     selector: 'app-user',
     templateUrl: './user.page.html',
     styleUrls: ['./user.page.scss'],
-    imports: [IonicModule, CommonModule, FormsModule]
+    imports: [FormsModule, IONIC_STANDALONE_MODULES]
 })
 export class UserPage implements OnInit {
   data!: any;

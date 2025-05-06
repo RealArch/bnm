@@ -27,7 +27,7 @@ bootstrapApplication(AppComponent, {
   providers: [
     DatePipe, TitleCasePipe,
     { provide: RouteReuseStrategy, useClass: IonicRouteStrategy },
-    provideIonicAngular(),
+    provideIonicAngular({innerHTMLTemplatesEnabled: true}),
     provideRouter(routes, withPreloading(PreloadAllModules)),
     provideHttpClient(),
     provideFirebaseApp(() => initializeApp(environment.firebaseConfig)),

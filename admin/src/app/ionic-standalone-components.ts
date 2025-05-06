@@ -21,7 +21,7 @@ import {
   IonInput,
   IonItem,
   IonLabel,
-  IonList,
+  IonList, IonListHeader,
   IonMenu,
   IonMenuButton,
   IonNav,
@@ -106,5 +106,6 @@ export const IONIC_STANDALONE_MODULES = [
   IonMenuToggle,
   IonSplitPane,
   IonRouterOutlet,
-  IonAlert
+  IonAlert,
+  IonListHeader
 ];

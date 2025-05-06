@@ -89,7 +89,19 @@ export const routes: Routes = [
   {
     path: 'edit-user',
     loadComponent: () => import('./components/item-user/edit-user/edit-user.page').then( m => m.EditUserPage)
+  },  {
+    path: 'time-sheet-modal',
+    loadComponent: () => import('./pages/user/pay-periods/user-accordion/time-sheet-modal/time-sheet-modal.page').then( m => m.TimeSheetModalPage)
   },
+  {
+    path: 'remove-account',
+    loadComponent: () => import('./pages/public/remove-account/remove-account.page').then( m => m.RemoveAccountPage)
+  },
+  {
+    path: 'privacy-policies',
+    loadComponent: () => import('./pages/public/privacy-policies/privacy-policies.page').then( m => m.PrivacyPoliciesPage)
+  },
+
  
 
 

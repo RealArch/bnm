@@ -1,0 +1,145 @@
+<ion-header [translucent]="true">
+  <ion-toolbar color="primary" mode="ios">
+    <ion-buttons slot="end">
+      <ion-button (click)="dismissModal()">
+        <ion-icon name="close" slot="icon-only"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+    <ion-title>{{this.day.day | date}}</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content color="light" class="ion-padding">
+  @if(loading){
+  <div *ngIf="loading" class="loading">
+    <ion-spinner></ion-spinner>
+  </div>
+  }@else if(day.blocks.length > 0){
+  <!-- Hours and money -->
+  <!-- <ion-row class="" style="margin: 10px ">
+    <ion-col size="6">
+      <div class="mb-1">
+        <app-hours-worked-card [timeWorked]="timeWorked">
+        </app-hours-worked-card>
+      </div>
+    </ion-col>
+    <ion-col size="6">
+      <div class="mb-1">
+        <app-money-earned-card [hourlyRate]="hourlyRate" [timeWorked]="timeWorked"></app-money-earned-card>
+      </div>
+    </ion-col>
+  </ion-row> -->
+  <ion-card  class="mb-2 mt-0 mx-0 py-3 d-flex text-center border">
+    <ion-title>Compete Time Card</ion-title>
+    
+  </ion-card>
+  @for(block of day.blocks; track block){
+  <ion-card class="mb-2 mt-0 mx-0 d-flex">
+    <div class="lineBlock" [ngClass]="block.type==='working' ? 'success' : block.type==='lunch' ? 'warning' : 'dark'">
+      <ion-icon class="icon-block"
+        [name]="block.type==='working' ? 'hammer' : block.type==='lunch' ? 'pizza' : block.type==='commute' ? 'car' : 'help'"></ion-icon>
+    </div>
+    <ion-row class="ps-2 w-100">
+      <ion-col size="8" class="border-end py-3 px-2">
+        <div>
+          <ion-text class="workingPlace">
+            {{getCompanyInfoById(block.workingPlace)}}
+          </ion-text>
+        </div>
+        <div>
+          <ion-text class="blockType"
+            [color]="block.type==='working' ? 'success' : block.type==='lunch' ? 'warning' : 'dark'">
+            {{block.type | titlecase}}
+          </ion-text>
+        </div>
+      </ion-col>
+      <ion-col size="4" class=" m-0 p-0">
+        <ion-row class="m-0 p-0 h-100">
+          <ion-col size="12" class="d-flex align-items-center ps-2 pe-3 py-0 m-0 border-bottom ">
+            <div>
+              <strong>In:</strong>
+            </div>
+            <div class="ms-auto" style="size:auto">
+              {{block.startTime | date:'h:mm aa'}}
+            </div>
+            <div class="ms-1" id="in-map-{{block.startTime}}">
+              <ion-icon class="locateIcon" name="navigate-circle"></ion-icon>
+            </div>
+
+            <ion-popover class="map-popover" trigger="in-map-{{block.startTime}}" size="auto" triggerAction="click"
+              side="bottom" alignment="end" showBackdrop="false">
+              <ng-template>
+                <ion-content>
+                  <!-- {{block.startGeolocation.lat}}
+                  {{block.startGeolocation.lng}} -->
+                  <google-map *ngIf="block.startGeolocation"
+                    [center]="{lat: block.startGeolocation.lat, lng: block.startGeolocation.lng}" height="400px"
+                    width="400px">
+                    <map-marker
+                      [position]="{lat: block.startGeolocation.lat, lng: block.startGeolocation.lng}">
+                    </map-marker>
+                  </google-map>
+                </ion-content>
+              </ng-template>
+            </ion-popover>
+
+          </ion-col>
+          <ion-col size="12" class="d-flex align-items-center ps-2 pe-3 py-0 m-0">
+            <div>
+              <strong>Out:</strong>
+            </div>
+            <div class="ms-auto" style="size:auto">
+              @if(!block.endTime){
+              Current
+              } @else{
+              {{block.endTime | date:'h:mm aa'}}
+
+              }
+            </div>
+
+            <div class="ms-1" id="out-map-{{block.endTime}}">
+              <ion-icon class="locateIcon" name="navigate-circle"></ion-icon>
+            </div>
+
+            <ion-popover class="map-popover" trigger="out-map-{{block.endTime}}" triggerAction="click" side="bottom"
+              alignment="end" showBackdrop="false">
+              <ng-template>
+                <ion-content>
+                  <!-- {{block.endGeolocation.lat}}
+                  {{block.endGeolocation.lng}} -->
+                  <google-map *ngIf="block.endGeolocation"
+                    [center]="{lat: block.endGeolocation.lat, lng: block.endGeolocation.lng}" height="400px"
+                    width="400px">
+                    <map-marker
+                      [position]="{lat: block.endGeolocation.lat, lng: block.endGeolocation.lng}"></map-marker>
+                  </google-map>
+
+                </ion-content>
+              </ng-template>
+            </ion-popover>
+
+          </ion-col>
+        </ion-row>
+      </ion-col>
+    </ion-row>
+
+  </ion-card>
+  }
+
+  } @else if(day.blocks.length == 0){
+  <div class="no-items">
+    <div>
+      <ion-icon name="close"></ion-icon><br>
+      <div class="text">
+        <ion-text>
+          No blocks were found for this shift.
+        </ion-text>
+      </div>
+
+    </div>
+  </div>
+  }
+
+
+
+</ion-content>

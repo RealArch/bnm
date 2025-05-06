@@ -1,5 +1,4 @@
 import { Component, OnInit, inject } from '@angular/core';
-import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { IonicModule, NavController } from '@ionic/angular';
 import { AuthService } from 'src/app/services/auth.service';
@@ -14,7 +13,7 @@ import { IONIC_STANDALONE_MODULES } from 'src/app/ionic-standalone-components';
   selector: 'app-login',
   templateUrl: './login.page.html',
   styleUrls: ['./login.page.scss'],
-  imports: [FormsModule, CommonModule, ReactiveFormsModule, RouterLinkWithHref, ...IONIC_STANDALONE_MODULES],
+  imports: [FormsModule, ReactiveFormsModule, RouterLinkWithHref, ...IONIC_STANDALONE_MODULES],
 })
 export class LoginPage implements OnInit {
   authService = inject(AuthService);

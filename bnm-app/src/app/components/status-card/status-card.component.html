@@ -31,7 +31,7 @@
 
       </ion-col>
 
-      <ion-col class="status-info">
+      <ion-col size="10" class="status-info">
         <div>
           
         </div>
@@ -58,18 +58,18 @@
         </div>
 
         <div class="mt-4">
-          <div class="d-flex ion-justify-content-end buttons mt-auto">
-            <ion-button size="small" *ngIf="userData.status != 'onLunch'" (click)="openModal('commute')" color="warning">
+          <div class="d-flex ion-justify-content-end buttons mt-auto control-buttons">
+            <ion-button size="small" *ngIf="userData.status != 'onLunch'" fill="clear" (click)="openModal('commute')" color="warning">
               Commute
             </ion-button>
-            <ion-button *ngIf="userData.status != 'onLunch'" color="success" (click)="openModal('lunch')" fill="solid" shape="round">
+            <ion-button *ngIf="userData.status != 'onLunch'" color="success" (click)="openModal('lunch')" fill="clear">
               Start lunch
             </ion-button>
-            <ion-button size="small" *ngIf="userData.status == 'onLunch'" color="primary" fill="solid" shape="round"
+            <ion-button size="small" *ngIf="userData.status == 'onLunch'" color="primary" fill="clear" 
               (click)="openModal('commute')">
               Finish lunch
             </ion-button>
-            <ion-button size="small" *ngIf="userData.status !== 'onLunch'" color="danger" (click)="openEndingShiftModal()" fill="solid" shape="round">
+            <ion-button size="small" *ngIf="userData.status !== 'onLunch'" color="danger" (click)="openEndingShiftModal()" fill="clear">
               End shift
             </ion-button>
           </div>

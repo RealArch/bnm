@@ -3,7 +3,7 @@ import { addDoc, collection, collectionSnapshots, deleteDoc, doc, Firestore, get
 import { AuthService } from './auth.service';
 import { getAuth } from '@angular/fire/auth';
 import { AddCustomer, Customer } from '../interfaces/customers'
-import { map, Observable } from 'rxjs';
+import { map, Observable, shareReplay } from 'rxjs';
 import { algoliasearch } from 'algoliasearch';
 import { environment } from './../../environments/environment';
 
@@ -13,24 +13,37 @@ const client = algoliasearch(environment.algolia.appID, environment.algolia.sear
 })
 export class CustomersService {
   private firestore: Firestore = inject(Firestore)
-
+  private customers$: Observable<Customer[]> | null = null;
   constructor(
     private authService: AuthService
   ) { }
 
   getAllCustomers(): Observable<Customer[]> {
-    var ref = collection(getFirestore(), 'customers')
-    return collectionSnapshots(ref).pipe(
-      map(customers => customers.map(customer => {
-        {
-          const data = customer.data();
-          const id = customer.id;
+    if (!this.customers$) {
+      const ref = collection(this.firestore, 'customers');
+      this.customers$ = collectionSnapshots(ref).pipe(
+        map((customers) => {
+          console.log('Firestore query executed');
+          return customers.map((customer) => {
+            const data = customer.data();
+            const id = customer.id;
+            return { id, ...data } as Customer;
+          })
+        }),
+        shareReplay(1) // Comparte la misma suscripción entre múltiples observadores
+      );
+    }
+    return this.customers$;
 
-          return { id, ...data } as Customer
-
-        }
-      })))
   }
+  async searchCustomer2(value: string) {
+    const response = await client.getObject({
+      indexName: environment.algolia.indexes.customers,
+      objectID: value
+    })
+    return response
+  }
+
   async searchCustomer(value: string): Promise<Customer[]> {
     try {
       client.clearCache()
@@ -60,7 +73,7 @@ export class CustomersService {
     var ref = doc(firestore, 'customers/', id)
     //const { id, ...rest } = originalObject;
     const { id: removedId, ...rest } = data;
-        return setDoc(ref, {
+    return setDoc(ref, {
       ...rest,
       creationDate: serverTimestamp(),
     }, { merge: true })

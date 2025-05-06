@@ -1,4 +1,4 @@
-<ion-accordion  class=" box-shadow  " style="border-width: none;">
+<ion-accordion class=" box-shadow  " style="border-width: none;">
   <ion-item slot="header">
     <ion-row class="w-100">
       <ion-col size="1">
@@ -106,7 +106,7 @@
     </ion-row>
     <!-- List of time sheets -->
     @for (day of schedule ; track day){
-    <ion-row class="row-list">
+    <ion-row class="row-list" (click)="showTimeSheetModal(day)">
       <ion-col class="">
         <div class="day">
           {{day.day | date:'EEEEEE' }}
@@ -117,7 +117,17 @@
         <!-- <ion-text class="day">Thu &nbsp;</ion-text> 12/13/24 -->
       </ion-col>
       <ion-col>
+        <!-- a{{day | json}}a -->
         {{ day.start ? (day.start | date:'h:mm aaa') : '-' }}
+        <!-- @if(day.start){
+          <ion-icon name="navigate-circle"></ion-icon>
+        <ion-buttons shape="round">
+          <ion-button shape="round" fill="clear">
+            
+          </ion-button>
+
+        </ion-buttons>
+        } -->
       </ion-col>
       <ion-col>
         {{ day.end ? (day.end | date:'h:mm aaa'): '-' }}

@@ -1,7 +1,6 @@
 import { Component, OnInit } from '@angular/core';
-import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { IonicModule, ModalController } from '@ionic/angular';
+import { ModalController } from '@ionic/angular/standalone';
 import { addIcons } from 'ionicons';
 import { calendar, checkmark, eye } from 'ionicons/icons';
 import { AuthService } from 'src/app/services/auth.service';
@@ -9,13 +8,15 @@ import { combineLatest, Subject, takeUntil } from 'rxjs';
 import { ShiftsService } from 'src/app/services/shifts.service';
 import { PublicConfig } from 'src/app/interfaces/public-config';
 import { ViewBlocksModalPage } from 'src/app/components/status-card/view-blocks-modal/view-blocks-modal.page';
+import { IONIC_STANDALONE_MODULES } from 'src/app/ionic-standalone-components';
+import { DatePipe, NgIf } from '@angular/common';
 
 @Component({
   selector: 'app-pay-periods',
   templateUrl: './pay-periods.page.html',
   styleUrls: ['./pay-periods.page.scss'],
   standalone: true,
-  imports: [IonicModule, CommonModule, FormsModule]
+  imports: [ FormsModule, IONIC_STANDALONE_MODULES, DatePipe, NgIf]
 })
 export class PayPeriodsPage implements OnInit {
   loading: boolean = true;

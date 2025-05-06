@@ -1,16 +1,17 @@
 import { Component, OnInit } from '@angular/core';
-import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { IonicModule, ModalController } from '@ionic/angular';
+import { ModalController } from '@ionic/angular/standalone';
 import { AuthService } from 'src/app/services/auth.service';
 import { EditProfileModalPage } from './edit-profile-modal/edit-profile-modal.page';
 import { Subject, takeUntil } from 'rxjs';
+import { IONIC_STANDALONE_MODULES } from 'src/app/ionic-standalone-components';
+import { NgIf, TitleCasePipe } from '@angular/common';
 
 @Component({
-    selector: 'app-profile',
-    templateUrl: './profile.page.html',
-    styleUrls: ['./profile.page.scss'],
-    imports: [IonicModule, CommonModule, FormsModule]
+  selector: 'app-profile',
+  templateUrl: './profile.page.html',
+  styleUrls: ['./profile.page.scss'],
+  imports: [FormsModule, IONIC_STANDALONE_MODULES, TitleCasePipe, NgIf]
 })
 export class ProfilePage implements OnInit {
   loading: boolean = false;

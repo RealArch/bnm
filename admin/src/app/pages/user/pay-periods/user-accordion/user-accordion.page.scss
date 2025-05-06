@@ -77,6 +77,14 @@ ion-accordion {
 .row-list:nth-child(odd) {
     background-color: rgb(241, 241, 241);
 }
+.row-list:hover{
+    background-color: rgba(var(--ion-color-primary-rgb), 0.2);
+    cursor: pointer;
+}
+.row-list:active{
+    background-color: rgba(var(--ion-color-primary-rgb), 0.3);
+    cursor: pointer;
+}
 
 .small-button{
     height: 5px!important;

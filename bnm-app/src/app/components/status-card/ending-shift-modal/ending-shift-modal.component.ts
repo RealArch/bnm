@@ -1,5 +1,5 @@
 import { Component, Input, OnInit } from '@angular/core';
-import { ModalController, IonicModule, AlertController } from '@ionic/angular'
+import { ModalController, AlertController } from '@ionic/angular/standalone'
 import { AuthService } from 'src/app/services/auth.service';
 import { Subscription } from 'rxjs'
 import { ShiftsService } from 'src/app/services/shifts.service';
@@ -8,12 +8,13 @@ import { NgIf } from '@angular/common';
 import { TimeService } from 'src/app/services/time.service';
 import { Geolocation } from '@capacitor/geolocation';
 import { PopupsService } from 'src/app/services/popups.service';
+import { IONIC_STANDALONE_MODULES } from 'src/app/ionic-standalone-components';
 
 @Component({
   selector: 'app-ending-shift-modal',
   templateUrl: './ending-shift-modal.component.html',
   styleUrls: ['./ending-shift-modal.component.scss'],
-  imports: [IonicModule, FormsModule, NgIf]
+  imports: [FormsModule, NgIf, IONIC_STANDALONE_MODULES]
 })
 export class EndingShiftModalComponent implements OnInit {
   @Input() userData: any;
@@ -24,6 +25,7 @@ export class EndingShiftModalComponent implements OnInit {
   copyElapseTime!: { lunch: { hours: number; minutes: number; }; work: { hours: number; minutes: number; }; } | null;
   pickerTime: any
   minDatePicker: any
+  maxDatePicker:any
   constructor(
     private modalCtrl: ModalController,
     private alertCtrl: AlertController,
@@ -38,11 +40,11 @@ export class EndingShiftModalComponent implements OnInit {
   ngOnInit() {
     this.calculateClosingHour(this.datetimeValue)
     //set min time for picker
-    let blockL = this.userData.currentShift.blocks.length
-    this.minDatePicker = this.userData.currentShift.blocks[blockL - 1].startTime
-    console.log(this.minDatePicker)
     this.pickerTime = this.timeServices.dateNowToIso8601Timezone()
-
+    // define 5 minutes previous and 5 minutes after the current time
+    this.minDatePicker = this.timeServices.setMinMaxTime().minDatePicker
+    this.maxDatePicker = this.timeServices.setMinMaxTime().maxDatePicker
+    
   }
 
   closeModal() {
@@ -50,33 +52,37 @@ export class EndingShiftModalComponent implements OnInit {
   }
   //Logic for  Close the shift and send information to API
   async closeShift() {
-    // this.modal.dismiss()
 
-    this.updating = true
-    var geolocation = await this.getGeoloc()
-    if (geolocation == null) {
-      this.updating = false
-      return this.popupService.presentAlert('Location Access Required', 'To clock in and out, we need access to your location. Please enable GPS to continue.')
+    try {
+      this.updating = true
+      var geolocation = await this.getGeoloc()
+      if (geolocation == null) {
+        this.updating = false
+        return this.popupService.presentAlert('Location Access Required', 'To clock in and out, we need access to your location. Please enable GPS to continue.')
+      }
+      var afAuthToken = await this.authService.getIdToken()
+      //Prepare datetimeValue to send it to api. Convert it from iso to milliseconds
+      let datetimeValueMilliseconds = this.timeServices.formatToIso8601(this.pickerTime)
+      this.subscriptions.push(
+        this.shiftsService.closeShift(datetimeValueMilliseconds, geolocation, afAuthToken)
+          .subscribe({
+            next: (res) => {
+              console.log(res)
+              this.updating = false;
+              this.modalCtrl.dismiss()
+            },
+            error: (err) => {
+              this.updating = false;
+              console.log(err)
+            }
+          })
+      )
+    } catch (error) {
+      this.updating = false;
+      console.log(error)
+      this.popupService.presentAlert('Error', 'An error occurred while closing the shift. Please try again.')
     }
-    var afAuthToken = await this.authService.getIdToken()
-    console.log(this.datetimeValue)
-    //Prepare datetimeValue to send it to api. Convert it from iso to milliseconds
-    let datetimeValueMilliseconds = this.timeServices.formatToIso8601(this.pickerTime)
-    console.log(this.pickerTime)
-    this.subscriptions.push(
-      this.shiftsService.closeShift(datetimeValueMilliseconds, geolocation, afAuthToken)
-        .subscribe({
-          next: (res) => {
-            console.log(res)
-            this.updating = false;
-            this.modalCtrl.dismiss()
-          },
-          error: (err) => {
-            this.updating = false;
-            console.log(err)
-          }
-        })
-    )
+
   }
   async getGeoloc() {
 

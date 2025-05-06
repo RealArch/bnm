@@ -1,12 +1,11 @@
 import { Component, effect, Input, OnInit, signal, Signal } from '@angular/core';
-import { CommonModule } from '@angular/common';
-import { IonicModule } from '@ionic/angular';
+import { IONIC_STANDALONE_MODULES } from 'src/app/ionic-standalone-components';
 
 @Component({
     selector: 'app-money-earned-card',
     templateUrl: './money-earned-card.component.html',
     styleUrls: ['./money-earned-card.component.scss'],
-    imports: [IonicModule, CommonModule]
+    imports: [IONIC_STANDALONE_MODULES]
 })
 export class MoneyEarnedCardComponent implements OnInit {
   @Input() hourlyRate: Signal<number> = signal(0);

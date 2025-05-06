@@ -12,7 +12,7 @@ import { PopupsService } from 'src/app/services/popups.service';
   templateUrl: './forgot-password.page.html',
   styleUrls: ['./forgot-password.page.scss'],
   standalone: true,
-  imports: [IonContent, IonHeader, IonTitle, IonToolbar, CommonModule, FormsModule, ReactiveFormsModule, RouterLinkWithHref, ...IONIC_STANDALONE_MODULES]
+  imports: [FormsModule, ReactiveFormsModule, RouterLinkWithHref, ...IONIC_STANDALONE_MODULES]
 })
 export class ForgotPasswordPage implements OnInit {
   resetPasswordForm: FormGroup = this.fb.group({
@@ -29,17 +29,24 @@ export class ForgotPasswordPage implements OnInit {
 
   ngOnInit() {
   }
-  async sendEmail(formValue: any) {
+  sendEmail(formValue: any) {
     this.loading = true
-    try {
-      var res = await this.authService.sendPasswordResetEmail(formValue.name)
-      console.log(res)
-      this.popupService.presentAlert("Check your inbox!", "We just sent you an email with steps to reset your password. It might take a few minutes to arrive — and don’t forget to check your spam folder!")
-      this.router.navigate(['/auth/login'])
-    } catch (error) {
-      this.loading = false
-      console.log(error)
-      this.popupService.presentToast('bottom', 'danger', 'Oops! Something went wrong sending the email. Please try again.')
-    }
+
+      this.authService.sendPasswordResetEmail(formValue.email)
+        .then(() => {
+          console.log('Email sent successfully')
+          this.popupService.presentAlert("Check your inbox!", "We just sent you an email with steps to reset your password. It might take a few minutes to arrive — and don’t forget to check your spam folder!")
+          this.router.navigate(['/auth/login'])
+          this.loading = false
+
+        }).catch((error) => {
+          console.log(error)
+          this.popupService.presentToast('bottom', 'danger', 'Oops! Something went wrong sending the email. Please try again.')
+          this.loading = false
+
+        })
+      // console.log(res)
+
   }
 }
+//rafael8721693@gmai.com

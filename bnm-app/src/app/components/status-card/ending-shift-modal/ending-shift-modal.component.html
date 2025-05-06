@@ -1,6 +1,6 @@
 <ion-header>
   <ion-toolbar color="primary">
-    Ending Shift
+    <ion-title>Ending Shift</ion-title>
     <ion-buttons slot="end">
       <ion-button (click)="closeModal()" [disabled]="updating">Cancel</ion-button>
     </ion-buttons>
@@ -12,7 +12,7 @@
       <ion-col size="12" class="d-flex ion-align-items-center ion-justify-content-center">
 
         <ion-datetime [(ngModel)]="pickerTime" (ionChange)="calculateClosingHour($event.detail.value)" presentation="time" [disabled]="updating"
-          class="timePicker w-100" [min]="minDatePicker"></ion-datetime>
+          class="timePicker w-100 h-100" [min]="minDatePicker" [max]="maxDatePicker"></ion-datetime>
 
       </ion-col>
     </ion-row>
@@ -21,7 +21,7 @@
 <div class="mx-4">
   <ion-item color="light" class="radius" lines="none" *ngIf="copyElapseTime != null">
     <ion-input labelPlacement="fixed" [readonly]="true"
-      value="{{copyElapseTime!.work.hours}}:{{copyElapseTime!.work.minutes}} hrs">
+      value="{{copyElapseTime!.work.hours}} Hrs {{copyElapseTime!.work.minutes}} Mins">
       <div slot="label"><strong>Worked Hours:</strong> </div>
     </ion-input>
   </ion-item>

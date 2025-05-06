@@ -1,20 +1,21 @@
 import { Component, inject, Input, OnInit } from '@angular/core';
-import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
-import { IonicModule, ModalController } from '@ionic/angular';
+import { ModalController } from '@ionic/angular/standalone';
 import { addIcons } from 'ionicons';
 import { close } from 'ionicons/icons'
 import { CustomersService } from 'src/app/services/customers.service';
 import { AddCustomer, Customer } from 'src/app/interfaces/customers';
 import { PopupService } from 'src/app/services/popup.service';
 import { GeneralService } from 'src/app/services/general.service';
+import { IONIC_STANDALONE_MODULES } from 'src/app/ionic-standalone-components';
+import { NgFor, NgIf } from '@angular/common';
 
 @Component({
   selector: 'app-add-customer-modal',
   templateUrl: './add-customer-modal.page.html',
   styleUrls: ['./add-customer-modal.page.scss'],
   standalone: true,
-  imports: [IonicModule, CommonModule, FormsModule, ReactiveFormsModule]
+  imports: [ FormsModule, ReactiveFormsModule, IONIC_STANDALONE_MODULES, NgIf, NgFor]
 })
 export class AddCustomerModalPage implements OnInit {
   @Input() customer:Customer | undefined
