@@ -26,7 +26,7 @@ export class StatusCardComponent implements OnInit {
   alertController = inject(AlertController);
   interval: any;
   elapsedTime: any;
-  modType!: 'start' | 'commute' | 'lunch';
+  modType!: 'start' | 'commute' | 'lunch' | 'endLunch';
   copyElapseTime!: { lunch: { hours: number; minutes: number; }; work: { hours: number; minutes: number; }; } | null;
   updating: boolean = false;
   closingShiftTime: number = 0;
@@ -186,7 +186,7 @@ export class StatusCardComponent implements OnInit {
     await modal.present()
   }
 
-  async openModal(modType: 'start' | 'commute' | 'lunch') {
+  async openModal(modType: 'start' | 'commute' | 'lunch' | 'endLunch') {
     var previousShift = null
     var currentShiftBlockSize = this.userData.currentShift.blocks.length
     if (currentShiftBlockSize > 0) {

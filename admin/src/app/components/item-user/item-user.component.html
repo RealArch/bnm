@@ -47,11 +47,11 @@
 
       <ion-col size="1" class="ms-auto">
         <ion-buttons class="w-auto">
-          <ion-button [id]="userData.active +'Popover'">
+          <ion-button [id]="userData.id +'Popover'">
             <ion-icon slot="icon-only" name="ellipsis-vertical"></ion-icon>
           </ion-button>
         </ion-buttons>
-        <ion-popover [trigger]="userData.active +'Popover'" triggerAction="click" dismissOnSelect="true" showBackdrop="false">
+        <ion-popover [trigger]="userData.id +'Popover'" triggerAction="click" dismissOnSelect="true" showBackdrop="false">
           <ng-template>
             <ion-content>
               <ion-list>

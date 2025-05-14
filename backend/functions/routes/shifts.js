@@ -154,9 +154,10 @@ router.post('/close', middlewares.verifyClientToken, async (req, res) => {
         timeWorked = getElapsedMinSec(blocks);
         //Set the shiftDate to 12:00pm
         console.log(blocks[0].startTime)
+
         shiftDate = new Date(blocks[0].startTime).setHours(12, 0, 0, 0);
         // Add the closing shift to collection "usersCurrentPaychecks"
-        var userCurrentPaychecks = await userDocRef.set({
+        await userDocRef.set({
             currentPaycheck: FieldValue.arrayUnion({
                 blocks: blocks,
                 lunchTaken: lunchTaken,
@@ -275,7 +276,7 @@ const paycheckHistoryUpdated = exports.paycheckHistory = onDocumentUpdated({ doc
 // module.exports = router;
 
 const closePaychecks = exports.closePaychecks = onSchedule({
-    schedule: "21 23 * * *",
+    schedule: "45 23 * * *",
     timeZone: "America/New_York"
 },
     async (event) => {
@@ -338,57 +339,66 @@ async function closePaycheck() {
         //Read all users
         let usersDocs = await db.collection('users').get()
         let batch = db.batch();
+
         for (let i = 0; i < usersDocs.docs.length; i++) {
             const doc = usersDocs.docs[i];
             let userRef = db.collection('users').doc(doc.id);
             let user = doc.data();
             const lastBlockLength = user.currentShift.blocks[user.currentShift.blocks.length - 1];
-        
-            // Si no es día de pago, verifica si hay turnos abiertos y ciérralos
-            if (Date.now() < endDate) {
-                // NO ES DÍA DE PAGO
-                if (lastBlockLength != undefined && lastBlockLength.endTime == null) {
-                    // Cierra el último bloque y establece el estado en "outOfShift"
-                    await db.collection('users').doc(doc.id).update({
-                        currentShift: { blocks: [], lunchTaken: false },
-                        status: 'outOfShift',
-                        currentPaycheck: []
-                    }).then(() => {
-                        console.log('Shift closed successfully!');
-                    }).catch((error) => {
-                        console.error('Error closing shift: ', error);
-                    });
-                }
-                return console.log('it is not payday'); // Detiene la ejecución completa de la función
-            }
-        
-            // Agrega el cheque de pago actual formateado para este usuario a la colección de cheques de pago
-            let userPaycheck = {
-                userId: doc.id,
-                days: user.currentPaycheck,
-                hourlyRate: user.hourlyRate
-            };
-            if (user.currentPaycheck.length > 0) {
-                paychecks.usersPaychecks.push(userPaycheck);
-                batch.update(userRef, {
-                    paycheckHistory: FieldValue.arrayUnion(paycheckHistoryId)
-                });
-            }
-        
-            batch.update(userRef, {
-                currentShift: { blocks: [], lunchTaken: false },
-                status: 'outOfShift',
-                currentPaycheck: []
-            });
-        
-            // Si el turno aún está abierto (endTime == null), elimina el turno del día
+
+
+            //close the last block if open and set the status to outOfShift 
             if (lastBlockLength != undefined && lastBlockLength.endTime == null) {
                 batch.update(userRef, {
                     currentShift: { blocks: [], lunchTaken: false },
                     status: 'outOfShift',
-                    currentPaycheck: []
+                    // currentPaycheck: []
                 });
             }
+
+            // if it is payday, do this
+            if (Date.now() > endDate) {
+
+
+                // return console.log('it is not payday'); // Detiene la ejecución completa de la función
+
+                // Agrega el cheque de pago actual formateado para este usuario a la colección de cheques de pago
+                let userPaycheck = {
+                    userId: doc.id,
+                    days: user.currentPaycheck,
+                    hourlyRate: user.hourlyRate
+                };
+                if (user.currentPaycheck.length > 0) {
+                    paychecks.usersPaychecks.push(userPaycheck);
+                    batch.update(userRef, {
+                        paycheckHistory: FieldValue.arrayUnion(paycheckHistoryId),
+                        currentPaycheck: []
+                    });
+                }
+
+                //Update next lastStartingDate
+                let lastStartingDateUpdated = utilities.calculateNextPaycheckStart(endDate)
+                batch.update(settingsRef, { lastStartingDate: lastStartingDateUpdated })
+
+                //Create a doc in collection 'paychecks' with id 'lastStartingDate'
+                batch.set(db.collection('paycheckHistory').doc(paycheckHistoryId), paychecks)
+                //Add the referencia of the paycheck generated to configs
+                //TODO tal vez sea bueno anadir una validacion que confirma si existe el valor en el array paycheckHistory. Asi no haya pie para dublicados
+                batch.set(db.collection('general').doc('settings'), {
+                    paycheckHistory: FieldValue.arrayUnion(paycheckHistoryId)
+                }, { merge: true })
+            }
+
+
+
+            // batch.update(userRef, {
+            //     currentShift: { blocks: [], lunchTaken: false },
+            //     status: 'outOfShift',
+            //     currentPaycheck: []
+            // });
+
+            // Si el turno aún está abierto (endTime == null), elimina el turno del día
+
         }
         // usersDocs.forEach(doc => {
         //     let userRef = db.collection('users').doc(doc.id)
@@ -452,20 +462,15 @@ async function closePaycheck() {
 
 
         // });
-        //Update next lastStartingDate
-        let lastStartingDateUpdated = utilities.calculateNextPaycheckStart(endDate)
-        batch.update(settingsRef, { lastStartingDate: lastStartingDateUpdated })
-        //Create a doc in collection 'paychecks' with id 'lastStartingDate'
-        batch.set(db.collection('paycheckHistory').doc(paycheckHistoryId), paychecks)
-        //Add the referencia of the paycheck generated to configs
-        //TODO tal vez sea bueno anadir una validacion que confirma si existe el valor en el array paycheckHistory. Asi no haya pie para dublicados
-        batch.set(db.collection('general').doc('settings'), {
-            paycheckHistory: FieldValue.arrayUnion(paycheckHistoryId)
-        }, { merge: true })
+
+
         await batch.commit()
     } catch (error) {
-
-        console.log(error)
+        if (error.message === 'Cannot commit a write batch with no writes.') {
+            console.log('Batch is empty, skipping commit');
+        } else {
+            console.log(error)
+        }
 
     }
     return paychecks
@@ -497,11 +502,11 @@ function getElapsedMinSec(blocks) {
         }
 
     });
-        //eliminar los segundos para que sean minutos exactos
+    //eliminar los segundos para que sean minutos exactos
 
     var workedHours = setSecondsToZeroFromMillis(totalTimeWorked)
     var lunchedHours = setSecondsToZeroFromMillis(totalTimeLunch)
-   
+
     return {
         lunch: lunchedHours,
         work: workedHours

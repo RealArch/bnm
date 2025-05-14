@@ -66,7 +66,7 @@
               Start lunch
             </ion-button>
             <ion-button size="small" *ngIf="userData.status == 'onLunch'" color="primary" fill="clear" 
-              (click)="openModal('commute')">
+              (click)="openModal('endLunch')">
               Finish lunch
             </ion-button>
             <ion-button size="small" *ngIf="userData.status !== 'onLunch'" color="danger" (click)="openEndingShiftModal()" fill="clear">

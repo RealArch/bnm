@@ -18,7 +18,7 @@ import { IONIC_STANDALONE_MODULES } from 'src/app/ionic-standalone-components';
   imports: [FormsModule, ReactiveFormsModule, DatePipe, NgIf, IONIC_STANDALONE_MODULES]
 })
 export class StartShiftModalComponent implements OnInit {
-  @Input() modType!: 'start' | 'commute' | 'lunch';
+  @Input() modType!: 'start' | 'commute' | 'lunch' | 'endLunch';
   @Input() previousShift: any;
   //todo: if 'commute', set the min time for the clock the startTime of the previous block
   fb = inject(FormBuilder);
@@ -34,6 +34,7 @@ export class StartShiftModalComponent implements OnInit {
   loading: boolean = false;
   customers: Customer[] = []
   pickerTime: string = '';
+  maxDatePicker: any;
   ///////////
 
   constructor(
@@ -55,10 +56,15 @@ export class StartShiftModalComponent implements OnInit {
     this.pickerTime = this.timeServices.dateNowToIso8601Timezone()
     this.startShiftForm.controls['startTime'].setValue(this.pickerTime);
     //If there is a previous shift block and the current is lunch, load the values from the previous one
-
+    this.minDatePicker = this.timeServices.setMinMaxTime().minDatePicker
+    this.maxDatePicker = this.timeServices.setMinMaxTime().maxDatePicker
     if (this.previousShift) {
       //if a previous shift exist, don't allow select a time before the start time. We dont want negative count hours
-      this.minDatePicker = this.timeServices.formatToIso8601(this.previousShift.startTime)
+      
+      // this.minDatePicker = this.timeServices.formatToIso8601(this.previousShift.startTime)
+      
+      console.log(this.minDatePicker)
+      console.log(this.maxDatePicker)
       if (this.modType == 'lunch') {
         this.startShiftForm.controls['workingPlace'].setValue(this.previousShift.workingPlace)
         this.startShiftForm.controls['details'].setValue(this.previousShift.details)
@@ -89,7 +95,7 @@ export class StartShiftModalComponent implements OnInit {
         this.popupService.presentToast('bottom', 'danger', 'There was a problem trying to retrieve customers. Please try again.')
       })
   }
-  async startShiftAlert(modType: 'start' | 'commute' | 'lunch') {
+  async startShiftAlert(modType: 'start' | 'commute' | 'lunch' | 'endLunch') {
     var header = 'Adding shift information'
     var msg = `
       <strong> Start hour </strong>: ${this.datePipe.transform(this.startShiftForm.value.startTime, 'shortTime')} <br>

@@ -51,10 +51,16 @@ export class TimeService {
     return date.getTime(); // Devuelve el tiempo en milisegundos con los segundos en cero
   }
 
-  setMinMaxTime() {
-    const now = moment(); // Hora actual
+  setMinMaxTime(value?: any) {
+    var now 
+    if(value) {
+      now = moment(value); // Hora actual
+    }else{
+      now = moment(); // Hora actual
+    }
+    
     const minDatePicker = now.clone().subtract(5, 'minutes').format('YYYY-MM-DDTHH:mm:ss.SSSZ'); // 5 minutos antes
-    const maxDatePicker = now.clone().add(5, 'minutes').format('YYYY-MM-DDTHH:mm:ss.SSSZ'); // 5 minutos después
+    const maxDatePicker = now.clone().format('YYYY-MM-DDTHH:mm:ss.SSSZ'); // 5 minutos después
     return {
       minDatePicker,
       maxDatePicker
