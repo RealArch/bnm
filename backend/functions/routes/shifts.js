@@ -152,10 +152,13 @@ router.post('/close', middlewares.verifyClientToken, async (req, res) => {
         })
         //totalize hours worked
         timeWorked = getElapsedMinSec(blocks);
-        //Set the shiftDate to 12:00pm
-        console.log(blocks[0].startTime)
-
-        shiftDate = new Date(blocks[0].startTime).setHours(12, 0, 0, 0);
+        //get the day, month and year from string
+        var startTime = blocks[0].startTime
+        const [datePart] = startTime.split('T');
+        const [year, month, day] = datePart.split('-');
+        //Create Date and Set the shiftDate to 12:00pm
+        const dateUTC = new Date(year, month - 1, day, 12, 0, 0, 0);
+        const shiftDate = dateUTC.getTime();
         // Add the closing shift to collection "usersCurrentPaychecks"
         await userDocRef.set({
             currentPaycheck: FieldValue.arrayUnion({

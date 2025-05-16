@@ -16,7 +16,7 @@ import { DatePipe, NgIf } from '@angular/common';
   templateUrl: './pay-periods.page.html',
   styleUrls: ['./pay-periods.page.scss'],
   standalone: true,
-  imports: [ FormsModule, IONIC_STANDALONE_MODULES, DatePipe, NgIf]
+  imports: [FormsModule, IONIC_STANDALONE_MODULES, DatePipe, NgIf]
 })
 export class PayPeriodsPage implements OnInit {
   loading: boolean = true;
@@ -101,7 +101,10 @@ export class PayPeriodsPage implements OnInit {
       this.fixedHourlyRate = null
       return this.loading = false
     }
+    console.log(1)
     var res: any = await this.shifts.getUserWorkPaycheck(objectId)
+    console.log(2)
+
     let userId = localStorage.getItem('userUid')
     let userPaycheck = this.shiftService.userPaycheckById(res.usersPaychecks, userId)
     this.selectedPeriod = this.shiftService.createFortnightArray(res.paymentScheme, res.startDate, userPaycheck.days)

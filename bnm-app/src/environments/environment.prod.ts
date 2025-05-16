@@ -17,7 +17,7 @@ export const environment = {
     searchKey: '020bc175a201a0515a5a52f951e1fb54',
     indexes: {
       customers: 'customers_prod',
-      paycheckHistory:'paycheckHistory_dev'
+      paycheckHistory:'paycheckHistory_prod'
 
     }
   }

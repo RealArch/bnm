@@ -60,9 +60,9 @@ export class StartShiftModalComponent implements OnInit {
     this.maxDatePicker = this.timeServices.setMinMaxTime().maxDatePicker
     if (this.previousShift) {
       //if a previous shift exist, don't allow select a time before the start time. We dont want negative count hours
-      
+
       // this.minDatePicker = this.timeServices.formatToIso8601(this.previousShift.startTime)
-      
+
       console.log(this.minDatePicker)
       console.log(this.maxDatePicker)
       if (this.modType == 'lunch') {
@@ -162,13 +162,15 @@ export class StartShiftModalComponent implements OnInit {
       })
     )
   }
-  cancel() {
-    return this.modalController.dismiss()
-  }
+
   async getGeoloc() {
 
     try {
-      var coords = await Geolocation.getCurrentPosition()
+      var coords = await Geolocation.getCurrentPosition({
+        enableHighAccuracy: true,
+        timeout: 15000,  // 10 segundos
+        maximumAge: 0,
+      })
       var geolocation = {
         lat: coords.coords.latitude,
         lng: coords.coords.longitude,
@@ -180,6 +182,9 @@ export class StartShiftModalComponent implements OnInit {
       console.log(error)
       return null
     }
+  }
+  cancel() {
+    return this.modalController.dismiss()
   }
   // getIso8601Date(value?: number) {
   //   var date = Date.now()

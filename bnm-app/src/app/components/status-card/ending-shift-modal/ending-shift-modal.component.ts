@@ -87,7 +87,11 @@ export class EndingShiftModalComponent implements OnInit {
   async getGeoloc() {
 
     try {
-      var coords = await Geolocation.getCurrentPosition()
+      var coords = await Geolocation.getCurrentPosition({
+        enableHighAccuracy: true,
+        timeout: 15000,  // 10 segundos
+        maximumAge: 0,
+      })
       var geolocation = {
         lat: coords.coords.latitude,
         lng: coords.coords.longitude,
