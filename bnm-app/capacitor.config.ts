@@ -7,9 +7,9 @@ const config: CapacitorConfig = {
   appName: 'B&M App',
   webDir: 'www',
   server: { //Activar esto para emular en android
-    // androidScheme: 'http',
-    // cleartext: true,
-    // url: "http://192.168.50.46:8100",
+    androidScheme: 'http',
+    cleartext: true,
+    url: "http://192.168.50.46:8100",
   },
   android: {
     allowMixedContent: true
