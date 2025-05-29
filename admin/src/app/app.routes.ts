@@ -35,7 +35,8 @@ export const routes: Routes = [
           },
           {
             path: 'pending',
-            loadComponent: () => import('./pages/user/workers/pending/pending.page').then(m => m.PendingPage)
+            loadComponent: () => import('./pages/user/workers/pending/pending.page').then(m => m.PendingPage),
+
           },
         ]
       },
@@ -49,9 +50,20 @@ export const routes: Routes = [
       },
       {
         path: 'customers',
-        loadComponent: () => import('./pages/user/customers/customers.page').then( m => m.CustomersPage)
+        loadComponent: () => import('./pages/user/customers/customers.page').then(m => m.CustomersPage)
       },
-    
+      {
+        path: 'configs',
+        loadComponent: () => import('./pages/user/configs/configs.page').then(m => m.ConfigsPage),
+        children: [
+
+        ]
+      },
+      {
+        path: 'configs/admin-users',
+        loadComponent: () => import('./pages/user/configs/admin-users/admin-users.page').then(m => m.AdminUsersPage)
+      },
+
     ]
   },
 
@@ -76,33 +88,37 @@ export const routes: Routes = [
   },
   {
     path: 'user-accordion',
-    loadComponent: () => import('./pages/user/pay-periods/user-accordion/user-accordion.page').then( m => m.UserAccordionPage)
+    loadComponent: () => import('./pages/user/pay-periods/user-accordion/user-accordion.page').then(m => m.UserAccordionPage)
   },
   {
     path: 'add-customer-modal',
-    loadComponent: () => import('./pages/user/customers/add-customer-modal/add-customer-modal.page').then( m => m.AddCustomerModalPage)
+    loadComponent: () => import('./pages/user/customers/add-customer-modal/add-customer-modal.page').then(m => m.AddCustomerModalPage)
   },
   {
     path: 'edit-and-activate-modal',
-    loadComponent: () => import('./components/item-user/edit-and-activate-modal/edit-and-activate-modal.page').then( m => m.EditAndActivateModalPage)
+    loadComponent: () => import('./components/item-user/edit-and-activate-modal/edit-and-activate-modal.page').then(m => m.EditAndActivateModalPage)
   },
   {
     path: 'edit-user',
-    loadComponent: () => import('./components/item-user/edit-user/edit-user.page').then( m => m.EditUserPage)
-  },  {
+    loadComponent: () => import('./components/item-user/edit-user/edit-user.page').then(m => m.EditUserPage)
+  },
+  {
     path: 'time-sheet-modal',
-    loadComponent: () => import('./pages/user/pay-periods/user-accordion/time-sheet-modal/time-sheet-modal.page').then( m => m.TimeSheetModalPage)
+    loadComponent: () => import('./pages/user/pay-periods/user-accordion/time-sheet-modal/time-sheet-modal.page').then(m => m.TimeSheetModalPage)
   },
   {
     path: 'remove-account',
-    loadComponent: () => import('./pages/public/remove-account/remove-account.page').then( m => m.RemoveAccountPage)
+    loadComponent: () => import('./pages/public/remove-account/remove-account.page').then(m => m.RemoveAccountPage)
   },
   {
     path: 'privacy-policies',
-    loadComponent: () => import('./pages/public/privacy-policies/privacy-policies.page').then( m => m.PrivacyPoliciesPage)
+    loadComponent: () => import('./pages/public/privacy-policies/privacy-policies.page').then(m => m.PrivacyPoliciesPage)
   },
 
- 
+
+
+
+
 
 
 
