@@ -27,7 +27,13 @@ export class AppComponent implements OnDestroy {
   //Variables;
   private unsubscribe$ = new Subject<void>();
   constructor(private platform: Platform) {
-    this.checkGpsPermissions()
+    //solo si es la primera vez
+    console.log(localStorage)
+    console.log(localStorage.getItem('gpsModalPresented'))
+    if (localStorage.getItem('gpsModalPresented') != 'true') {
+      // this.checkGpsPermissions()
+      this.requestGpsModal()
+    }
 
     //todo:Pause app loading if can't find userData
     console.log('antes')
@@ -83,7 +89,8 @@ export class AppComponent implements OnDestroy {
           }
         })
     } else {
-      localStorage.clear()
+      localStorage.removeItem('userUid');
+      localStorage.removeItem('isUserActive');
       console.log('no user')
       this.navController.navigateRoot('/auth/login')
 
@@ -93,11 +100,14 @@ export class AppComponent implements OnDestroy {
   }
   //REQUEST GPS
   async checkGpsPermissions() {
-    console.log('entre a check gps permissions')
+
     try {
       const permissions = await Geolocation.checkPermissions()
       if (permissions.location !== 'granted') {
+
         this.requestGpsModal()
+
+
       }
     } catch (error) {
       return console.log(error)
@@ -108,6 +118,8 @@ export class AppComponent implements OnDestroy {
   //MODALS
   //Modal when GPS is not conceded
   async requestGpsModal() {
+    localStorage.setItem('gpsModalPresented', 'true')
+
     const modal = await this.modalController.create({
       component: RequestGpsPage
     })

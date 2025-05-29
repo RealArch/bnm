@@ -1,6 +1,8 @@
 const { auth } = require('firebase-admin');
 const { getFirestore } = require('firebase-admin/firestore');
 const { defineSecret } = require('firebase-functions/params');
+const { onDocumentDeleted } = require('firebase-functions/v2/firestore');
+const middlewares = require('../middlewares/verifyAuthTokens');
 
 const algoliaAppId = defineSecret('ALGOLIA_APP_ID');
 const algoliaAdminKey = defineSecret('ALGOLIA_ADMIN_KEY');
@@ -8,7 +10,7 @@ const algoliaAdminKey = defineSecret('ALGOLIA_ADMIN_KEY');
 const router = require('express').Router();
 const db = getFirestore()
 
-router.get('/',(req,res)=>{
+router.get('/', (req, res) => {
     console.log(algoliaAdminKey.value())
     console.log(algoliaAppId.value())
     return res.send("ok")
@@ -68,13 +70,13 @@ router.post('/signup', async (req, res) => {
                 blocks: [],
                 lunchTaken: false,
             },
-            paycheckHistory:[],
-            currentPaycheck:[],
+            paycheckHistory: [],
+            currentPaycheck: [],
             creationDate: dateNow,
             lastUpdate: dateNow,
             lastFinishedShift: null,
-            uid:userCreated.uid,
-            hourlyRate:0,
+            uid: userCreated.uid,
+            hourlyRate: 0,
         }
         await db.collection('users').doc(userCreated.uid).set(userDataDb).catch(err => {
             //Delete user previeusly created
@@ -102,6 +104,7 @@ router.post('/signup', async (req, res) => {
     return res.json({ message: 'User created', data: userDataDb, loginToken: loginToken })
 })
 
+
 router.get('/createAdminUser', async (req, res) => {
     try {
         var userCreated = await auth().createUser({
@@ -119,15 +122,51 @@ router.get('/createAdminUser', async (req, res) => {
         await db.collection('general').doc('settings').set({
             lastStartingDate: 1743764400000,
             paymentSchedule: "biweekly",
-            paycheckHistory:[]
+            paycheckHistory: []
         })
 
         return res.json({ message: 'Admin user created' })
-    } catch (error) {
+    } catch (err) {
         return res.status(500).json({
             name: err.name, message: err.message, code: 'auth/general-error'
         })
     }
     return res.status(500)
 })
-module.exports = router
+router.post('/deleteAccount',middlewares.verifyClientToken, async (req, res) => {
+    const userUid = req.body.userUid;
+    try {
+        await auth().deleteUser(userUid);
+        await db.collection('users').doc(userUid).delete();
+
+        return res.status(200).json({ 
+            success: true, 
+            message: 'Your account has been deleted successfully.' 
+        });
+    } catch (error) {
+        console.error(error);
+        return res.status(500).json({ 
+            success: false, 
+            message: 'There was an error deleting your account. Please try again.' 
+        });
+    }
+});
+//Trigger functions
+// const userDeleted = exports.userDeleted = onDocumentDeleted('users/{userId}',
+//     async (event) => {
+//         // const userId = event.params.userId;
+//         const userId = event.id;
+//         try {
+//             await auth().deleteUser(userId);
+//             console.log(`User ${userId} deleted from Firebase Auth.`);
+//         } catch (error) {
+//             console.error(`Error deleting user ${userId} from Auth:`, error);
+//         }
+//     }
+// );
+
+module.exports = {
+    router,
+    // userDeleted // Exporta el router para las rutas de Express
+
+};

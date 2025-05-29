@@ -118,7 +118,7 @@ export class RequestGpsPage implements OnInit {
               await NativeSettings.openIOS({
                 option: IOSSettings.App // Abre Settings > TuApp
               });
-            } else if (Capacitor.getPlatform() === 'ios') {
+            } else if (Capacitor.getPlatform() === 'android') {
               await NativeSettings.openAndroid({
                 option: AndroidSettings.ApplicationDetails // Abre Settings > TuApp
               });

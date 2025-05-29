@@ -49,7 +49,8 @@ const shiftsTriggers = require('./routes/shifts')
 
 
 //RUTAS
-const authRoute = require("./routes/auth")
+//Auth
+const { router: authRoute} = require('./routes/auth');
 app.use('/auth', authRoute)
 //SHIFTS
 const { router: shiftRoute, paycheckHistoryCreated, paycheckHistoryUpdated, closePaychecks } = require('./routes/shifts');
@@ -81,7 +82,8 @@ exports.customersTrigger = customersTrigger;
 exports.paycheckHistoryCreated = paycheckHistoryCreated;
 exports.paycheckHistoryUpdated = paycheckHistoryUpdated;
 exports.closePaychecks = closePaychecks;
-
+//Auto functions auth
+// exports.deleteUser = userDeleted
 //AUTOMATIC FUNCTIONS
 
 

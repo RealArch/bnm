@@ -3,7 +3,7 @@ import { Auth, IdTokenResult, authState, getAuth, getIdToken, idToken, onAuthSta
 import { HttpClient } from '@angular/common/http';
 import { environment } from '../../environments/environment';
 import { idTokenResult } from '@angular/fire/auth-guard';
-import { Firestore, doc, docData, docSnapshots, getDoc, getFirestore } from '@angular/fire/firestore';
+import { Firestore, deleteDoc, doc, docData, docSnapshots, getDoc, getFirestore } from '@angular/fire/firestore';
 import { Router } from '@angular/router';
 import { NavController } from '@ionic/angular';
 import { map } from 'rxjs'
@@ -72,6 +72,13 @@ export class AuthService {
         ...snapshot.data()
       }))
     )
+  }
+  deleteAccount(userUid: string, afAuthToken: string) {
+    var data = {
+      userUid: userUid,
+      afAuthToken: afAuthToken
+    }
+    return this.http.post(`${environment.api}/auth/deleteAccount`, data)
   }
   sendPasswordResetEmail(email: string) {
     console.log(email)

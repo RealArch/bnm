@@ -30,9 +30,12 @@
   <key>FirebaseAppDelegateProxyEnabled</key>
   <false/>
   
+  <!-- This if to open settings when gps is not granted -->
   
-  
-  
+  	<key>LSApplicationQueriesSchemes</key>
+	<array>
+    <string>app-settings</string>
+	</array>
   
 	<key>CFBundleDevelopmentRegion</key>
 	<string>en</string>

@@ -11,6 +11,9 @@ import { TimeService } from 'src/app/services/time.service';
 import { Customer } from './../../interfaces/customers'
 import { Geolocation } from '@capacitor/geolocation';
 import { IONIC_STANDALONE_MODULES } from 'src/app/ionic-standalone-components';
+import { NativeSettings, IOSSettings, AndroidSettings } from 'capacitor-native-settings';
+import { Capacitor } from '@capacitor/core';
+
 @Component({
   selector: 'app-start-shift-modal',
   templateUrl: './start-shift-modal.component.html',
@@ -139,7 +142,8 @@ export class StartShiftModalComponent implements OnInit {
     var geolocation = await this.getGeoloc()
     if (geolocation == null) {
       this.sending = false
-      return this.popupService.presentAlert('Location Access Required', 'To clock in and out, we need access to your location. Please enable GPS to continue.')
+      // return this.popupService.presentAlert('Location Access Required', 'To clock in and out, we need access to your location. Please enable GPS to continue.')
+      return this.alertOpenConfig()
     }
 
 
@@ -209,6 +213,40 @@ export class StartShiftModalComponent implements OnInit {
     const item = this.customers.find((entry: any) => entry.id === id);
     return item ? item.companyName : 'Name not found';
   }
+  //alerts
+  async alertOpenConfig() {
+    const alert = await this.alertController.create({
+      header: "Location Access Required",
+      message: "You have previously denied location access. To use this feature, please enable location services in Settings.",
+      buttons: [
+        {
+          text: 'Cancel',
+          role: 'cancel',
+          handler: () => {
+          },
+        },
+        {
+          text: 'Open settings',
+          role: 'confirm',
+          handler: async () => {
+
+            if (Capacitor.getPlatform() === 'ios') {
+              await NativeSettings.openIOS({
+                option: IOSSettings.App // Abre Settings > TuApp
+              });
+            } else if (Capacitor.getPlatform() === 'android') {
+              await NativeSettings.openAndroid({
+                option: AndroidSettings.ApplicationDetails // Abre Settings > TuApp
+              });
+            }
+
+          },
+        },
+      ]
+    })
+    alert.present()
+  }
+
   ngOnDestroy() {
     console.log('destroy StartShiftModalComponent')
     this.subscriptions.forEach(element => {

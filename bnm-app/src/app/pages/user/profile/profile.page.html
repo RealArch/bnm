@@ -34,7 +34,10 @@
     </ion-row>
 
     <ion-list color="primary" class="radius" [inset]="false">
-      <ion-item button color="light" detail="false" (click)="logout()">
+      <ion-item button color="light" detail="false" (click)="deleteAccountAlert()">
+        <ion-text>Delete your account</ion-text>
+      </ion-item>
+            <ion-item button color="light" detail="false" (click)="logout()">
         Sign out
       </ion-item>
     </ion-list>

@@ -2,21 +2,24 @@
   <ion-grid class="px-5 d-flex flex-column align-items-center justify-content-center h-100">
 
 
-      <div class="icon">
-        <ion-icon name="navigate-circle"></ion-icon>
-      </div>
-      <div class="title pb-2">
-        Location Access Required
-      </div>
-      <div class="details text-center pb-4">
-        To clock in and out, we need access to your location.
-        This helps ensure accurate time tracking for your shifts.
-        <br><br>
-        Please enable location services to continue.
-      </div>
-      <div class="button">
-        <ion-button (click)="requestGps()" size="small" color="light">Request permissions</ion-button>
-      </div>
+    <div class="icon">
+      <ion-icon name="navigate-circle"></ion-icon>
+    </div>
+    <div class="title pb-2">
+      Location Access Required
+    </div>
+    <div class="details text-center pb-4">
+      To clock in and out, we need access to your location.
+      This helps ensure accurate time tracking for your shifts.
+      <br><br>
+      You can grant permissions now or later, but please note that you won't be able to clock in or out without allowing location access.
+    </div>
+    <div class="button">
+      <ion-button (click)="requestGps()" size="small" color="light">Request permissions</ion-button>
+    </div>
+    <div class="button"> 
+      <ion-button (click)="modalController.dismiss()" size="small" color="light">Continue without permissions</ion-button>
+    </div>
   </ion-grid>
 
 
