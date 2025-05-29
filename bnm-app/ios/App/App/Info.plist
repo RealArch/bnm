@@ -2,7 +2,6 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
-<<<<<<< HEAD
   
   <key>NSLocationWhenInUseUsageDescription</key>
   <string>This app needs your location to show nearby points of interest.</string>
@@ -38,8 +37,6 @@
     <string>app-settings</string>
 	</array>
   
-=======
->>>>>>> 0f576a5 (cambios mac)
 	<key>CFBundleDevelopmentRegion</key>
 	<string>en</string>
 	<key>CFBundleDisplayName</key>
