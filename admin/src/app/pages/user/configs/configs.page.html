@@ -1,0 +1,28 @@
+<ion-header [translucent]="true">
+  <ion-toolbar color="primary">
+    <ion-title>
+      Settings
+    </ion-title>
+    <ion-buttons slot="start">
+      <ion-menu-button></ion-menu-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content [fullscreen]="true" color="light">
+ <ion-grid class="ion-padding">
+  <div class="mb-3">
+    <ion-text class="title-section-small ps-1">
+      Authentication
+    </ion-text>
+  </div>
+ 
+  <ion-list class="rounded">
+    <ion-item button routerLink="admin-users">
+      Admin users
+    </ion-item>
+  </ion-list>
+ </ion-grid>
+
+
+</ion-content>
