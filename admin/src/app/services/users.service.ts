@@ -60,5 +60,15 @@ export class UsersService {
       }))
     )
   }
+  getAdminUsers(){
+      const usersRef = collection(getFirestore(), 'adminUsers')
+    return collectionSnapshots(usersRef).pipe(
+      map(users => users.map(user => {
+        const data = user.data()
+        const id = user.id
+        return { id, ...data }
+      }))
+    )
+  }
 
 }

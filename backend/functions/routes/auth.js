@@ -1,5 +1,6 @@
 const { auth } = require('firebase-admin');
-const { getFirestore } = require('firebase-admin/firestore');
+const admin = require('firebase-admin');
+const { getFirestore, FieldValue } = require('firebase-admin/firestore');
 const { defineSecret } = require('firebase-functions/params');
 const { onDocumentDeleted } = require('firebase-functions/v2/firestore');
 const middlewares = require('../middlewares/verifyAuthTokens');
@@ -110,6 +111,9 @@ router.get('/createAdminUser', async (req, res) => {
         var userCreated = await auth().createUser({
             email: 'admin@admin.com',
             password: '111111',
+            name: 'Admin',
+            lastName: 'Admin',
+            active: true
         }).catch(err => {
             return res.status(500).json({
                 name: err.name, message: err.message, code: 'auth/error-user-creation'
@@ -124,6 +128,14 @@ router.get('/createAdminUser', async (req, res) => {
             paymentSchedule: "biweekly",
             paycheckHistory: []
         })
+        await db.collection('adminUsers').doc(userCreated.uid).set({
+            email: 'admin@admin.com',
+            createdDate: FieldValue.serverTimestamp(),
+            name: 'Admin',
+            lastName: 'Admin',
+            active: true
+
+        })
 
         return res.json({ message: 'Admin user created' })
     } catch (err) {
@@ -133,21 +145,21 @@ router.get('/createAdminUser', async (req, res) => {
     }
     return res.status(500)
 })
-router.post('/deleteAccount',middlewares.verifyClientToken, async (req, res) => {
+router.post('/deleteAccount', middlewares.verifyClientToken, async (req, res) => {
     const userUid = req.body.userUid;
     try {
         await auth().deleteUser(userUid);
         await db.collection('users').doc(userUid).delete();
 
-        return res.status(200).json({ 
-            success: true, 
-            message: 'Your account has been deleted successfully.' 
+        return res.status(200).json({
+            success: true,
+            message: 'Your account has been deleted successfully.'
         });
     } catch (error) {
         console.error(error);
-        return res.status(500).json({ 
-            success: false, 
-            message: 'There was an error deleting your account. Please try again.' 
+        return res.status(500).json({
+            success: false,
+            message: 'There was an error deleting your account. Please try again.'
         });
     }
 });

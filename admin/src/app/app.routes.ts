@@ -55,9 +55,7 @@ export const routes: Routes = [
       {
         path: 'configs',
         loadComponent: () => import('./pages/user/configs/configs.page').then(m => m.ConfigsPage),
-        children: [
-
-        ]
+ 
       },
       {
         path: 'configs/admin-users',

@@ -1,13 +1,56 @@
 <ion-header [translucent]="true">
-  <ion-toolbar>
-    <ion-title>admin-users</ion-title>
+  <ion-toolbar color="primary">
+    <ion-title>
+      Settings
+    </ion-title>
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="user/configs"></ion-back-button>
+    </ion-buttons>
   </ion-toolbar>
 </ion-header>
 
-<ion-content [fullscreen]="true">
-  <ion-header collapse="condense">
-    <ion-toolbar>
-      <ion-title size="large">admin-users</ion-title>
-    </ion-toolbar>
-  </ion-header>
+<ion-content [fullscreen]="true" color="light">
+  <ion-grid class="ion-padding">
+    <div class="mb-3">
+      <ion-text class="title-section-small ps-1">
+        List of admin users
+      </ion-text>
+    </div>
+
+    <ion-list class="rounded">
+      <ion-item>
+        <ion-row class="w-100">
+          <ion-col size="3">
+            <div class="titulo">Nombre</div>
+            <div class="content">Rafael Alvarez</div>
+          </ion-col>
+          <ion-col size="5">
+            <div class="titulo">Email</div>
+            <div class="content">Rafael8721693&#64;gmail.com</div>
+          </ion-col>
+          <ion-col size="5">
+            <div class="titulo">Email</div>
+            <div class="content">Rafael8721693&#64;gmail.com</div>
+          </ion-col>
+          <ion-col class="d-flex justify-content-end align-itens-center">
+            <ion-button fill="clear">
+              <ion-icon color="medium" size="small" slot="icon-only" name="pencil"></ion-icon>
+            </ion-button>
+            <ion-button fill="clear">
+              <ion-icon color="medium" size="small" slot="icon-only" name="trash"></ion-icon>
+            </ion-button>
+          </ion-col>
+        </ion-row>
+
+      </ion-item>
+    </ion-list>
+  </ion-grid>
+
+
 </ion-content>
+
+<ion-fab vertical="bottom" horizontal="end">
+  <ion-fab-button>
+    <ion-icon name="add"></ion-icon>
+  </ion-fab-button>
+</ion-fab>
