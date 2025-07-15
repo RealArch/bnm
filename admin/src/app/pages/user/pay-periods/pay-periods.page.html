@@ -101,6 +101,13 @@
 
               <app-user-accordion [userData]="user" [configs]="configs" [customers]="customers"></app-user-accordion>
 
+              } @empty{
+              <div class="d-flex align-items-center justify-content-center">
+                <div class="my-4">
+                  No active user found
+
+                </div>
+              </div>
               }
 
             </ion-accordion-group>

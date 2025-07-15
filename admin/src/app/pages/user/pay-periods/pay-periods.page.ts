@@ -48,7 +48,7 @@ export class PayPeriodsPage implements OnInit {
   readUsers() {
     this.loading = true;
     combineLatest([
-      this.usersService.getUsers(),
+      this.usersService.getWorkersPerActive(true),
       this.authService.getPublicConfigData(),
       this.customerService.getAllCustomers()
     ])

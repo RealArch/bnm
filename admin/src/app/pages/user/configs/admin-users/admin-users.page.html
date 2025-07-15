@@ -16,19 +16,16 @@
         List of admin users
       </ion-text>
     </div>
-
+    @if(!loading()){
     <ion-list class="rounded">
+      @for ( user of users(); track user.id) {
       <ion-item>
         <ion-row class="w-100">
           <ion-col size="3">
             <div class="titulo">Nombre</div>
             <div class="content">Rafael Alvarez</div>
           </ion-col>
-          <ion-col size="5">
-            <div class="titulo">Email</div>
-            <div class="content">Rafael8721693&#64;gmail.com</div>
-          </ion-col>
-          <ion-col size="5">
+          <ion-col size="4">
             <div class="titulo">Email</div>
             <div class="content">Rafael8721693&#64;gmail.com</div>
           </ion-col>
@@ -41,9 +38,14 @@
             </ion-button>
           </ion-col>
         </ion-row>
-
       </ion-item>
+      }
     </ion-list>
+    } @else {
+    <div class="loading mt-0">
+      <ion-spinner color="primary"></ion-spinner>
+    </div>
+    }
   </ion-grid>
 
 

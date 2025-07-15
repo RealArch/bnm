@@ -1,4 +1,4 @@
-import { Component, inject, OnInit } from '@angular/core';
+import { Component, inject, OnInit, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { IonicModule } from '@ionic/angular';
@@ -15,10 +15,10 @@ import { add, pencil, star, trash } from 'ionicons/icons';
   imports: [IonicModule, CommonModule, FormsModule]
 })
 export class AdminUsersPage implements OnInit {
-  loading: boolean = true;
   usersService = inject(UsersService)
   popupService = inject(PopupService)
-  users: any;
+  loading = signal(true);
+  users= signal<any[]>([]);
   constructor() { 
     addIcons({trash, pencil, add})
   }
@@ -28,16 +28,16 @@ export class AdminUsersPage implements OnInit {
   }
   getAdminUsers() {
     console.log('entre')
-    this.loading = true
+    this.loading.set(true);
     this.usersService.getAdminUsers().subscribe({
       next: (users) => {
-        this.users = users
-        this.loading=false
+        this.users.set(users);
+        this.loading.set(false);
         console.log(this.users)
       },
       error: (err) => {
         console.log(err)
-        this.loading = false
+        this.loading.set(false);
         this.popupService.presentToast('bottom', 'danger', 'An error occurred while getting the users.')
       }
     })

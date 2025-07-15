@@ -1,7 +1,7 @@
 <ion-content color="dark">
 
   <ion-grid class="ion-no-padding h-100">
-    <form [formGroup]="signInForm" class="h-100">
+    <form [formGroup]="signInForm" class="h-100" (ngSubmit)="signIn(signInForm)">
 
       <ion-row class="ion-align-items-center ion-justify-content-center h-100">
         <ion-col size="10" size-md="6" class="ion-justify-content-center">
@@ -24,7 +24,7 @@
                 formControlName="password"></ion-input>
 
 
-              <ion-button class="mx-0 mt-2" [disabled]="!signInForm.valid || sending" expand="block" (click)="signIn(signInForm)">Sign
+              <ion-button type="submit" class="mx-0 mt-2" [disabled]="!signInForm.valid || sending" expand="block" >Sign
                 in</ion-button>
               <!-- <a href="#!" class="forgot-password-link">Forgot password?</a> -->
               <!-- <p class="login-wrapper-footer-text">Don't have an account? <a href="#!" class="text-reset">Register
