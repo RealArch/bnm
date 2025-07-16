@@ -143,8 +143,119 @@ router.get('/createAdminUser', async (req, res) => {
             name: err.name, message: err.message, code: 'auth/general-error'
         })
     }
-    return res.status(500)
 })
+/**
+ * @route POST /api/createUser
+ * @desc Crea un nuevo usuario en Firebase Authentication y guarda su perfil en Firestore.
+ * @access Public (Considera agregar middleware de autenticación si solo admins pueden crear usuarios)
+ * @param {string} email - Correo electrónico del nuevo usuario.
+ * @param {string} password - Contraseña del nuevo usuario (mínimo 6 caracteres).
+ * @param {string} name - Contraseña del nuevo usuario (mínimo 2 caracteres).
+ * @param {string} lastname - Contraseña del nuevo usuario (mínimo 2 caracteres).
+ */
+router.post('/addAdminUser', async (req, res) => {
+    const { email, password, name, lastName } = req.body;
+
+    // --- 1. Validaciones de entrada ---
+    if (!email || email.length > 200) {
+        return res.status(400).json({
+            code: 'auth/email-error',
+            message: 'Email field not valid.'
+        });
+    }
+    if (!password || password.length < 6 || password.length > 125) {
+        return res.status(400).json({
+            code: 'auth/password-error',
+            message: 'password field not valid.'
+        });
+    }
+    if (!name || name.length < 2 || name.length > 125) {
+        return res.status(400).json({
+            code: 'auth/name-error',
+            message: 'name field not valid.'
+        });
+    }
+    if (!lastName || lastName.length < 2 || lastName.length > 125) {
+        return res.status(400).json({
+            code: 'auth/lastName-error',
+            message: 'lastName field not valid.'
+        });
+    }
+
+
+    try {
+        let userRecord;
+        try {
+            // --- 2. Crear el usuario en Firebase Authentication ---
+            userRecord = await auth().createUser({
+                email: email,
+                password: password,
+                name: name,
+                lastName: lastName,
+                active: true
+            });
+            //Set custom claims for the user
+            await auth().setCustomUserClaims(userRecord.uid, {
+                admin: true
+            })
+        } catch (authError) {
+            // Manejo de errores específicos de Firebase Authentication
+            if (authError.code === 'auth/email-already-in-use') {
+                return res.status(409).json({
+                    name: authError.name,
+                    message: 'The email address is already in use by another account.',
+                    code: authError.code
+                });
+            }
+            // Otros errores de autenticación inesperados
+            return res.status(500).json({
+                name: authError.name,
+                message: authError.message,
+                code: 'auth/firebase-auth-error'
+            });
+        }
+
+        // --- 3. Guardar información adicional del usuario en Firestore ---
+        // Se asume que siempre queremos guardar un perfil en Firestore después de crear el usuario en Auth.
+        await db.collection('users').doc(userRecord.uid).set({
+            email: userRecord.email, // Usa userRecord.email para asegurar consistencia
+            createdDate: FieldValue.serverTimestamp(),
+            active: true, // El usuario está activo por defecto
+            name: name,
+            lastName: lastName,
+            // Puedes añadir más campos aquí, como:
+            // name: '',
+            // lastName: '',
+            // role: 'standard' // Ejemplo de rol predeterminado
+        });
+
+        // --- 4. Opcional: Establecer claims personalizados (si es necesario para la lógica de tu app) ---
+        // Por ejemplo, si necesitas definir roles o permisos a nivel de token de forma inmediata:
+        // await auth().setCustomUserClaims(userRecord.uid, {
+        //     role: 'standardUser',
+        //     level: 1
+        // });
+
+        // --- 5. Respuesta exitosa ---
+        return res.status(201).json({
+            message: 'User created successfully',
+            uid: userRecord.uid,
+            email: userRecord.email
+        });
+
+    } catch (dbError) {
+        // Manejo de errores que ocurran *después* de la creación en Auth (ej. fallos en Firestore)
+        // Consideración: Si el fallo es aquí, el usuario ya existe en Firebase Auth pero no en Firestore.
+        // Podrías añadir lógica para limpiar el usuario de Auth si esto es crítico para tu aplicación.
+        //eng
+        console.error(`Error saving user data in Firestore for UID ${dbError.uid}:`, dbError);
+        return res.status(500).json({
+            name: dbError.name,
+            message:' There was an error saving the user data in the database.',
+            code: 'firestore/data-save-error'
+        });
+    }
+});
 router.post('/deleteAccount', middlewares.verifyClientToken, async (req, res) => {
     const userUid = req.body.userUid;
     try {

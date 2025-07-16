@@ -1,0 +1,77 @@
+<ion-header>
+  <ion-toolbar color="primary">
+    <ion-buttons slot="end">
+      <ion-button (click)="closeModal()">
+        <ion-icon name="close" slot="icon-only"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+    <ion-title>
+      @if(user!=null){
+      Edit admin user
+      }@else{
+      Add admin user
+      }
+    </ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <ion-grid class="ion-padding">
+    <form [formGroup]="userForm">
+      <ion-list class="py-0 ">
+        <ion-list-header class="ps-2">
+          User Information
+        </ion-list-header>
+        <ion-row>
+
+          <ion-col size="6" class=" ">
+            <ion-item color="light" class="radius">
+              <ion-input formControlName="name" label="User name (Required)"
+                label-placement="stacked"></ion-input>
+            </ion-item>
+          </ion-col>
+           <ion-col size="6" class=" ">
+            <ion-item color="light" class="radius">
+              <ion-input formControlName="lastName" label="User last name (Required)"
+                label-placement="stacked"></ion-input>
+            </ion-item>
+          </ion-col>
+
+                    <ion-col size="6" class=" ">
+            <ion-item color="light" class="radius">
+              <ion-input formControlName="email" label="Email (Required)"
+                label-placement="stacked"></ion-input>
+            </ion-item>
+          </ion-col>
+
+                    <ion-col size="6" class=" ">
+            <ion-item color="light" class="radius">
+              <ion-input formControlName="password" label="Password (Required)"
+                label-placement="stacked"></ion-input>
+            </ion-item>
+          </ion-col>
+
+        </ion-row>
+      </ion-list>
+
+    </form>
+
+  </ion-grid>
+</ion-content>
+<ion-footer>
+  <ion-toolbar color="light" class="px-2">
+    <ion-buttons slot="end">
+      <ion-button [disabled]="!userForm.valid" (click)="addAdminUser()" color="primary" fill="solid">
+        @if (loading){
+        <ion-spinner></ion-spinner>
+        } @else {
+        @if(user!=null){
+        Update
+        }@else{
+        Add
+        }
+        }
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-footer>

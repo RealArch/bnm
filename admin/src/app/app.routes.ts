@@ -111,7 +111,11 @@ export const routes: Routes = [
   {
     path: 'privacy-policies',
     loadComponent: () => import('./pages/public/privacy-policies/privacy-policies.page').then(m => m.PrivacyPoliciesPage)
+  },  {
+    path: 'add-user-modal',
+    loadComponent: () => import('./pages/user/configs/admin-users/add-user-modal/add-user-modal.page').then( m => m.AddUserModalPage)
   },
+
 
 
 
