@@ -6,3 +6,15 @@
     font-weight: 400;
     font-size: small;
 }
+.updatingOverlay{
+    // height: 100%;
+    // width: 100%;
+    // background-color: rgba($color: black, $alpha: 0.5);
+    position: absolute;
+    bottom: 0; 
+}
+.current{
+    font-size: small;
+    font-weight: bolder;
+    color: var(--ion-color-primary);
+}

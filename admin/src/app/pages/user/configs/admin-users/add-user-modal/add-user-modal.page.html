@@ -15,7 +15,7 @@
   </ion-toolbar>
 </ion-header>
 
-<ion-content>
+<ion-content >
   <ion-grid class="ion-padding">
     <form [formGroup]="userForm">
       <ion-list class="py-0 ">
@@ -26,13 +26,13 @@
 
           <ion-col size="6" class=" ">
             <ion-item color="light" class="radius">
-              <ion-input formControlName="name" label="User name (Required)"
+              <ion-input formControlName="name" label="Name (Required)"
                 label-placement="stacked"></ion-input>
             </ion-item>
           </ion-col>
            <ion-col size="6" class=" ">
             <ion-item color="light" class="radius">
-              <ion-input formControlName="lastName" label="User last name (Required)"
+              <ion-input formControlName="lastName" label="Last name (Required)"
                 label-placement="stacked"></ion-input>
             </ion-item>
           </ion-col>
@@ -46,7 +46,7 @@
 
                     <ion-col size="6" class=" ">
             <ion-item color="light" class="radius">
-              <ion-input formControlName="password" label="Password (Required)"
+              <ion-input formControlName="password" label="Password * (min 6 characters)"
                 label-placement="stacked"></ion-input>
             </ion-item>
           </ion-col>

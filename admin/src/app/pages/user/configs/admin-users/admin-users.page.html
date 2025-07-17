@@ -10,7 +10,7 @@
 </ion-header>
 
 <ion-content [fullscreen]="true" color="light">
-  <ion-grid class="ion-padding">
+  <ion-grid class="ion-padding" fixed>
     <div class="mb-3">
       <ion-text class="title-section-small ps-1">
         List of admin users
@@ -19,26 +19,59 @@
     @if(!loading()){
     <ion-list class="rounded">
       @for ( user of users(); track user.id) {
+
       <ion-item>
+
         <ion-row class="w-100">
           <ion-col size="3">
-            <div class="titulo">Nombre</div>
-            <div class="content">Rafael Alvarez</div>
+            <div class="titulo">Name</div>
+            <div class="content">{{user.name}} {{user.lastName}}</div>
           </ion-col>
+
           <ion-col size="4">
             <div class="titulo">Email</div>
-            <div class="content">Rafael8721693&#64;gmail.com</div>
+            <div class="content">{{user.email}}</div>
           </ion-col>
+
+          <ion-col size="3">
+            <div class="titulo">Status</div>
+            <div class="content">
+              @if(user.active){
+              <ion-badge color="success">Active</ion-badge>
+              } @else {
+              <ion-badge color="danger">Inactive</ion-badge>
+              }
+
+            </div>
+          </ion-col>
+
           <ion-col class="d-flex justify-content-end align-itens-center">
-            <ion-button fill="clear">
-              <ion-icon color="medium" size="small" slot="icon-only" name="pencil"></ion-icon>
+            <!-- {{authService.currentUserUid$ | async}} -->
+            @if((authService.currentUserUid$ | async) == user.id ){
+
+            <div class="d-flex align-items-center current me-3">
+              Current user
+            </div>
+            } @else {
+            <ion-button [disabled]="checkIfUpdating(user.id)" fill="clear"
+              (click)="activateDeactivateUSer(user.id, user.active)">
+              <ion-icon *ngIf="user.active" color="medium" size="small" slot="icon-only" name="pause"></ion-icon>
+              <ion-icon *ngIf="!user.active" color="medium" size="small" slot="icon-only" name="play"></ion-icon>
+
             </ion-button>
-            <ion-button fill="clear">
-              <ion-icon color="medium" size="small" slot="icon-only" name="trash"></ion-icon>
+            <ion-button [disabled]="checkIfUpdating(user.id)" fill="clear" (click)="deleteAdminUser(user.id)">
+              <ion-icon color="danger" size="small" slot="icon-only" name="trash"></ion-icon>
             </ion-button>
+            }
           </ion-col>
+
         </ion-row>
+        @if(checkIfUpdating(user.id)){
+        <ion-progress-bar class="updatingOverlay" type="indeterminate"></ion-progress-bar>
+        }
       </ion-item>
+
+
       }
     </ion-list>
     } @else {

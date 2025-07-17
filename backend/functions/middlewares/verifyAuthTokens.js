@@ -9,7 +9,7 @@ const middlewares = {
                 .then((decodedToken) => {
                     if (decodedToken.admin) {
                         return res.status(500).json({
-                            'success': 'false',
+                            'success': false,
                             'msg': "This account is not allowed to do this"
                         });
                     } else {
@@ -37,37 +37,36 @@ const middlewares = {
         }
     },
 
-    // verificarTokenAdmin: function (req, res, next) {
-    //     console.log(req.body.afAuthToken)
-    //     var afAuthToken = req.body.afAuthToken;
-    //     if (afAuthToken) {
-    //         admin.auth().verifyIdToken(afAuthToken)
-    //             .then((decodedToken) => {
-    //                 if (decodedToken.admin) {
-    //                     req.afAuthTokenDecoded = decodedToken
-    //                     next();
-    //                     return
-    //                 } else {
-    //                     return res.status(500).json({
-    //                         'success': 'false',
-    //                         'msg': 'Este usuario no tiene persmisos para ejecutar esta acción.'
-    //                     });
-    //                 }
+    verifyAdminToken: function (req, res, next) {
+        const afAuthToken = req.headers.authorization?.split('Bearer ')[1];
+        if (afAuthToken) {
+            admin.auth().verifyIdToken(afAuthToken)
+                .then((decodedToken) => {
+                    if (decodedToken.admin) {
+                        req.afAuthTokenDecoded = decodedToken
+                        next();
+                        return
+                    } else {
+                        return res.status(401).json({
+                            'success': false,
+                            'msg': 'Este usuario no tiene persmisos para ejecutar esta acción.'
+                        });
+                    }
 
-    //             }).catch((err) => {
-    //                 console.log(err)
-    //                 return res.status(500).json({
-    //                     'success': 'false',
-    //                     'message': 'Error en afAuth',
-    //                     err: err
-    //                 });
-    //             })
-    //     } else {
-    //         return res.status(500).json({
-    //             'success': 'false',
-    //             'msg': 'No token provided.'
-    //         });
-    //     }
-    // },
+                }).catch((err) => {
+                    console.log(err)
+                    return res.status(500).json({
+                        'success': false,
+                        'message': 'Error en afAuth',
+                        err: err
+                    });
+                })
+        } else {
+            return res.status(401).json({
+                'success': false,
+                'msg': 'No token provided.'
+            });
+        }
+    },
 };
 module.exports = middlewares;

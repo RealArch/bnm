@@ -42,7 +42,7 @@ export class AddUserModalPage implements OnInit {
     //Declare form
     this.userForm = this.fb.group({
       email: [null, Validators.required],
-      password: [ null, Validators.required],
+      password: [ null, [Validators.required, Validators.minLength(6)]],
       name: [ null, Validators.required],
       lastName: [ null, Validators.required],
 
@@ -66,7 +66,7 @@ export class AddUserModalPage implements OnInit {
          this.popupService.presentToast(
           "bottom",
           "success",
-          "User added successfully"
+          "The user has been added successfully"
         )
         this.closeModal()
         this.loading = false;
@@ -84,6 +84,9 @@ export class AddUserModalPage implements OnInit {
 
 
   }
+
+
+
   closeModal() {
     this.modalController.dismiss()
   }

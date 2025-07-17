@@ -9,8 +9,8 @@ import { environment } from './environments/environment';
 import { initializeApp, provideFirebaseApp } from '@angular/fire/app';
 import { connectAuthEmulator, getAuth, provideAuth } from '@angular/fire/auth';
 import { connectFirestoreEmulator, getFirestore, provideFirestore } from '@angular/fire/firestore';
-import { getStorage, provideStorage } from '@angular/fire/storage';
-import { provideHttpClient } from '@angular/common/http';
+import {  provideHttpClient, withInterceptors } from '@angular/common/http';
+import { authInterceptor } from './app/interceptors/http-token.interceptor';
 
 if (environment.production) {
   enableProdMode();
@@ -19,7 +19,9 @@ if (environment.production) {
 bootstrapApplication(AppComponent, {
   providers: [
     { provide: RouteReuseStrategy, useClass: IonicRouteStrategy },
-    provideHttpClient(),
+    provideHttpClient(
+      withInterceptors([authInterceptor])
+    ),
     provideIonicAngular(),
     provideRouter(routes),
     importProvidersFrom(
@@ -43,5 +45,6 @@ bootstrapApplication(AppComponent, {
         return getFirestore();
       }
     })),
+
   ],
 });

@@ -144,39 +144,126 @@ router.get('/createAdminUser', async (req, res) => {
         })
     }
 })
+
+// Ruta para eliminar un usuario
+router.delete('/adminUsers/:userId', middlewares.verifyAdminToken, async (req, res) => {
+    const userId = req.params.userId; // Accede al ID desde los parámetros de la URL
+
+    try {
+        // Aquí iría la lógica para eliminar el usuario de tu base de datos
+        // Por ejemplo, con Firebase Admin SDK si el usuario está en Authentication
+        await admin.auth().deleteUser(userId);
+        await db.collection('adminUsers').doc(userId).delete();
+
+        return res.status(200).json({ success: true, message: `Usuario ${userId} eliminado correctamente.` });
+    } catch (error) {
+        console.error('Error al eliminar usuario:', error);
+        // Manejo de errores específicos, por ejemplo, si el usuario no existe
+        if (error.code === 'auth/user-not-found') {
+            return res.status(404).json({ success: false, message: 'Usuario no encontrado.' });
+        }
+        return res.status(500).json({ success: false, message: 'Error interno del servidor al eliminar usuario.', error: error.message });
+    }
+});
+
+router.patch('/adminUsers/changeStatus', middlewares.verifyAdminToken, async (req, res) => {
+    // Extract newStatus and userId from the request body
+    const { newStatus, userId } = req.body;
+
+    // --- Input Validation ---
+    // Validate that newStatus is a boolean type
+    if (typeof newStatus !== 'boolean') {
+        return res.status(409).json({
+            code: 'auth/newStatus-field-error',
+            message: 'newStatus field must be a boolean (true/false).'
+        });
+    }
+    // Validate that userId is provided and is a string
+    if (!userId || typeof userId !== 'string') {
+        return res.status(409).json({
+            code: 'auth/userId-field-error',
+            message: 'userId field not valid or not provided.'
+        });
+    }
+    // --- End Input Validation ---
+
+    try {
+        // --- Update User in Firebase Authentication (Custom Claims) ---
+        // Set the 'active' custom claim for the specified user.
+        // This affects the user's token and can be used for authorization rules.
+        await auth().setCustomUserClaims(userId, { active: newStatus });
+        
+        // --- Update User in Firestore Database ---
+        // Update the 'active' field and 'lastUpdate' timestamp in the user's Firestore document.
+        // This keeps the database record consistent with the authentication state.
+        await db.collection('adminUsers').doc(userId).update({
+            active: newStatus,
+            lastUpdate: FieldValue.serverTimestamp() // Uses Firestore's server timestamp
+        });
+
+        // --- Success Response ---
+        // Send a 200 OK response indicating successful status change.
+        return res.status(200).json({
+            success: true,
+            message: `User ${userId} status changed to ${newStatus}.` // Use newStatus for the message
+        });
+
+    } catch (error) {
+        // --- Error Handling ---
+        console.error('Error changing user status:', error);
+
+        // Handle specific Firebase Auth errors
+        if (error.code === 'auth/user-not-found') {
+            return res.status(404).json({
+                success: false,
+                message: 'User not found in Firebase Authentication.',
+                error: error.message
+            });
+        }
+        // General error response for any other unexpected errors during the process
+        return res.status(500).json({
+            success: false,
+            message: 'Internal server error occurred while changing user status.',
+            error: error.message
+        });
+    }
+
+
+})
+
 /**
  * @route POST /api/createUser
  * @desc Crea un nuevo usuario en Firebase Authentication y guarda su perfil en Firestore.
- * @access Public (Considera agregar middleware de autenticación si solo admins pueden crear usuarios)
+ * @access AdminAuth (Considera agregar middleware de autenticación si solo admins pueden crear usuarios)
  * @param {string} email - Correo electrónico del nuevo usuario.
  * @param {string} password - Contraseña del nuevo usuario (mínimo 6 caracteres).
  * @param {string} name - Contraseña del nuevo usuario (mínimo 2 caracteres).
  * @param {string} lastname - Contraseña del nuevo usuario (mínimo 2 caracteres).
  */
-router.post('/addAdminUser', async (req, res) => {
+router.post('/addAdminUser', middlewares.verifyAdminToken, async (req, res) => {
     const { email, password, name, lastName } = req.body;
 
     // --- 1. Validaciones de entrada ---
     if (!email || email.length > 200) {
-        return res.status(400).json({
+        return res.status(409).json({
             code: 'auth/email-error',
             message: 'Email field not valid.'
         });
     }
     if (!password || password.length < 6 || password.length > 125) {
-        return res.status(400).json({
+        return res.status(409).json({
             code: 'auth/password-error',
             message: 'password field not valid.'
         });
     }
     if (!name || name.length < 2 || name.length > 125) {
-        return res.status(400).json({
+        return res.status(409).json({
             code: 'auth/name-error',
             message: 'name field not valid.'
         });
     }
     if (!lastName || lastName.length < 2 || lastName.length > 125) {
-        return res.status(400).json({
+        return res.status(409).json({
             code: 'auth/lastName-error',
             message: 'lastName field not valid.'
         });
@@ -194,10 +281,7 @@ router.post('/addAdminUser', async (req, res) => {
                 lastName: lastName,
                 active: true
             });
-            //Set custom claims for the user
-            await auth().setCustomUserClaims(userRecord.uid, {
-                admin: true
-            })
+
         } catch (authError) {
             // Manejo de errores específicos de Firebase Authentication
             if (authError.code === 'auth/email-already-in-use') {
@@ -217,7 +301,7 @@ router.post('/addAdminUser', async (req, res) => {
 
         // --- 3. Guardar información adicional del usuario en Firestore ---
         // Se asume que siempre queremos guardar un perfil en Firestore después de crear el usuario en Auth.
-        await db.collection('users').doc(userRecord.uid).set({
+        await db.collection('adminUsers').doc(userRecord.uid).set({
             email: userRecord.email, // Usa userRecord.email para asegurar consistencia
             createdDate: FieldValue.serverTimestamp(),
             active: true, // El usuario está activo por defecto
@@ -235,6 +319,9 @@ router.post('/addAdminUser', async (req, res) => {
         //     role: 'standardUser',
         //     level: 1
         // });
+        await auth().setCustomUserClaims(userRecord.uid, {
+            admin: true
+        })
 
         // --- 5. Respuesta exitosa ---
         return res.status(201).json({
@@ -251,7 +338,7 @@ router.post('/addAdminUser', async (req, res) => {
         console.error(`Error saving user data in Firestore for UID ${dbError.uid}:`, dbError);
         return res.status(500).json({
             name: dbError.name,
-            message:' There was an error saving the user data in the database.',
+            message: ' There was an error saving the user data in the database.',
             code: 'firestore/data-save-error'
         });
     }
