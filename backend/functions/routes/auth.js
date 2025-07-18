@@ -20,13 +20,13 @@ router.post('/signup', async (req, res) => {
     console.log('entre a crear')
     var body = req.body
     var dateNow = Date.now()
-    if (body.firstName === null || body.firstName === undefined || body.firstName.length < 3 || body.firstName.length > 50 || body.firstName === '') {
+    if (body.firstName === null || body.firstName === undefined || body.firstName.length < 2 || body.firstName.length > 50 || body.firstName === '') {
         return res.status(500).json({
             msg: 'The "firstName" field is required and must contain between 3 and 50 characters.',
             code: 'auth/error-first-name'
         });
     }
-    if (body.lastName === null || body.lastName === undefined || body.lastName.length < 3 || body.lastName.length > 50 || body.lastName === '') {
+    if (body.lastName === null || body.lastName === undefined || body.lastName.length < 2 || body.lastName.length > 50 || body.lastName === '') {
         return res.status(500).json({
             msg: 'The "lastName" field is required and must contain between 3 and 50 characters.',
             code: 'auth/error-last-name'
@@ -52,6 +52,7 @@ router.post('/signup', async (req, res) => {
             emailVerified: false,
             password: body.password,
         }).catch(err => {
+            console.log(err)
             return res.status(500).json({
                 name: err.name, message: err.message, code: 'auth/error-user-creation'
             })
@@ -63,8 +64,8 @@ router.post('/signup', async (req, res) => {
         })
         var userDataDb = {
             email: body.email,
-            firstName: body.firstName,
-            lastName: body.lastName,
+            firstName: body.firstName.toString(),
+            lastName: body.lastName.toString(),
             active: false,
             status: 'outOfShift', // outOfShift | onShift 
             currentShift: {
@@ -96,6 +97,7 @@ router.post('/signup', async (req, res) => {
 
 
     } catch (err) {
+        console.log(err)
         return res.status(500).json({
             name: err.name, message: err.message, code: 'auth/general-error'
         })
@@ -113,14 +115,14 @@ router.get('/createAdminUser', async (req, res) => {
             password: '111111',
             name: 'Admin',
             lastName: 'Admin',
-            active: true
         }).catch(err => {
             return res.status(500).json({
                 name: err.name, message: err.message, code: 'auth/error-user-creation'
             })
         })
         await auth().setCustomUserClaims(userCreated.uid, {
-            admin: true
+            admin: true,
+            active:true
         })
         //Setear la DB
         await db.collection('general').doc('settings').set({
@@ -279,7 +281,6 @@ router.post('/addAdminUser', middlewares.verifyAdminToken, async (req, res) => {
                 password: password,
                 name: name,
                 lastName: lastName,
-                active: true
             });
 
         } catch (authError) {
@@ -320,7 +321,8 @@ router.post('/addAdminUser', middlewares.verifyAdminToken, async (req, res) => {
         //     level: 1
         // });
         await auth().setCustomUserClaims(userRecord.uid, {
-            admin: true
+             admin: true,
+            active:true
         })
 
         // --- 5. Respuesta exitosa ---

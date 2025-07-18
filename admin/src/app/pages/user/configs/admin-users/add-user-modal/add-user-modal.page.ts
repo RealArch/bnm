@@ -41,7 +41,7 @@ export class AddUserModalPage implements OnInit {
     this.states = this.generalService.getStatesArray()
     //Declare form
     this.userForm = this.fb.group({
-      email: [null, Validators.required],
+      email: [null, [Validators.required, Validators.email]],
       password: [ null, [Validators.required, Validators.minLength(6)]],
       name: [ null, Validators.required],
       lastName: [ null, Validators.required],

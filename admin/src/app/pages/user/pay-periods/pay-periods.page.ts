@@ -62,6 +62,7 @@ export class PayPeriodsPage implements OnInit {
           }
 
           this.configs = configs
+          console.log(this.configs)
           //Calculate current closing date 
           this.currentClosingDate = this.paycheckService.calculateEndOfPaycheck(this.configs.paymentSchedule, this.configs.lastStartingDate)
           //customers

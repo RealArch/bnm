@@ -1,11 +1,17 @@
 {
-  "hosting": [
-    {
-      "target": "admin-bnm", 
-      "source": ".",
-      "frameworksBackend": {
-        "buildCommand": "ng build --prod"
+  "hosting": {
+    "target": "admin-bnm",
+    "public": "www",
+    "ignore": [
+      "firebase.json",
+      "**/.*",
+      "**/node_modules/**"
+    ],
+    "rewrites": [
+      {
+        "source": "**",
+        "destination": "/index.html"
       }
-    }
-  ]
+    ]
+  }
 }

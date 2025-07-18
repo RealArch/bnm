@@ -22,8 +22,7 @@ export class AuthService {
   }
 
   login(email: string, password: string) {
-    console.log(email)
-    console.log(password)
+
     return signInWithEmailAndPassword(getAuth(), email, password)
   }
 

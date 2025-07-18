@@ -8,7 +8,8 @@ import { home, people, logOut, business, settings } from 'ionicons/icons'
 import { AuthService } from 'src/app/services/auth.service';
 import { Subject, takeUntil } from 'rxjs';
 import { IONIC_STANDALONE_MODULES } from 'src/app/ionic-standalone-components';
-
+import { PopupService } from 'src/app/services/popup.service';
+import { NavController } from '@ionic/angular/standalone';
 @Component({
   selector: 'app-user',
   templateUrl: './user.page.html',
@@ -20,26 +21,35 @@ export class UserPage implements OnInit {
   authService = inject(AuthService)
   router = inject(Router)
   menuController = inject(MenuController)
+  navController = inject(NavController)
+  popupService = inject(PopupService)
   private unsubscribe$ = new Subject<void>();
   constructor() {
 
     addIcons({ home, people, logOut, business, settings })
     this.authService.getAuthState()
-    .pipe(takeUntil(this.unsubscribe$))
+      .pipe(takeUntil(this.unsubscribe$))
       .subscribe({
         next: (user: any) => {
           if (user) {
             //Check if it is an admin
             this.authService.getIdTokenResult()?.then(data => {
-              if (!data?.claims['admin']) {
+              if (!data?.claims['admin'] || !data?.claims['active']) {
                 console.log('No es admin');
-                this.router.navigate(['/auth/login'])
+                this.popupService.presentToast(
+                  'bottom',
+                  'danger',
+                  'Access denied for this module.'
+                )
+                this.navController.navigateRoot('/auth/login')
+                // this.router.navigate(['/auth/login'])
                 this.logOut()
-              } 
+              }
             })
             //Then redirect to dashboard
           } else {
-            this.router.navigate(['/auth/login'])
+            this.navController.navigateRoot('/auth/login')
+            // this.router.navigate(['/auth/login'])
           }
         }
       })
@@ -48,7 +58,7 @@ export class UserPage implements OnInit {
 
   ngOnInit() {
   }
-  closeModal(){
+  closeModal() {
     this.menuController.close('main')
     console.log('cerrando')
   }
@@ -56,7 +66,7 @@ export class UserPage implements OnInit {
     this.authService.logOut()
     //Send a notification that you were logged out
   }
-  ngOnDestroy(){
+  ngOnDestroy() {
     this.unsubscribe$.next()
     this.unsubscribe$.complete()
   }

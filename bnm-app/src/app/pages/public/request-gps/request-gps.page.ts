@@ -107,6 +107,7 @@ export class RequestGpsPage implements OnInit {
           text: 'Cancel',
           role: 'cancel',
           handler: () => {
+            return this.modalController.dismiss()
           },
         },
         {
