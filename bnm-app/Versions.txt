@@ -1,2 +1,4 @@
+1.0.3 (working)
+-Correcion bug correo 'Profile'
 1.0.2 (12 ios)
 - Corregidos problemas de implementacion de app store connect. (Eliminacion de boton solicitar permisos mas tarde)
