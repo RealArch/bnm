@@ -1,11 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { addIcons } from 'ionicons';
-import { fileTrayFull, home, hourglass, person } from 'ionicons/icons';
-import { ActivatedRoute, Router } from '@angular/router';
-import { DocumentSnapshot } from '@angular/fire/firestore';
+import { fileTrayFull, home, hourglass, person, receiptOutline } from 'ionicons/icons';
+import { Router } from '@angular/router';
 import { AuthService } from 'src/app/services/auth.service';
-import { onAuthStateChanged, getAuth } from '@angular/fire/auth';
 import { IONIC_STANDALONE_MODULES } from 'src/app/ionic-standalone-components';
 
 @Component({
@@ -21,7 +19,7 @@ export class UserPage implements OnInit {
     private authService: AuthService,
     private router: Router
   ) {
-    addIcons({ home, person, hourglass, fileTrayFull })
+    addIcons({ home, person, hourglass, fileTrayFull, receiptOutline })
   }
 
   ngOnInit() {

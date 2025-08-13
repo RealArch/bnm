@@ -1,0 +1,32 @@
+<ion-header>
+  <ion-toolbar color="primary">
+
+    <!-- Título con animación -->
+    <ion-title *ngIf="!isSearching" class="fade-in">
+      Work Orders
+    </ion-title>
+
+    <!-- Searchbar con animación -->
+    <ion-searchbar name="searchText" *ngIf="isSearching" placeholder="Buscar..."
+      class="slide-in" (ionInput)="onSearchChange($event)" animated="true">
+    </ion-searchbar>
+
+    <!-- Botón lupa / cerrar -->
+    <ion-buttons slot="end">
+      <ion-button (click)="toggleSearch()">
+        <ion-icon [name]="isSearching ? 'close' : 'search'" slot="icon-only"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+
+</ion-content>
+
+<ion-fab horizontal="end" vertical="bottom" class="p-2">
+  <ion-fab-button routerLink="add">
+    <ion-icon name="add"></ion-icon>
+  </ion-fab-button>
+</ion-fab>

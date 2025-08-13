@@ -1,0 +1,67 @@
+<ion-header>
+  <ion-toolbar color="primary">
+    <ion-title>Add Work Order</ion-title>
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="user/work-orders"></ion-back-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content color="light">
+  <ion-grid>
+    <form [formGroup]="addWorkOrderForm">
+      <ion-row>
+        <ion-col size="12" class="section-subtitle">
+          Basic Information
+        </ion-col>
+        <!-- startDate -->
+        <ion-col>
+          <ion-item>
+            <ion-label position="stacked">Start date</ion-label>
+            <ion-datetime-button class="pb-3" datetime="startDate"></ion-datetime-button>
+            <ion-popover [keepContentsMounted]="true">
+              <ng-template>
+                <ion-datetime presentation="date" id="startDate" formControlName="startDate"></ion-datetime>
+              </ng-template>
+            </ion-popover>
+          </ion-item>
+        </ion-col>
+        <!--  -->
+        <!-- closeDate -->
+        <ion-col>
+          <ion-item>
+            <ion-label position="stacked">Date completed</ion-label>
+            <ion-datetime-button class="pb-3" datetime="closeDate"></ion-datetime-button>
+            <ion-popover [keepContentsMounted]="true">
+              <ng-template>
+                <ion-datetime presentation="date" id="closeDate" formControlName="closeDate"></ion-datetime>
+              </ng-template>
+            </ion-popover>
+          </ion-item>
+        </ion-col>
+        <!--  -->
+        <!-- billTo -->
+        <ion-col size="12">
+          <ion-item>
+            <ion-select labelPlacement="stacked" placeholder="Select a customer" interface="modal">
+              <div slot="label">Bill To <ion-text color="danger">(Required)</ion-text></div>
+              <ion-select-option value="apple">
+                <span>Gatorade</span>, <span>Saint cloud</span>,
+                <span>FL</span>
+              </ion-select-option>
+
+
+            </ion-select>
+          </ion-item>
+        </ion-col>
+        <!--  -->
+      </ion-row>
+
+      <ion-row>
+        <ion-col size="12" class="section-subtitle">
+          Equipment
+        </ion-col>
+      </ion-row>
+    </form>
+  </ion-grid>
+</ion-content>

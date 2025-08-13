@@ -13,7 +13,7 @@ export const routes: Routes = [
     path: '',
     redirectTo: 'user',
     pathMatch: 'full',
-    
+
   },
 
   {
@@ -37,9 +37,17 @@ export const routes: Routes = [
       },
       {
         path: 'pay-periods',
-        loadComponent: () => import('./pages/user/pay-periods/pay-periods.page').then( m => m.PayPeriodsPage)
+        loadComponent: () => import('./pages/user/pay-periods/pay-periods.page').then(m => m.PayPeriodsPage)
       },
-    
+      {
+        path: 'work-orders',
+        loadComponent: () => import('./pages/user/work-orders/work-orders.page').then(m => m.WorkOrdersPage)
+      },
+      {
+        path: 'work-orders/add',
+        loadComponent: () => import('./pages/user/work-orders/add-work-order/add-work-order.page').then(m => m.AddWorkOrderPage)
+      },
+
 
     ]
   },
@@ -58,7 +66,7 @@ export const routes: Routes = [
       },
       {
         path: 'forgot-password',
-        loadComponent: () => import('./pages/public/forgot-password/forgot-password.page').then( m => m.ForgotPasswordPage)
+        loadComponent: () => import('./pages/public/forgot-password/forgot-password.page').then(m => m.ForgotPasswordPage)
       },
 
     ]
@@ -67,28 +75,29 @@ export const routes: Routes = [
   {
     path: 'not-allowed-user',
     loadComponent: () => import('./pages/public/not-allowed-user/not-allowed-user.page').then(m => m.NotAllowedUserPage),
-    
+
   },
   {
     path: 'edit-profile-modal',
-    loadComponent: () => import('./pages/user/profile/edit-profile-modal/edit-profile-modal.page').then( m => m.EditProfileModalPage)
+    loadComponent: () => import('./pages/user/profile/edit-profile-modal/edit-profile-modal.page').then(m => m.EditProfileModalPage)
   },
   {
     path: 'notifications',
-    loadComponent: () => import('./pages/user/dashboard/notifications/notifications.page').then( m => m.NotificationsPage)
+    loadComponent: () => import('./pages/user/dashboard/notifications/notifications.page').then(m => m.NotificationsPage)
   },
   {
     path: 'view-blocks-modal',
-    loadComponent: () => import('./components/status-card/view-blocks-modal/view-blocks-modal.page').then( m => m.ViewBlocksModalPage)
+    loadComponent: () => import('./components/status-card/view-blocks-modal/view-blocks-modal.page').then(m => m.ViewBlocksModalPage)
   },
   {
     path: 'test',
-    loadComponent: () => import('./delete/test/test.page').then( m => m.TestPage)
+    loadComponent: () => import('./delete/test/test.page').then(m => m.TestPage)
   },
   {
     path: 'request-gps',
-    loadComponent: () => import('./pages/public/request-gps/request-gps.page').then( m => m.RequestGpsPage)
+    loadComponent: () => import('./pages/public/request-gps/request-gps.page').then(m => m.RequestGpsPage)
   },
+
 
 
 
