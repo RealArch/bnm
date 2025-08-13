@@ -97,6 +97,10 @@ export const routes: Routes = [
     path: 'request-gps',
     loadComponent: () => import('./pages/public/request-gps/request-gps.page').then(m => m.RequestGpsPage)
   },
+  {
+    path: 'modal-add-equipment',
+    loadComponent: () => import('./pages/user/work-orders/add-work-order/modal-add-equipment/modal-add-equipment.page').then( m => m.ModalAddEquipmentPage)
+  },
 
 
 

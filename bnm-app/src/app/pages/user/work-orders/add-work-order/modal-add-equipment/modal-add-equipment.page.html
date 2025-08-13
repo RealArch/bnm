@@ -1,0 +1,73 @@
+<ion-header>
+  <ion-toolbar color="primary">
+    <ion-title>Add Equipment Data</ion-title>
+    <ion-buttons slot="end">
+      <ion-button (click)="closeModal()">
+        <ion-icon slot="icon-only" name="close"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content color="light">
+  <ion-grid>
+    <form [formGroup]="addEquipmentForm">
+
+      <ion-row>
+        <ion-col size="12" class="section-subtitle">
+          Basic Information
+        </ion-col>
+
+        <!-- make -->
+        <ion-col size="12">
+          <ion-item>
+            <ion-input formControlName="make" labelPlacement="stacked" placeholder="Ex. EnerSys">
+              <div slot="label">Make</div>
+            </ion-input>
+          </ion-item>
+        </ion-col>
+        <!--  -->
+
+        <!-- model -->
+        <ion-col size="12">
+          <ion-item>
+            <ion-input formControlName="model" labelPlacement="stacked" placeholder="Ex. 18-145">
+              <div slot="label">Model</div>
+            </ion-input>
+          </ion-item>
+        </ion-col>
+        <!--  -->
+
+        <!-- serialNumber -->
+        <ion-col size="12">
+          <ion-item>
+            <ion-input formControlName="serialNumber" labelPlacement="stacked" placeholder="Ex. 123123b">
+              <div slot="label">Serial Number</div>
+            </ion-input>
+          </ion-item>
+        </ion-col>
+        <!--  -->
+
+        <!-- equipmentNumber -->
+        <ion-col size="12">
+          <ion-item>
+            <ion-input formControlName="equipmentNumber" labelPlacement="stacked" placeholder="Ex. 34">
+              <div slot="label">Equipment Number</div>
+            </ion-input>
+          </ion-item>
+        </ion-col>
+        <!--  -->
+      </ion-row>
+    </form>
+  </ion-grid>
+</ion-content>
+
+<ion-footer>
+  <ion-toolbar color="primary" class="ion-padding">
+    <ion-buttons slot="end">
+      <ion-button fill="solid" color="light" (click)="save()">
+        <span class="px-4">Add</span>
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-footer>

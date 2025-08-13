@@ -43,7 +43,8 @@
         <!-- billTo -->
         <ion-col size="12">
           <ion-item>
-            <ion-select labelPlacement="stacked" placeholder="Select a customer" interface="modal">
+            <ion-select formControlName="billTo" labelPlacement="stacked" placeholder="Select a customer"
+              interface="modal">
               <div slot="label">Bill To <ion-text color="danger">(Required)</ion-text></div>
               <ion-select-option value="apple">
                 <span>Gatorade</span>, <span>Saint cloud</span>,
@@ -59,7 +60,82 @@
 
       <ion-row>
         <ion-col size="12" class="section-subtitle">
-          Equipment
+          Noted Equipments
+        </ion-col>
+        <ion-col size="12">
+          @if(notedEquipments.value.length == 0){
+          <div class="no-equipment-box">
+            <div>
+              No Equipment added to the work order.
+            </div>
+
+          </div>
+          }
+          @for(notedEquipment of notedEquipments.value; track notedEquipment; let i = $index){
+          <ion-item class="mb-1">
+            <ion-row class="w-100">
+              <ion-col size="6">
+                <div class="equipmentHeader">
+                  Make
+                </div>
+                <div class="equipmentData">
+                  {{notedEquipment.make || 'N/A'}}
+                </div>
+              </ion-col>
+              <ion-col size="6">
+                <div class="equipmentHeader">
+                  Model
+                </div>
+                <div class="equipmentData">
+                  {{notedEquipment.model || 'N/A'}}
+                </div>
+              </ion-col>
+              <ion-col size="6">
+                <div class="equipmentHeader">
+                  Serial Number
+                </div>
+                <div class="equipmentData">
+                  {{notedEquipment.serialNumber || 'N/A'}}
+                </div>
+              </ion-col>
+              <ion-col size="6">
+                <div class="equipmentHeader">
+                  Equipment Number
+                </div>
+                <div class="equipmentData">
+                  {{notedEquipment.equipmentNumber || 'N/A'}}
+                </div>
+              </ion-col>
+            </ion-row>
+            <ion-button slot="end" size="small" shape="round" (click)="removeEquipment(i)">
+              <ion-icon slot="icon-only" name="close"></ion-icon>
+            </ion-button>
+          </ion-item>
+          }
+          <div class="d-flex justify-content-center pt-2">
+            <ion-button size="small" (click)="openAddEquipmentModal()">Add
+              <ion-icon name="add"></ion-icon>
+            </ion-button>
+          </div>
+        </ion-col>
+      </ion-row>
+
+      <ion-row>
+        <ion-col size="12" class="section-subtitle">
+          Services
+        </ion-col>
+        <ion-col size="12">
+          <div class="no-equipment-box">
+            <div>
+              No Services added to the work order.
+            </div>
+
+          </div>
+          <div class="d-flex justify-content-center pt-2">
+            <ion-button size="small" (click)="openAddEquipmentModal()">Add
+              <ion-icon name="add"></ion-icon>
+            </ion-button>
+          </div>
         </ion-col>
       </ion-row>
     </form>
