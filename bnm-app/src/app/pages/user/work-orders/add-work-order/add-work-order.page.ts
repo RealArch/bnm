@@ -171,7 +171,7 @@ export class AddWorkOrderPage implements OnInit {
     const { data, role } = await modal.onWillDismiss();
 
     if (role === 'confirm') {
-      // 3. Verificamos el modo para saber si añadir o actualizar
+      // 3. Verificamos e l modo para saber si añadir o actualizar
       if (data.mode === 'Add') {
         // Añadimos un nuevo servicio al FormArray
         this.materialsUsed.push(this.fb.control(data.material));
