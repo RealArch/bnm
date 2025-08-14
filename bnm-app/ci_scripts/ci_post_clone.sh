@@ -1,17 +1,25 @@
 #!/bin/sh
+# Install Homebrew (needed for Node.js and CocoaPods)
+/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
 
-# Navega al directorio raíz del repositorio
+# Add Homebrew to PATH
+(echo; echo 'eval "$(/opt/homebrew/bin/brew shellenv)"') >> ~/.zprofile
+eval "$(/opt/homebrew/bin/brew shellenv)"
+
+# Install Node.js
+brew install node
+
+# Install CocoaPods
+brew install cocoapods
+
+# Navigate to the project root directory
 cd $CI_WORKSPACE
 
-# Instala las dependencias de Node.js
-echo "---- Instalando dependencias de Node.js ----"
+# Install Node.js dependencies
 npm install
 
-# Ejecuta Capacitor Sync para copiar los assets web y actualizar los plugins nativos
-echo "---- Sincronizando plugins de Capacitor ----"
-npx cap sync ios
+# Navigate to the iOS directory
+cd ios
 
-echo "---- Script de post-clonación finalizado ----"
-
-# Salir con éxito
-exit 0
+# Install CocoaPods dependencies
+pod install
