@@ -13,7 +13,7 @@ brew install node
 brew install cocoapods
 
 # Navigate to the correct project directory (bnm/bnm-app)
-cd $CI_WORKSPACE/bnm/bnm-app
+cd $CI_WORKSPACE/bnm-app
 
 # Install Node.js dependencies
 npm install
