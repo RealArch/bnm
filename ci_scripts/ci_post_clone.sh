@@ -7,7 +7,7 @@
 eval "$(/opt/homebrew/bin/brew shellenv)"
 
 # Install Node.js
-brew install node
+brew install node 
 
 # Install CocoaPods
 brew install cocoapods
