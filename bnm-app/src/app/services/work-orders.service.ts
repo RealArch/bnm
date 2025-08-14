@@ -15,7 +15,7 @@ export class WorkOrdersService {
    * @returns Un Observable con la respuesta de la API.
    */
   addWorkOrder(workOrderData: any, afAuthToken:string): Observable<any> {
-    var data={
+    var data={ 
       workOrderData,
       afAuthToken
     }
