@@ -1,4 +1,4 @@
-import { Component, inject, OnInit } from '@angular/core';
+import { Component, inject, Input, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import {
@@ -15,12 +15,18 @@ import { close } from 'ionicons/icons';
   styleUrls: ['./modal-add-equipment.page.scss'],
   standalone: true,
   imports: [IonInput, IonItem, IonCol,
-     IonRow, IonGrid, IonFooter, IonIcon,
-     IonButton, IonButtons, IonContent,
-      IonHeader, IonTitle, IonToolbar, 
-      CommonModule, FormsModule, ReactiveFormsModule]
+    IonRow, IonGrid, IonFooter, IonIcon,
+    IonButton, IonButtons, IonContent,
+    IonHeader, IonTitle, IonToolbar,
+    CommonModule, FormsModule, ReactiveFormsModule
+  ]
 })
 export class ModalAddEquipmentPage implements OnInit {
+  @Input() equipment: any;
+  @Input() index!: number;
+
+  mode: 'Add' | 'Edit' = 'Add';
+
   modalCtrl = inject(ModalController)
   fb = inject(FormBuilder)
   addEquipmentForm: FormGroup = this.fb.group({})
@@ -35,11 +41,19 @@ export class ModalAddEquipmentPage implements OnInit {
   }
 
   ngOnInit() {
+    if (this.equipment) {
+      this.mode = 'Edit';
+      this.addEquipmentForm.patchValue(this.equipment);
+    }
   }
-  save(){
-    this.modalCtrl.dismiss(this.addEquipmentForm.value, 'confirm');
+  save() {
+    this.modalCtrl.dismiss({
+      equipment: this.addEquipmentForm.value,
+      mode: this.mode,
+      index: this.index
+    }, 'confirm');
   }
-  closeModal() {
-    this.modalCtrl.dismiss()
+ closeModal() {
+    this.modalCtrl.dismiss(null, 'cancel');
   }
 }

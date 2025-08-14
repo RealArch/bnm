@@ -65,8 +65,8 @@
 <ion-footer>
   <ion-toolbar color="primary" class="ion-padding">
     <ion-buttons slot="end">
-      <ion-button fill="solid" color="light" (click)="save()">
-        <span class="px-4">Add</span>
+      <ion-button fill="solid" color="light" (click)="save()" [disabled]="addEquipmentForm.invalid">
+        <span class="px-4">{{ mode === 'Add' ? 'Add' : 'Update' }}</span>
       </ion-button>
     </ion-buttons>
   </ion-toolbar>

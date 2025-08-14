@@ -1,19 +1,27 @@
 import { Component, inject, OnInit } from '@angular/core';
 import { CommonModule, JsonPipe } from '@angular/common';
-import { FormArray, FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
+import { AbstractControl, FormArray, FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, ValidationErrors, Validators } from '@angular/forms';
 import {
   IonContent, IonHeader, IonTitle, IonToolbar, IonBackButton, IonButtons, IonGrid, IonRow, IonCol, IonItem, IonLabel, IonDatetimeButton, IonDatetime, IonPopover, IonInput, IonText,
-  IonSelect, IonSelectOption, IonButton, IonIcon, ModalController, IonList } from '@ionic/angular/standalone';
+  IonSelect, IonSelectOption, IonButton, IonIcon, ModalController, IonList, IonFooter, IonSpinner, NavController
+} from '@ionic/angular/standalone';
 import { addIcons } from 'ionicons';
-import { add, close } from 'ionicons/icons'
+import { add, close, createOutline, alert, alertCircleOutline } from 'ionicons/icons'
 import { ModalAddEquipmentPage } from './modal-add-equipment/modal-add-equipment.page';
+import { ModalAddServicePage } from './modal-add-service/modal-add-service.page';
+import { ModalAddMaterialsPage } from './modal-add-materials/modal-add-materials.page';
+import { ActivatedRoute } from '@angular/router';
+import { WorkOrdersService } from 'src/app/services/work-orders.service';
+import { finalize } from 'rxjs';
+import { AuthService } from 'src/app/services/auth.service';
+import { PopupsService } from 'src/app/services/popups.service';
 @Component({
   selector: 'app-add-work-order',
   templateUrl: './add-work-order.page.html',
   styleUrls: ['./add-work-order.page.scss'],
   standalone: true,
-  imports: [ IonIcon, IonButton, IonText,  IonPopover, IonDatetime, 
-    IonDatetimeButton, IonLabel, IonItem, IonCol, IonRow, IonGrid, 
+  imports: [IonSpinner, IonFooter, IonIcon, IonButton, IonText, IonPopover, IonDatetime,
+    IonDatetimeButton, IonLabel, IonItem, IonCol, IonRow, IonGrid,
     IonButtons, IonBackButton,
     IonContent, IonHeader, IonTitle, IonToolbar, CommonModule,
     FormsModule, ReactiveFormsModule, IonSelect, IonSelectOption,
@@ -22,42 +30,168 @@ import { ModalAddEquipmentPage } from './modal-add-equipment/modal-add-equipment
 export class AddWorkOrderPage implements OnInit {
   modalCtrl = inject(ModalController)
   fb = inject(FormBuilder)
-  addWorkOrderForm: FormGroup = this.fb.group({})
+  route = inject(ActivatedRoute)
+  workOrderService = inject(WorkOrdersService);
+  navCtrl = inject(NavController);
+  authService = inject(AuthService)
+  popupService = inject(PopupsService)
 
+  saving: Boolean = false;
+  addWorkOrderForm: FormGroup = this.fb.group({})
+  type: string | null = null;
   constructor() {
-    addIcons({close,add});
+    addIcons({ createOutline, close, add, alert, alertCircleOutline });
     this.addWorkOrderForm = this.fb.group({
-      startDate: [null, [Validators.required]],
-      closeDate: [null, [Validators.required]],
+      startDate: [new Date().toISOString().split('T')[0], [Validators.required]],
+      closeDate: [null, []],
       billTo: [null, [Validators.required]],
-      notedEquipments: this.fb.array([])
+      notedEquipments: this.fb.array([]),
+      servicesPerformed: this.fb.array([], [minLengthArray(1)]),
+      materialsUsed: this.fb.array([]),
+      type: [this.route.snapshot.paramMap.get('type'), [Validators.required]]
 
     })
   }
 
   ngOnInit() {
-    console.log('a')
+    this.type = this.route.snapshot.paramMap.get('type');
   }
   get notedEquipments() {
     return this.addWorkOrderForm.get('notedEquipments') as FormArray;
   }
-  removeEquipment(index:number){
+  get servicesPerformed() {
+    return this.addWorkOrderForm.get('servicesPerformed') as FormArray;
+  }
+  get materialsUsed() {
+    return this.addWorkOrderForm.get('materialsUsed') as FormArray;
+  }
+  get startDate() {
+    return this.addWorkOrderForm.get('startDate') as FormArray;
+  }
+  removeEquipment(index: number) {
     this.notedEquipments.removeAt(index)
   }
-
-  async openAddEquipmentModal() {
+  removeService(index: number) {
+    this.servicesPerformed.removeAt(index)
+  }
+  removeMaterial(index: number) {
+    this.materialsUsed.removeAt(index)
+  }
+  // EQUIPMENT MODAL
+  async openEquipmentModal(equipment: any = null, index: any = null) {
     const modal = await this.modalCtrl.create({
       component: ModalAddEquipmentPage,
+      // 2. Pasamos el equipo y su índice al modal.
+      componentProps: {
+        equipment: equipment,
+        index: index
+      }
     });
     modal.present();
 
     const { data, role } = await modal.onWillDismiss();
-    console.log('cerre')
+
     if (role === 'confirm') {
-      this.notedEquipments.push(this.fb.control(data));
-      console.log(this.notedEquipments)
+      // 3. Verificamos el modo para saber si añadir o actualizar.
+      if (data.mode === 'Add') {
+        this.notedEquipments.push(this.fb.control(data.equipment));
+      } else { // Si el modo es 'Edit'
+        this.notedEquipments.at(data.index).setValue(data.equipment);
+      }
+    }
+  }
+
+  async createWorkOrder() {
+
+    this.saving = true;
+
+    var afAuthToken = await this.authService.getIdToken()
+
+    this.workOrderService.addWorkOrder(this.addWorkOrderForm.value, afAuthToken!).pipe(
+      // El operador finalize asegura que 'saving' se ponga en 'false' siempre,
+      // tanto si la petición tiene éxito como si falla.
+      finalize(() => this.saving = false)
+    ).subscribe({
+      next: (response) => {
+        this.popupService.presentToast('bottom', 'success', 'Work order created successfully.')
+        // Opcional: Muestra un mensaje de éxito (ej. un Toast de Ionic)
+        // Opcional: Navega a la página de lista de work orders
+        this.navCtrl.navigateBack('/user/work-orders');
+      },
+      error: (error) => {
+        console.error('error:', error);
+        this.popupService.presentToast('bottom', 'danger', 'Failed to create work order. Please try again.')
+
+        // Opcional: Muestra un mensaje de error al usuario
+      }
+    });
+  }
+  ////var afAuthToken = await this.authService.getIdToken()
+  //SERVICES MODAL
+  async openServiceModal(service: any = null, index: any = null) {
+
+
+    const modal = await this.modalCtrl.create({
+      component: ModalAddServicePage,
+      // 2. Pasamos los datos al modal. Si service es nulo, el modal sabrá que es para añadir.
+      componentProps: {
+        service: service,
+        index: index
+      }
+    });
+    modal.present();
+
+    const { data, role } = await modal.onWillDismiss();
+
+    if (role === 'confirm') {
+      // 3. Verificamos el modo para saber si añadir o actualizar
+      if (data.mode === 'Add') {
+        // Añadimos un nuevo servicio al FormArray
+        this.servicesPerformed.push(this.fb.control(data.service));
+      } else { // Si el modo es 'Edit'
+        // Actualizamos el servicio existente en el FormArray
+        this.servicesPerformed.at(data.index).setValue(data.service);
+      }
+    }
+  }
+
+  //MATERIAL MODAL
+  async openMaterialModal(material: any = null, index: any = null) {
+
+
+    const modal = await this.modalCtrl.create({
+      component: ModalAddMaterialsPage,
+      componentProps: {
+        material: material,
+        index: index
+      }
+    });
+    modal.present();
+
+    const { data, role } = await modal.onWillDismiss();
+
+    if (role === 'confirm') {
+      // 3. Verificamos el modo para saber si añadir o actualizar
+      if (data.mode === 'Add') {
+        // Añadimos un nuevo servicio al FormArray
+        this.materialsUsed.push(this.fb.control(data.material));
+      } else { // Si el modo es 'Edit'
+        // Actualizamos el servicio existente en el FormArray
+        this.materialsUsed.at(data.index).setValue(data.material);
+      }
     }
   }
 
 
+
+
+}
+
+export function minLengthArray(min: number) {
+  return (control: AbstractControl): ValidationErrors | null => {
+    if (control && control.value && Array.isArray(control.value) && control.value.length >= min) {
+      return null;
+    }
+    return { minLengthArray: { requiredLength: min, actualLength: control.value?.length || 0 } };
+  };
 }

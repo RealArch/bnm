@@ -8,14 +8,43 @@
 </ion-header>
 
 <ion-content color="light">
-  <ion-grid>
+  <ion-grid class="mb-5">
     <form [formGroup]="addWorkOrderForm">
       <ion-row>
-        <ion-col size="12" class="section-subtitle">
+        <ion-col size="12">
+          <div class="type-box">
+            @if(type=='work'){
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+              stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round"
+              class="icon icon-tabler icons-tabler-outline icon-tabler-hammer me-2">
+              <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+              <path d="M11.414 10l-7.383 7.418a2.091 2.091 0 0 0 0 2.967a2.11 2.11 0 0 0 2.976 0l7.407 -7.385" />
+              <path
+                d="M18.121 15.293l2.586 -2.586a1 1 0 0 0 0 -1.414l-7.586 -7.586a1 1 0 0 0 -1.414 0l-2.586 2.586a1 1 0 0 0 0 1.414l7.586 7.586a1 1 0 0 0 1.414 0z" />
+            </svg>
+            Work order for work or delivery
+            } @else if(type=='pickup') {
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+              stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round"
+              class="icon icon-tabler icons-tabler-outline icon-tabler-car-crane me-2">
+              <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+              <path d="M5 17m-2 0a2 2 0 1 0 4 0a2 2 0 1 0 -4 0" />
+              <path d="M17 17m-2 0a2 2 0 1 0 4 0a2 2 0 1 0 -4 0" />
+              <path d="M7 18h8m4 0h2v-6a5 5 0 0 0 -5 -5h-1l1.5 5h4.5" />
+              <path d="M12 18v-11h3" />
+              <path d="M3 17v-5h9" />
+              <path d="M4 12v-6l18 -3v2" />
+              <path d="M8 12v-4l-4 -2" />
+            </svg>
+            Work order for Pick-up
+            }
+          </div>
+        </ion-col>
+        <ion-col size="12" class="section-subtitle mt-0">
           Basic Information
         </ion-col>
         <!-- startDate -->
-        <ion-col>
+        <ion-col size="6">
           <ion-item>
             <ion-label position="stacked">Start date</ion-label>
             <ion-datetime-button class="pb-3" datetime="startDate"></ion-datetime-button>
@@ -28,7 +57,8 @@
         </ion-col>
         <!--  -->
         <!-- closeDate -->
-        <ion-col>
+        @if(type=='work'){
+        <ion-col size="6">
           <ion-item>
             <ion-label position="stacked">Date completed</ion-label>
             <ion-datetime-button class="pb-3" datetime="closeDate"></ion-datetime-button>
@@ -39,6 +69,8 @@
             </ion-popover>
           </ion-item>
         </ion-col>
+        }
+
         <!--  -->
         <!-- billTo -->
         <ion-col size="12">
@@ -62,6 +94,7 @@
         <ion-col size="12" class="section-subtitle">
           Noted Equipments
         </ion-col>
+        <!-- notedEquipments -->
         <ion-col size="12">
           @if(notedEquipments.value.length == 0){
           <div class="no-equipment-box">
@@ -71,7 +104,7 @@
 
           </div>
           }
-          @for(notedEquipment of notedEquipments.value; track notedEquipment; let i = $index){
+          @for(notedEquipment of notedEquipments.value; track $index; let i = $index){
           <ion-item class="mb-1">
             <ion-row class="w-100">
               <ion-col size="6">
@@ -107,37 +140,170 @@
                 </div>
               </ion-col>
             </ion-row>
-            <ion-button slot="end" size="small" shape="round" (click)="removeEquipment(i)">
-              <ion-icon slot="icon-only" name="close"></ion-icon>
+            <!-- BOTÓN DE EDITAR -->
+            <ion-button (click)="openEquipmentModal(notedEquipment, i)" fill="clear" slot="end">
+              <ion-icon color="medium" name="create-outline" slot="icon-only"></ion-icon>
+            </ion-button>
+
+            <!-- BOTÓN DE ELIMINAR -->
+            <ion-button (click)="removeEquipment(i)" fill="clear" color="danger" slot="end">
+              <ion-icon name="close" slot="icon-only"></ion-icon>
             </ion-button>
           </ion-item>
           }
           <div class="d-flex justify-content-center pt-2">
-            <ion-button size="small" (click)="openAddEquipmentModal()">Add
+            <ion-button size="small" (click)="openEquipmentModal()">Add
               <ion-icon name="add"></ion-icon>
             </ion-button>
           </div>
         </ion-col>
+        <!--  -->
       </ion-row>
 
+      <!-- servicesPerformed -->
       <ion-row>
         <ion-col size="12" class="section-subtitle">
-          Services
+          Services <ion-text color="danger">(Required)</ion-text>
         </ion-col>
         <ion-col size="12">
+          @if(servicesPerformed.value.length == 0){
+
           <div class="no-equipment-box">
             <div>
               No Services added to the work order.
             </div>
-
           </div>
+          }
+
+
+          @for(servicePerformed of servicesPerformed.value; track $index; let i = $index){
+          <ion-item class="mb-1">
+            <ion-row class="w-100">
+              <ion-col size="2" class="px-0 mx-0 d-flex flex-column justify-content-center">
+                <div class="equipmentHeader">
+                  Qty.
+                </div>
+                <div class="equipmentData">
+                  {{servicePerformed.quantity || 'N/A'}}
+                </div>
+              </ion-col>
+              <ion-col size="10" class="d-flex flex-column justify-content-center">
+                <div class="equipmentHeader text-truncate">
+                  {{servicePerformed.title}}
+                </div>
+                <div class="equipmentData text-truncate-2-lines">
+                  {{servicePerformed.description}}
+                </div>
+              </ion-col>
+
+
+            </ion-row>
+            <!-- BOTÓN DE EDITAR -->
+            <ion-button (click)="openServiceModal(servicePerformed, i)" fill="clear" slot="end">
+              <ion-icon color="medium" name="create-outline" slot="icon-only"></ion-icon>
+            </ion-button>
+
+            <!-- BOTÓN DE ELIMINAR -->
+            <ion-button (click)="removeService(i)" fill="clear" color="danger" slot="end">
+              <ion-icon name="close" slot="icon-only"></ion-icon>
+            </ion-button>
+          </ion-item>
+          }
+          @if(servicesPerformed?.errors?.['minLengthArray']){
+          <div class="errorMessage py-2">
+            <ion-icon name="alert-circle-outline"></ion-icon>
+            Debes agregar al menos un servicio realizado.
+          </div>
+          }
+
           <div class="d-flex justify-content-center pt-2">
-            <ion-button size="small" (click)="openAddEquipmentModal()">Add
+            <ion-button size="small" (click)="openServiceModal()">Add
               <ion-icon name="add"></ion-icon>
             </ion-button>
           </div>
         </ion-col>
       </ion-row>
+      <!--  -->
+
+      <!-- Materials used -->
+      <ion-row>
+        <ion-col size="12" class="section-subtitle">
+          Record of Materials Used
+        </ion-col>
+        <ion-col size="12">
+          @if(materialsUsed.value.length == 0){
+
+          <div class="no-equipment-box">
+            <div>
+              No Materials added to the work order.
+            </div>
+          </div>
+          }
+
+          @for(materialUsed of materialsUsed.value; track $index; let i = $index){
+          <ion-item class="mb-1">
+            <ion-row class="w-100">
+
+              <ion-col size="2" class="px-0 mx-0 d-flex flex-column justify-content-center">
+                <div class="equipmentHeader">
+                  Qty.
+                </div>
+                <div class="equipmentData">
+                  {{materialUsed.quantity || 'N/A'}}
+                </div>
+              </ion-col>
+
+              <ion-col size="10" class="d-flex flex-column justify-content-center">
+                <div class="equipmentHeader text-truncate">
+                  Description
+                </div>
+                <div class="equipmentData text-truncate">
+                  {{materialUsed.description}}
+                </div>
+              </ion-col>
+
+            </ion-row>
+            <!-- BOTÓN DE EDITAR -->
+            <ion-button (click)="openMaterialModal(materialUsed, i)" fill="clear" slot="end">
+              <ion-icon color="medium" name="create-outline" slot="icon-only"></ion-icon>
+            </ion-button>
+
+            <!-- BOTÓN DE ELIMINAR -->
+            <ion-button (click)="removeMaterial(i)" fill="clear" color="danger" slot="end">
+              <ion-icon name="close" slot="icon-only"></ion-icon>
+            </ion-button>
+          </ion-item>
+          }
+
+
+          <div class="d-flex justify-content-center pt-2">
+            <ion-button size="small" (click)="openMaterialModal()">Add
+              <ion-icon name="add"></ion-icon>
+            </ion-button>
+          </div>
+        </ion-col>
+      </ion-row>
+
+      <!--  -->
     </form>
   </ion-grid>
 </ion-content>
+<ion-footer>
+  <ion-toolbar color="light">
+    <ion-buttons slot="end">
+      <!-- <ion-button fill="clear">
+
+      </ion-button> -->
+      <ion-button (click)="createWorkOrder()" fill="solid" color="primary" [disabled]="!addWorkOrderForm.valid || saving">
+        <div class="px-3">
+          @if(saving){
+          <ion-spinner size="small" color="light"></ion-spinner>
+          } @else {
+          Create
+          }
+        </div>
+
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-footer>

@@ -1,14 +1,15 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, inject, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import {
   IonContent, IonHeader, IonTitle, IonToolbar,
   IonIcon, IonButtons, IonButton, IonSearchbar,
-  IonFab,IonFabButton
+  IonFab, IonFabButton, ModalController
 } from '@ionic/angular/standalone';
 import { addIcons } from 'ionicons';
 import { add, close, search } from 'ionicons/icons';
 import { RouterLink } from '@angular/router';
+import { SelectWorkTypePage } from './select-work-type/select-work-type.page';
 
 @Component({
   selector: 'app-work-orders',
@@ -17,12 +18,14 @@ import { RouterLink } from '@angular/router';
   standalone: true,
   imports: [IonSearchbar, IonButtons, IonIcon, IonContent, IonHeader, IonTitle,
     IonButton, IonToolbar, CommonModule, FormsModule,
-    ReactiveFormsModule, IonFab,IonFabButton, RouterLink
+    ReactiveFormsModule, IonFab, IonFabButton, RouterLink
   ]
 })
 export class WorkOrdersPage implements OnInit {
+  modalCtrl = inject(ModalController)
+
   constructor() {
-    addIcons({add,close,search});
+    addIcons({ add, close, search });
   }
 
   ngOnInit() {
@@ -43,6 +46,13 @@ export class WorkOrdersPage implements OnInit {
     const query = event.detail.value;
     console.log('Buscando:', query);
     // Aquí filtras tu lista según query
+  }
+  async openWorkTypeModal() {
+    const modal = await this.modalCtrl.create({
+      component: SelectWorkTypePage
+    })
+
+    modal.present();
   }
 
 }

@@ -1,0 +1,70 @@
+<ion-header>
+  <ion-toolbar color="primary">
+    <ion-title>{{ mode }} Service</ion-title>
+    <ion-buttons slot="end">
+      <ion-button (click)="closeModal()">
+        <ion-icon slot="icon-only" name="close"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content color="light">
+
+
+  <ion-grid>
+    <form [formGroup]="addServiceForm">
+
+
+      <ion-row>
+        <ion-col size="12" class="section-subtitle">
+          Basic Information
+        </ion-col>
+        <!-- title -->
+        <ion-col size="12">
+          <ion-item>
+            <ion-input formControlName="title" labelPlacement="stacked" placeholder="Ex. Traveled to customer to...">
+              <div slot="label">Service Description</div>
+            </ion-input>
+          </ion-item>
+        </ion-col>
+        <!--  -->
+
+        <!-- description -->
+        <ion-col size="12">
+          <ion-item>
+            <ion-textarea formControlName="description" labelPlacement="stacked" placeholder="More info if needed."
+              [autoGrow]="true" rows="4">
+              <div slot="label">Service Description</div>
+            </ion-textarea>
+          </ion-item>
+        </ion-col>
+        <!--  -->
+        <!-- quantity -->
+        <ion-col size="12">
+          <ion-item>
+            <ion-input type="number" inputmode="numeric" formControlName="quantity"
+             labelPlacement="stacked" placeholder="min 1"
+             errorText="Invalid input. Make sure you are typing a number">
+              <div slot="label">Quantity</div>
+            </ion-input>
+          </ion-item>
+        </ion-col>
+        <!--  -->
+      </ion-row>
+
+
+    </form>
+  </ion-grid>
+</ion-content>
+
+<ion-footer>
+  <ion-toolbar color="primary" class="ion-padding">
+    <ion-buttons slot="end">
+      <ion-button fill="solid" color="light" (click)="save()" [disabled]="addServiceForm.invalid">
+        <!-- El texto del botón cambia dependiendo del modo -->
+        <span class="px-4">{{ mode === 'Add' ? 'Add' : 'Update' }}</span>
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-footer>

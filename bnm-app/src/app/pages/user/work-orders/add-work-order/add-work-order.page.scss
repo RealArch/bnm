@@ -1,23 +1,55 @@
-.section-subtitle{
+.section-subtitle {
     margin-top: 15px;
     font-weight: 500;
 }
 
-.no-equipment-box{
+.no-equipment-box {
     background-color: rgb(220, 220, 220);
     color: var(--ion-color-medium);
     height: 75px;
-    display:flex;
+    display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
     border-radius: 15px;
 }
 
-.equipmentHeader{
+.equipmentHeader {
     font-size: 14px;
     color: var(--ion-color-medium);
 }
-.equipmentData{
-    
+
+.equipmentData {}
+
+.text-truncate-2-lines {
+    display: -webkit-box;
+    /* Necesario para que funcione line-clamp */
+    -webkit-box-orient: vertical;
+    /* Orienta el contenido verticalmente */
+    -webkit-line-clamp: 2;
+    /* ¡La propiedad clave! Limita el texto a 2 líneas */
+    overflow: hidden;
+    /* Oculta el resto del texto */
+    text-overflow: ellipsis;
+    /* Agrega los puntos suspensivos al final */
+    line-height: normal;
+    font-size: 14px;
+}
+
+.type-box {
+    background-color: rgb(220, 220, 220);
+    border-radius: 15px;
+    padding: 15px;
+}
+.icon{
+    color: var(--ion-color-primary);
+}
+
+.errorMessage{
+    text-align: center;
+    font-size: 13px;
+    color: var(--ion-color-danger);
+}
+ion-item{
+    border-radius: 15px;
 }

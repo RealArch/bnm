@@ -34,10 +34,15 @@
             Workers
           </ion-item>
           <ion-item button lines="none" routerLinkActive="selected" routerDirection="root"
-          [routerLink]="['/user/configs']">
-          <ion-icon aria-hidden="true" name="settings" slot="start"></ion-icon>
-          Settings
-        </ion-item>
+            [routerLink]="['/user/work-orders']">
+            <ion-icon aria-hidden="true" name="reader" slot="start"></ion-icon>
+            Work Orders
+          </ion-item>
+          <ion-item button lines="none" routerLinkActive="selected" routerDirection="root"
+            [routerLink]="['/user/configs']">
+            <ion-icon aria-hidden="true" name="settings" slot="start"></ion-icon>
+            Settings
+          </ion-item>
         </ion-menu-toggle>
       </ion-list>
     </ion-content>

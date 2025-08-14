@@ -41,10 +41,6 @@ export const routes: Routes = [
         ]
       },
       {
-        path: 'shifts',
-        loadComponent: () => import('./pages/user/shifts/shifts.page').then(m => m.ShiftsPage)
-      },
-      {
         path: 'pay-periods',
         loadComponent: () => import('./pages/user/pay-periods/pay-periods.page').then(m => m.PayPeriodsPage)
       },
@@ -55,11 +51,15 @@ export const routes: Routes = [
       {
         path: 'configs',
         loadComponent: () => import('./pages/user/configs/configs.page').then(m => m.ConfigsPage),
- 
+
       },
       {
         path: 'configs/admin-users',
         loadComponent: () => import('./pages/user/configs/admin-users/admin-users.page').then(m => m.AdminUsersPage)
+      },
+      {
+        path: 'work-orders',
+        loadComponent: () => import('./pages/user/work-orders/work-orders.page').then(m => m.WorkOrdersPage)
       },
 
     ]
@@ -111,10 +111,12 @@ export const routes: Routes = [
   {
     path: 'privacy-policies',
     loadComponent: () => import('./pages/public/privacy-policies/privacy-policies.page').then(m => m.PrivacyPoliciesPage)
-  },  {
-    path: 'add-user-modal',
-    loadComponent: () => import('./pages/user/configs/admin-users/add-user-modal/add-user-modal.page').then( m => m.AddUserModalPage)
   },
+  {
+    path: 'add-user-modal',
+    loadComponent: () => import('./pages/user/configs/admin-users/add-user-modal/add-user-modal.page').then(m => m.AddUserModalPage)
+  },
+
 
 
 

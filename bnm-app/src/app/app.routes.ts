@@ -44,7 +44,7 @@ export const routes: Routes = [
         loadComponent: () => import('./pages/user/work-orders/work-orders.page').then(m => m.WorkOrdersPage)
       },
       {
-        path: 'work-orders/add',
+        path: 'work-orders/add/:type',
         loadComponent: () => import('./pages/user/work-orders/add-work-order/add-work-order.page').then(m => m.AddWorkOrderPage)
       },
 
@@ -100,6 +100,18 @@ export const routes: Routes = [
   {
     path: 'modal-add-equipment',
     loadComponent: () => import('./pages/user/work-orders/add-work-order/modal-add-equipment/modal-add-equipment.page').then( m => m.ModalAddEquipmentPage)
+  },
+  {
+    path: 'modal-add-service',
+    loadComponent: () => import('./pages/user/work-orders/add-work-order/modal-add-service/modal-add-service.page').then( m => m.ModalAddServicePage)
+  },
+  {
+    path: 'modal-add-materials',
+    loadComponent: () => import('./pages/user/work-orders/add-work-order/modal-add-materials/modal-add-materials.page').then( m => m.ModalAddMaterialsPage)
+  },
+  {
+    path: 'select-work-type',
+    loadComponent: () => import('./pages/user/work-orders/select-work-type/select-work-type.page').then( m => m.SelectWorkTypePage)
   },
 
 

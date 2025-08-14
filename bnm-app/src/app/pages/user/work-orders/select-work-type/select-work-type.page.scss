@@ -1,0 +1,26 @@
+.title {
+    text-align: center;
+    font-size: 2.3rem;
+    font-weight: 700;
+    padding: 0 30px 0 30px;
+    line-height: normal;
+    margin-bottom: 20px;
+}
+
+// .item-card {}
+
+.item-card {
+    background-color: var(--ion-color-primary-shade);
+    color: var(--ion-color-light);
+    // margin-right: 16px;
+    /* agrega espacio a la derecha */
+    height: 200px;
+
+}
+.card-title{
+    font-size: 20px;
+}
+
+// .item-card:last-child {
+//     /* evita margen en el último */
+// }

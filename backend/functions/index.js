@@ -50,14 +50,17 @@ const shiftsTriggers = require('./routes/shifts')
 
 //RUTAS
 //Auth
-const { router: authRoute} = require('./routes/auth');
+const { router: authRoute } = require('./routes/auth');
 app.use('/auth', authRoute)
 //SHIFTS
 const { router: shiftRoute, paycheckHistoryCreated, paycheckHistoryUpdated, closePaychecks } = require('./routes/shifts');
-app.use('/shifts', shiftRoute)
+app.use('/shifts', shiftRoute) 
 //CUSTOMERS
 const customersRoute = require("./routes/customers")
 app.use('/customers', customersRoute)
+//WORK ORDERS
+const  workOrdersRoute  = require("./routes/work-orders")
+app.use('/work-orders', workOrdersRoute.router)
 // Middleware para acceder a los parámetros 
 app.use((req, res, next) => {
     req.secret = ALGOLIA_ADMIN_KEY.value();
@@ -82,6 +85,8 @@ exports.customersTrigger = customersTrigger;
 exports.paycheckHistoryCreated = paycheckHistoryCreated;
 exports.paycheckHistoryUpdated = paycheckHistoryUpdated;
 exports.closePaychecks = closePaychecks;
+exports.workOrderCreated = workOrdersRoute.workOrderCreated;
+
 //Auto functions auth
 // exports.deleteUser = userDeleted
 //AUTOMATIC FUNCTIONS
