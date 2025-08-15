@@ -1,39 +1,31 @@
-name: CI para iOS + Web
+name: Build iOS
 
 on:
   push:
-    branches: [ main ]
+    branches:
+      - main
 
 jobs:
   build:
     runs-on: macos-latest
-
-    defaults:
-      run:
-        working-directory: frontend
-
     steps:
-    - uses: actions/checkout@v3
+      - uses: actions/checkout@v3
 
-    - name: Configurar Node.js
-      uses: actions/setup-node@v3
-      with:
-        node-version: '20'
+      # Instalar Node y npm
+      - name: Setup Node
+        uses: actions/setup-node@v3
+        with:
+          node-version: 18
 
-    - name: Instalar dependencias npm
-      run: npm install
+      - name: Install npm dependencies
+        run: |
+          cd bnm-app
+          npm install
 
-    - name: Volver al root
-      run: echo "Ahora construimos la app iOS"
-      working-directory: .
+      # Instalar CocoaPods
+      - name: Install CocoaPods
+        run: |
+          cd bnm-app/ios/App
+          pod install
 
-    - name: Instalar CocoaPods
-      run: |
-        cd ios
-        sudo gem install cocoapods
-        pod install
-
-    - name: Construir iOS
-      run: |
-        cd ios
-        xcodebuild -workspace YourApp.xcworkspace -scheme YourApp -configuration Release -sdk iphoneos -derivedDataPath build
+      # Aquí vendrían los pasos para compilar con Xcode o tu flujo
