@@ -1,0 +1,33 @@
+name: CI para iOS
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build:
+    runs-on: macos-latest
+
+    steps:
+      - name: Clonar el repositorio
+        uses: actions/checkout@v3
+
+      - name: Configurar Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '16'
+
+      - name: Instalar dependencias de npm
+        run: npm install
+
+      - name: Instalar CocoaPods
+        run: |
+          sudo gem install cocoapods
+          cd ios
+          pod install
+
+      - name: Construir la aplicación iOS
+        run: |
+          cd ios
+          xcodebuild -workspace YourApp.xcworkspace -scheme YourApp -configuration Release -sdk iphoneos -derivedDataPath build
