@@ -43,42 +43,77 @@ const createWorkOrderSchema = Joi.object({
  * @access  Private (requiere token de cliente)
  */
 router.post('/create', middlewares.verifyClientToken, async (req, res) => {
-    console.log(req.body.workOrderData)
+    // 1. Validación de Datos con Joi (esto se mantiene igual)
     const { error, value } = createWorkOrderSchema.validate(req.body.workOrderData);
-    // Si hay un error de validación, devuelve un error 400 con el mensaje específico.
     if (error) {
         logger.warn("Validation error creating work order:", error.details[0].message);
-        // Devuelve el primer mensaje de error encontrado para claridad.
         return res.status(400).json({ success: false, message: error.details[0].message });
     }
 
     try {
         const userUid = req.afAuthTokenDecoded.user_id;
 
-        // 2. Prepara el Objeto para Guardar en Firestore
-        // Usa `value` que es el objeto validado y sanitizado por Joi.
-        const newWorkOrder = {
-            ...value, 
-            createdBy: userUid,
-            createdAt: FieldValue.serverTimestamp(),
-            status: 'open',
-        };
+        // Referencia al documento contador
+        const counterRef = db.collection('counters').doc('workOrderCounter');
+        
+        // --- INICIO DE LA LÓGICA DE TRANSACCIÓN ---
+        // Usamos una transacción para garantizar que el número de control sea único y se incremente de forma atómica.
+        // db.runTransaction() intentará ejecutar este bloque de código. Si hay conflictos (ej: otro usuario intenta hacer lo mismo),
+        // lo reintentará automáticamente, asegurando la consistencia de los datos.
+        const workOrderId = await db.runTransaction(async (transaction) => {
+            // Lee el documento contador DENTRO de la transacción
+            const counterDoc = await transaction.get(counterRef);
 
-        // 3. Guarda en Firestore
-        const workOrderRef = await db.collection('workOrders').add(newWorkOrder);
+            if (!counterDoc.exists) {
+                // Si el documento contador no existe, lanzamos un error para detener la operación.
+                // Es crucial que el documento 'workOrderCounter' exista.
+                throw new Error("Counter document 'workOrderCounter' does not exist!");
+            }
 
-        logger.info(`Work Order created successfully with ID: ${workOrderRef.id} by user ${userUid}`);
+            // Obtenemos el último número y calculamos el nuevo
+            const lastNumber = counterDoc.data().lastControlNo;
+            const newControlNo = lastNumber + 1;
+
+            // Prepara el objeto de la nueva orden de trabajo
+            const newWorkOrder = {
+                ...value, // Datos validados por Joi
+                controlNo: newControlNo, // ¡Aquí asignamos el nuevo número de control!
+                createdBy: userUid,
+                createdAt: FieldValue.serverTimestamp(), // serverTimestamp es seguro de usar en transacciones
+                status: 'open',
+            };
+
+            // Creamos una referencia para el nuevo documento de Work Order.
+            // No usamos .add() porque necesitamos la referencia antes de crear el documento.
+            const newWorkOrderRef = db.collection('workOrders').doc();
+
+            // DENTRO de la transacción, realizamos todas las escrituras:
+            // 1. Actualiza el contador con el nuevo número.
+            transaction.update(counterRef, { lastControlNo: newControlNo });
+            
+            // 2. Crea (set) el nuevo documento de la orden de trabajo.
+            transaction.set(newWorkOrderRef, newWorkOrder);
+            
+            // La transacción retorna el ID del nuevo documento para usarlo en la respuesta.
+            return newWorkOrderRef.id;
+        });
+        // --- FIN DE LA LÓGICA DE TRANSACCIÓN ---
+
+        logger.info(`Work Order created successfully with ID: ${workOrderId} by user ${userUid}`);
+        
         return res.status(201).json({
             success: true,
             message: 'Work Order created successfully.',
-            workOrderId: workOrderRef.id
+            workOrderId: workOrderId
         });
 
     } catch (error) {
         logger.error("Error creating work order:", error);
+        // Si el error es el que lanzamos nosotros (contador no existe), se mostrará aquí.
         return res.status(500).json({
             success: false,
-            message: "An unexpected error occurred while creating the work order."
+            message: "An unexpected error occurred while creating the work order.",
+            error: error.message // Opcional: para debugging
         });
     }
 });

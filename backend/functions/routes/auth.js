@@ -128,7 +128,10 @@ router.get('/createAdminUser', async (req, res) => {
         await db.collection('general').doc('settings').set({
             lastStartingDate: 1743764400000,
             paymentSchedule: "biweekly",
-            paycheckHistory: []
+            paycheckHistory: [],
+            workOrderCounters:{
+                lastControlNo:4999
+            }
         })
         await db.collection('adminUsers').doc(userCreated.uid).set({
             email: 'admin@admin.com',

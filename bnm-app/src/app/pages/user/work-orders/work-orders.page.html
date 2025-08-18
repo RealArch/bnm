@@ -7,8 +7,8 @@
     </ion-title>
 
     <!-- Searchbar con animación -->
-    <ion-searchbar name="searchText" *ngIf="isSearching" placeholder="Buscar..."
-      class="slide-in" (ionInput)="onSearchChange($event)" animated="true">
+    <ion-searchbar name="searchText" *ngIf="isSearching" placeholder="Buscar..." class="slide-in"
+      (ionInput)="onSearchChange($event)" [animated]="true" [debounce]="300">
     </ion-searchbar>
 
     <!-- Botón lupa / cerrar -->
@@ -21,7 +21,114 @@
   </ion-toolbar>
 </ion-header>
 
-<ion-content>
+<ion-content class="ion-padding">
+  <ion-grid>
+    <!-- <ion-row>
+      <ion-col size="4">
+        <ion-card class="button-option" button>
+          <ion-card-content>
+            Pending
+          </ion-card-content>
+        </ion-card>
+      </ion-col>
+    </ion-row> -->
+    <ion-row>
+      <ion-col class="title-box">
+        <ion-text>
+          Pending for sign
+        </ion-text>
+      </ion-col>
+      <ion-col size="12">
+        <ion-list style="border-radius: 15px;">
+          @for(workOrder of workOrders; track workOrder.id){
+          <ion-item detail="false" color="light">
+            <ion-label>
+              <ion-row class="align-items-center">
+                <ion-col size="12" class="controlNo m-0 pb-0">
+                  No. {{workOrder.controlNo}}
+                </ion-col>
+                <!-- billTo -->
+                <ion-col size="7" class="m-0">
+                  <div class="title-item">Customer</div>
+                  <div class="content-item text-truncate">{{workOrder.billTo | titlecase}}</div>
+                </ion-col>
+                <!-- Date -->
+                <ion-col size="3" class="m-0">
+                  <div class="title-item">Created</div>
+                  <div class="content-item">08/16/25</div>
+                </ion-col>
+
+                <ion-col size="auto" class="m-0 ms-auto">
+                  <ion-buttons>
+                    <ion-button [id]="workOrder.id">
+                      <ion-icon name="ellipsis-vertical"></ion-icon>
+                    </ion-button>
+                    <ion-popover [trigger]="workOrder.id" triggerAction="click">
+                      <ng-template>
+                        <ion-content>
+                          <ion-list >
+                            <ion-item detail="false" button>
+                              <ion-icon size="small" slot="start" name="ellipsis-vertical"></ion-icon>
+                              Request Sign
+                            </ion-item>
+                          </ion-list>
+                        </ion-content>
+                      </ng-template>
+                    </ion-popover>
+
+                  </ion-buttons>
+                </ion-col>
+
+              </ion-row>
+            </ion-label>
+          </ion-item>
+          }
+        </ion-list>
+      </ion-col>
+    </ion-row>
+
+    <ion-row class="pt-3">
+      <ion-col class="title-box">
+
+        <ion-text>
+          Open work orders
+        </ion-text>
+      </ion-col>
+      <ion-col size="12">
+        <ion-list style="border-radius: 15px;">
+          <ion-item detail="false" color="light" button>
+            w
+          </ion-item>
+          <ion-item detail="false" color="light" button>
+            w
+          </ion-item>
+        </ion-list>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
+
+
+  <!--
+    Usamos el viewport de scroll virtual del CDK de Angular.
+    'itemSize' es muy importante: debes poner la altura en píxeles de cada item.
+    Esto permite al CDK calcular cuántos items caben en pantalla y optimizar el renderizado.
+    Ajusta el valor 75 a la altura real de tus items para un rendimiento óptimo.
+  -->
+  <!-- <cdk-virtual-scroll-viewport [itemSize]="75" class="h-full">
+    <ion-item *cdkVirtualFor="let workOrder of workOrders; trackBy: trackById">
+      <ion-label>
+        <h2>Orden #{{ workOrder.id }}</h2>
+        <p>Descripción o estado de la orden...</p>
+      </ion-label>
+    </ion-item>
+  </cdk-virtual-scroll-viewport> -->
+
+
+  <!-- Mantenemos el infinite scroll para seguir cargando los datos -->
+  <ion-infinite-scroll (ionInfinite)="loadWorkOrders($event)">
+    <ion-infinite-scroll-content loadingSpinner="bubbles" loadingText="Cargando más datos...">
+    </ion-infinite-scroll-content>
+  </ion-infinite-scroll>
 
 </ion-content>
 

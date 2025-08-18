@@ -15,3 +15,53 @@
   from { transform: translateX(100%); opacity: 0; }
   to { transform: translateX(0); opacity: 1; }
 }
+
+.title-box{
+  font-weight: 500;
+  font-size: 0.9rem;
+}
+.button-option{
+  background-color: var(--ion-color-primary);
+  color: var(--ion-color-light);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 75px;
+  margin: 0px;
+  text-align: center;
+}
+.controlNo{
+  margin-top: 2px;
+  font-size: 11px;
+  line-height: 10px;
+  font-weight: 600;
+  color: var(--ion-color-primary);
+}
+.title-item{
+  font-size: 14px;
+  font-weight: 600;
+  color:rgb(85, 85, 85);
+  line-height: 5px;
+}
+.content-item{
+  font-size: 15px;
+  padding-top: 1px;
+}
+// Es importante dar una altura explícita al contenedor del scroll virtual.
+// Hacemos que ion-content se comporte como un contenedor flex en columna
+// para que el viewport del CDK pueda expandirse y ocupar todo el espacio.
+// Hacemos que ion-content sea el contexto de posicionamiento para el viewport.
+ion-content {
+  position: relative;
+}
+
+// Forzamos al viewport del CDK a ocupar todo el espacio de ion-content.
+// Se posiciona de forma absoluta con respecto al ion-content y se estira
+// en todas las direcciones (arriba, abajo, izquierda, derecha).
+cdk-virtual-scroll-viewport {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+}

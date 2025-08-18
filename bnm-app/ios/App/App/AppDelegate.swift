@@ -11,6 +11,17 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         // Override point for customization after application launch.
       FirebaseApp.configure()
 
+
+                #if DEBUG
+            if #available(iOS 16.4, *) {
+                DispatchQueue.main.asyncAfter(deadline: .now() + 3.0) {
+                if let vc = self.window?.rootViewController as? CAPBridgeViewController {
+                    vc.bridge?.webView?.isInspectable = true
+                }
+                }
+            }
+            #endif
+
       return true
     }
   
