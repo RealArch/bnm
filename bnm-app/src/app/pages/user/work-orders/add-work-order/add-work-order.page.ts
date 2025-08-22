@@ -15,6 +15,8 @@ import { WorkOrdersService } from 'src/app/services/work-orders.service';
 import { finalize } from 'rxjs';
 import { AuthService } from 'src/app/services/auth.service';
 import { PopupsService } from 'src/app/services/popups.service';
+import { CustomersService } from 'src/app/services/customers.service';
+import { Customer } from 'src/app/interfaces/customers';
 @Component({
   selector: 'app-add-work-order',
   templateUrl: './add-work-order.page.html',
@@ -22,7 +24,7 @@ import { PopupsService } from 'src/app/services/popups.service';
   standalone: true,
   imports: [IonSpinner, IonFooter, IonIcon, IonButton, IonText, IonPopover, IonDatetime,
     IonDatetimeButton, IonLabel, IonItem, IonCol, IonRow, IonGrid,
-    IonButtons, IonBackButton,
+    IonButtons, IonBackButton, IonInput,
     IonContent, IonHeader, IonTitle, IonToolbar, CommonModule,
     FormsModule, ReactiveFormsModule, IonSelect, IonSelectOption,
   ]
@@ -35,16 +37,28 @@ export class AddWorkOrderPage implements OnInit {
   navCtrl = inject(NavController);
   authService = inject(AuthService)
   popupService = inject(PopupsService)
+  customersService = inject(CustomersService)
 
   saving: Boolean = false;
   addWorkOrderForm: FormGroup = this.fb.group({})
   type: string | null = null;
+  loadingCustomers: boolean = true;
+  customers: Customer[] = [];
+  addressString: any = null;
   constructor() {
     addIcons({ createOutline, close, add, alert, alertCircleOutline });
     this.addWorkOrderForm = this.fb.group({
       startDate: [new Date().toISOString().split('T')[0], [Validators.required]],
-      closeDate: [null, []],
-      billTo: [null, [Validators.required]],
+      closeDate: [new Date().toISOString().split('T')[0], [Validators.required]],
+      // billTo: [null, [Validators.required]],
+      customer: this.fb.group({
+        id: [{ value: null, disabled: true }, [Validators.required]],
+        companyName: [{ value: null, disabled: true }, []],
+        companyPhone: [{ value: null, disabled: true }, [Validators.required]],
+        companyAddress: [{ value: null, disabled: true }, [Validators.required]],
+        contactName: [{ value: null, disabled: true }, [Validators.required]],
+        contactPhone: [{ value: null, disabled: true }, [Validators.required]],
+      }),
       notedEquipments: this.fb.array([]),
       servicesPerformed: this.fb.array([], [minLengthArray(1)]),
       materialsUsed: this.fb.array([]),
@@ -52,9 +66,25 @@ export class AddWorkOrderPage implements OnInit {
 
     })
   }
+  // // 
 
-  ngOnInit() {
+  // companyAddress: {zip: "34771", city: "Saint Coud", street: "232 pine vally Rd", state: "FL"}
+
+  // companyName: "Gatorade"
+
+  // companyPhone: "4077023859"
+
+  // contactName: "Denisse Roa"
+
+  // contactPhone: "444444444"
+
+  // creationDate: {_seconds: 1741387284, _nanoseconds: 49000000}
+
+  // id: "uqjazTllgLR3tiXMj1K4"
+  async ngOnInit() {
     this.type = this.route.snapshot.paramMap.get('type');
+    this.customers = await this.getCustomer() as Customer[]
+    console.log('hola')
   }
   get notedEquipments() {
     return this.addWorkOrderForm.get('notedEquipments') as FormArray;
@@ -68,6 +98,10 @@ export class AddWorkOrderPage implements OnInit {
   get startDate() {
     return this.addWorkOrderForm.get('startDate') as FormArray;
   }
+  get customer() {
+    return this.addWorkOrderForm.get('customer') as FormGroup;
+  }
+
   removeEquipment(index: number) {
     this.notedEquipments.removeAt(index)
   }
@@ -76,6 +110,47 @@ export class AddWorkOrderPage implements OnInit {
   }
   removeMaterial(index: number) {
     this.materialsUsed.removeAt(index)
+  }
+
+  //Get custonmers
+  async getCustomer() {
+    try {
+      this.loadingCustomers = true;
+      const customers: Customer[] = await this.customersService.getAllCustomersAlgolia()
+      this.loadingCustomers = false
+      return customers
+    } catch (e) {
+      console.log(e)
+      this.popupService.presentToast('bottom', 'danger', 'There was a problem reading the data. Please try again.')
+      return []
+    }
+  }
+  onCustomerSelected(event: any) {
+    const selectedCustomer = event.detail.value;
+    console.log(selectedCustomer)
+    // Actualiza el FormGroup 'customer' con los datos del cliente seleccionado
+
+
+
+  if (this.customer) {
+    // Usamos patchValue, que es más seguro y flexible.
+    this.customer.patchValue({
+      id: selectedCustomer.id,
+      companyName: selectedCustomer.companyName, // Ahora incluimos este campo
+      companyPhone: selectedCustomer.companyPhone,
+      companyAddress: selectedCustomer.companyAddress,
+      contactName: selectedCustomer.contactName,
+      contactPhone: selectedCustomer.contactPhone,
+    });
+    
+    // Si tienes una propiedad aparte para la dirección, actualízala aquí.
+    // Aunque es mejor que esté dentro del FormGroup.
+    this.addressString = selectedCustomer.companyAddress.street + ', ' +
+                          selectedCustomer.companyAddress.city + ', ' +
+                          selectedCustomer.companyAddress.state + ', ' +
+                          selectedCustomer.companyAddress.zip;
+  }
+
   }
   // EQUIPMENT MODAL
   async openEquipmentModal(equipment: any = null, index: any = null) {
@@ -107,7 +182,7 @@ export class AddWorkOrderPage implements OnInit {
 
     var afAuthToken = await this.authService.getIdToken()
 
-    this.workOrderService.addWorkOrder(this.addWorkOrderForm.value, afAuthToken!).pipe(
+    this.workOrderService.addWorkOrder(this.addWorkOrderForm.getRawValue(), afAuthToken!).pipe(
       // El operador finalize asegura que 'saving' se ponga en 'false' siempre,
       // tanto si la petición tiene éxito como si falla.
       finalize(() => this.saving = false)

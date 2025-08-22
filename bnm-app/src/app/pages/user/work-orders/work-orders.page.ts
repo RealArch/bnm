@@ -6,15 +6,17 @@ import {
   IonIcon, IonButtons, IonButton, IonSearchbar,
   IonFab, IonFabButton, ModalController,
   IonList, IonLabel, IonSpinner, IonInfiniteScroll, IonInfiniteScrollContent,
-  IonItem, IonGrid, IonCol, IonRow, IonText, IonCard, IonCardContent, IonPopover } from '@ionic/angular/standalone';
+  IonItem, IonGrid, IonCol, IonRow, IonText, IonCard, IonCardContent, IonPopover
+} from '@ionic/angular/standalone';
 import { addIcons } from 'ionicons';
-import { add, close, search, ellipsisVertical } from 'ionicons/icons';
+import { add, close, search, ellipsisVertical, pencilOutline } from 'ionicons/icons';
 import { RouterLink } from '@angular/router';
 // Importante: Añadir el módulo de Scrolling del CDK de Angular
 import { ScrollingModule } from '@angular/cdk/scrolling';
 import { SelectWorkTypePage } from './select-work-type/select-work-type.page';
 import { WorkOrdersService } from 'src/app/services/work-orders.service';
 import { WorkOrder } from 'src/app/interfaces/work-order';
+import { RequestSignPage } from './request-sign/request-sign.page';
 
 @Component({
   selector: 'app-work-orders',
@@ -38,44 +40,57 @@ export class WorkOrdersPage implements OnInit {
   private offset = 0;
   private readonly pageSize = 20;
 
-  isSearching = false;
+  isSearching = [];
   searchText = '';
 
   constructor() {
-    addIcons({ ellipsisVertical, add, close, search });
+    addIcons({ ellipsisVertical, add, close, search, pencilOutline });
   }
 
   ngOnInit() {
-    this.loadWorkOrders(); 
+    console.log('hola2')
+    this.loadWorkOrders();
 
   }
 
-  async loadWorkOrders(event?: any) {
-    try {
-      const data = await this.workOrdersService.getWorkOrders_A(this.offset, this.pageSize);
-      if (data && data.hits) {
-        // Usar un nuevo array para mejorar la detección de cambios
-        this.workOrders = [...this.workOrders, ...data.hits];
+  loadWorkOrders() {
+    console.log('hola1')
+    this.workOrdersService.getUserPendingSignWorkOrders()
+      .subscribe({
+        next: (data) => {
+          this.workOrders = data
+        },
+        error: (err) => {
+          console.log(err)
 
-        this.offset += this.pageSize;
-        if (event) {
-          event.target.complete();
-          if (data.hits.length < this.pageSize) {
-            event.target.disabled = true;
-          }
         }
-      } else {
-        if (event) {
-          event.target.disabled = true;
-        }
-      }
+      })
 
-    } catch (error) {
-      console.error('Error al cargar las órdenes de trabajo:', error);
-      if (event) {
-        event.target.complete();
-      }
-    }
+    // try {
+    //   const data = await this.workOrdersService.getWorkOrders_A(this.offset, this.pageSize);
+    //   if (data && data.hits) {
+    //     // Usar un nuevo array para mejorar la detección de cambios
+    //     this.workOrders = [...this.workOrders, ...data.hits];
+
+    //     this.offset += this.pageSize;
+    //     if (event) {
+    //       event.target.complete();
+    //       if (data.hits.length < this.pageSize) {
+    //         event.target.disabled = true;
+    //       }
+    //     }
+    //   } else {
+    //     if (event) {
+    //       event.target.disabled = true;
+    //     }
+    //   }
+
+    // } catch (error) {
+    //   console.error('Error al cargar las órdenes de trabajo:', error);
+    //   if (event) {
+    //     event.target.complete();
+    //   }
+    // }
   }
 
   /**
@@ -91,10 +106,10 @@ export class WorkOrdersPage implements OnInit {
   }
 
   toggleSearch() {
-    this.isSearching = !this.isSearching;
-    if (!this.isSearching) {
-      this.searchText = '';
-    }
+    // this.isSearching = !this.isSearching;
+    // if (!this.isSearching) {
+    //   this.searchText = '';
+    // }
   }
 
   onSearchChange(event: any) {
@@ -105,6 +120,15 @@ export class WorkOrdersPage implements OnInit {
   async openWorkTypeModal() {
     const modal = await this.modalCtrl.create({
       component: SelectWorkTypePage
+    });
+    await modal.present();
+  }
+  async openRequestSignModal(workOrder: WorkOrder) {
+    const modal = await this.modalCtrl.create({
+      component: RequestSignPage,
+      componentProps: {
+        workOrder
+      }
     });
     await modal.present();
   }

@@ -12,6 +12,7 @@ const db = getFirestore();
 
 // Middleware para verificar el token de autenticación (asumiendo que la ruta es la correcta)
 const middlewares = require('../middlewares/verifyAuthTokens');
+const { default: createWorkOrderSchema } = require('../validators/work-order.schema');
 
 // --- Configuración de Algolia ---
 // Define los secretos de Firebase para las claves de Algolia
@@ -22,20 +23,7 @@ const ALGOLIA_ADMIN_KEY = defineSecret("ALGOLIA_ADMIN_KEY");
 
 
 //VALIDATIONS /CREATE
-const createWorkOrderSchema = Joi.object({
-    billTo: Joi.string().trim().min(1).max(100).required().messages({
-        'string.empty': '"billTo" cannot be empty.',
-        'any.required': '"billTo" is a required field.'
-    }),
-    startDate: Joi.date().iso().required(),
-    closeDate: Joi.date().iso().allow(null), // Permite que sea nulo
-    notedEquipments: Joi.array().items(Joi.object()).allow(null),
-    servicesPerformed: Joi.array().items(Joi.object()).min(1).required().messages({
-        'array.min': 'At least one service must be performed.'
-    }),
-    materialsUsed: Joi.array().items(Joi.object()).allow(null),
-    type: Joi.string().valid('work', 'pickup').required(), // Solo permite 'work' o 'pickup'
-});
+
 
 /**
  * @route   POST /create
@@ -44,6 +32,7 @@ const createWorkOrderSchema = Joi.object({
  */
 router.post('/create', middlewares.verifyClientToken, async (req, res) => {
     // 1. Validación de Datos con Joi (esto se mantiene igual)
+    console.log(req.body.workOrderData.customer)
     const { error, value } = createWorkOrderSchema.validate(req.body.workOrderData);
     if (error) {
         logger.warn("Validation error creating work order:", error.details[0].message);
@@ -55,7 +44,7 @@ router.post('/create', middlewares.verifyClientToken, async (req, res) => {
 
         // Referencia al documento contador
         const counterRef = db.collection('counters').doc('workOrderCounter');
-        
+
         // --- INICIO DE LA LÓGICA DE TRANSACCIÓN ---
         // Usamos una transacción para garantizar que el número de control sea único y se incremente de forma atómica.
         // db.runTransaction() intentará ejecutar este bloque de código. Si hay conflictos (ej: otro usuario intenta hacer lo mismo),
@@ -80,7 +69,17 @@ router.post('/create', middlewares.verifyClientToken, async (req, res) => {
                 controlNo: newControlNo, // ¡Aquí asignamos el nuevo número de control!
                 createdBy: userUid,
                 createdAt: FieldValue.serverTimestamp(), // serverTimestamp es seguro de usar en transacciones
-                status: 'open',
+                status: 'pending',
+                workSign: {
+                    img: null,
+                    dateSigned: null,
+                    requestedBy: null
+                },
+                pickupSign: {
+                    img: null,
+                    dateSigned: null,
+                    requestedBy: null
+                }
             };
 
             // Creamos una referencia para el nuevo documento de Work Order.
@@ -90,17 +89,17 @@ router.post('/create', middlewares.verifyClientToken, async (req, res) => {
             // DENTRO de la transacción, realizamos todas las escrituras:
             // 1. Actualiza el contador con el nuevo número.
             transaction.update(counterRef, { lastControlNo: newControlNo });
-            
+
             // 2. Crea (set) el nuevo documento de la orden de trabajo.
             transaction.set(newWorkOrderRef, newWorkOrder);
-            
+
             // La transacción retorna el ID del nuevo documento para usarlo en la respuesta.
             return newWorkOrderRef.id;
         });
         // --- FIN DE LA LÓGICA DE TRANSACCIÓN ---
 
         logger.info(`Work Order created successfully with ID: ${workOrderId} by user ${userUid}`);
-        
+
         return res.status(201).json({
             success: true,
             message: 'Work Order created successfully.',
@@ -143,10 +142,10 @@ const workOrderCreated = onDocumentCreated({ document: 'workOrders/{workOrderId}
             // Guarda el nuevo objeto en el índice de Algolia
             await client.saveObject({
                 indexName: ALGOLIA_INDEX_NAME,
-                body:{
-                    "objectID":objectID,
-                    'id':objectID,
-                        ...newData
+                body: {
+                    "objectID": objectID,
+                    'id': objectID,
+                    ...newData
                 }
             });
             logger.info(`Successfully synced Work Order ${objectID} to Algolia.`);

@@ -2,7 +2,7 @@ import { HttpClient } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
 import { catchError, from, map, Observable, of } from 'rxjs';
 import { environment as globals } from "./../../environments/environment"
-import { collection, collectionData, CollectionReference, DocumentData, Firestore } from '@angular/fire/firestore';
+import { collection, collectionData, CollectionReference, DocumentData, Firestore, query, where } from '@angular/fire/firestore';
 import { WorkOrder, PaginatedWorkOrderResult } from '../interfaces/work-order';
 import { algoliasearch } from 'algoliasearch';
 import { environment } from 'src/environments/environment';
@@ -30,6 +30,7 @@ export class WorkOrdersService {
  * @returns Un Observable con la respuesta de la API.
  */
   addWorkOrder(workOrderData: any, afAuthToken: string): Observable<any> {
+    console.log(workOrderData)
     var data = {
       workOrderData,
       afAuthToken
@@ -59,5 +60,16 @@ export class WorkOrdersService {
       }
     })
   }
+  getUserPendingSignWorkOrders() {
+    var q = query(
+      this.workOrdersCollection,
+      where("workSign.img", "==", null),
+      where("pickupSign.img", "==", null)
+    )
+    return collectionData(q, { idField: "id" })
+  }
 
+  
+
+  
 }

@@ -8,6 +8,11 @@
 </ion-header>
 
 <ion-content color="light">
+    @if(loadingCustomers){
+  <div class="loading">
+    <ion-spinner name="circular"></ion-spinner>
+  </div>
+  }@else{
   <ion-grid class="mb-5">
     <form [formGroup]="addWorkOrderForm">
       <ion-row>
@@ -72,23 +77,54 @@
         }
 
         <!--  -->
+
+      </ion-row>
+      <ion-row>
+        <ion-col size="12" class="section-subtitle">
+          Customer Information
+        </ion-col>
         <!-- billTo -->
         <ion-col size="12">
           <ion-item>
-            <ion-select formControlName="billTo" labelPlacement="stacked" placeholder="Select a customer"
-              interface="modal">
+            <ion-select labelPlacement="stacked" placeholder="Select a customer"
+              interface="modal" (ionChange)="onCustomerSelected($event)">
               <div slot="label">Bill To <ion-text color="danger">(Required)</ion-text></div>
-              <ion-select-option value="apple">
-                <span>Gatorade</span>, <span>Saint cloud</span>,
-                <span>FL</span>
+              @for(customer of customers; track customer.id){
+              <ion-select-option [value]="customer" >
+                <span>[{{customer.companyAddress.state}}] </span>
+                <span>{{customer.companyName | titlecase}}</span>, <span>{{customer.companyAddress.city | titlecase}}</span>
+               
               </ion-select-option>
+              }
+
 
 
             </ion-select>
           </ion-item>
         </ion-col>
+
         <!--  -->
       </ion-row>
+
+      <ion-row formGroupName="customer">
+        <!-- orderedBy -->
+        <ion-col size="12">
+          <ion-item>
+            <ion-input formControlName="companyName"   labelPlacement="stacked" label="Ordered By"></ion-input>
+          </ion-item>
+        </ion-col>
+        <!--  -->
+
+        <!-- address -->
+        <ion-col size="12">
+          <ion-item>
+            <ion-input disabled [value]="addressString" labelPlacement="stacked" label="Address"></ion-input>
+          </ion-item>
+        </ion-col>
+        <!--  -->
+
+      </ion-row>
+
 
       <ion-row>
         <ion-col size="12" class="section-subtitle">
@@ -287,6 +323,7 @@
       <!--  -->
     </form>
   </ion-grid>
+}
 </ion-content>
 <ion-footer>
   <ion-toolbar color="light">
@@ -294,7 +331,8 @@
       <!-- <ion-button fill="clear">
 
       </ion-button> -->
-      <ion-button (click)="createWorkOrder()" fill="solid" color="primary" [disabled]="!addWorkOrderForm.valid || saving">
+      <ion-button (click)="createWorkOrder()" fill="solid" color="primary"
+        [disabled]="!addWorkOrderForm.valid || saving">
         <div class="px-3">
           @if(saving){
           <ion-spinner size="small" color="light"></ion-spinner>

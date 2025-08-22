@@ -47,7 +47,10 @@ export const routes: Routes = [
         path: 'work-orders/add/:type',
         loadComponent: () => import('./pages/user/work-orders/add-work-order/add-work-order.page').then(m => m.AddWorkOrderPage)
       },
-
+      {
+        path: 'work-orders/request-sign',
+        loadComponent: () => import('./pages/user/work-orders/request-sign/request-sign.page').then(m => m.RequestSignPage)
+      },
 
     ]
   },
@@ -99,20 +102,21 @@ export const routes: Routes = [
   },
   {
     path: 'modal-add-equipment',
-    loadComponent: () => import('./pages/user/work-orders/add-work-order/modal-add-equipment/modal-add-equipment.page').then( m => m.ModalAddEquipmentPage)
+    loadComponent: () => import('./pages/user/work-orders/add-work-order/modal-add-equipment/modal-add-equipment.page').then(m => m.ModalAddEquipmentPage)
   },
   {
     path: 'modal-add-service',
-    loadComponent: () => import('./pages/user/work-orders/add-work-order/modal-add-service/modal-add-service.page').then( m => m.ModalAddServicePage)
+    loadComponent: () => import('./pages/user/work-orders/add-work-order/modal-add-service/modal-add-service.page').then(m => m.ModalAddServicePage)
   },
   {
     path: 'modal-add-materials',
-    loadComponent: () => import('./pages/user/work-orders/add-work-order/modal-add-materials/modal-add-materials.page').then( m => m.ModalAddMaterialsPage)
+    loadComponent: () => import('./pages/user/work-orders/add-work-order/modal-add-materials/modal-add-materials.page').then(m => m.ModalAddMaterialsPage)
   },
   {
     path: 'select-work-type',
-    loadComponent: () => import('./pages/user/work-orders/select-work-type/select-work-type.page').then( m => m.SelectWorkTypePage)
+    loadComponent: () => import('./pages/user/work-orders/select-work-type/select-work-type.page').then(m => m.SelectWorkTypePage)
   },
+
 
 
 

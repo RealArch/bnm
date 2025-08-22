@@ -2,21 +2,21 @@
   <ion-toolbar color="primary">
 
     <!-- Título con animación -->
-    <ion-title *ngIf="!isSearching" class="fade-in">
+    <ion-title class="fade-in">
       Work Orders
     </ion-title>
 
     <!-- Searchbar con animación -->
-    <ion-searchbar name="searchText" *ngIf="isSearching" placeholder="Buscar..." class="slide-in"
+    <!-- <ion-searchbar name="searchText" *ngIf="isSearching" placeholder="Buscar..." class="slide-in"
       (ionInput)="onSearchChange($event)" [animated]="true" [debounce]="300">
-    </ion-searchbar>
+    </ion-searchbar> -->
 
     <!-- Botón lupa / cerrar -->
-    <ion-buttons slot="end">
+    <!-- <ion-buttons slot="end">
       <ion-button (click)="toggleSearch()">
         <ion-icon [name]="isSearching ? 'close' : 'search'" slot="icon-only"></ion-icon>
       </ion-button>
-    </ion-buttons>
+    </ion-buttons> -->
 
   </ion-toolbar>
 </ion-header>
@@ -50,12 +50,12 @@
                 <!-- billTo -->
                 <ion-col size="7" class="m-0">
                   <div class="title-item">Customer</div>
-                  <div class="content-item text-truncate">{{workOrder.billTo | titlecase}}</div>
+                  <div class="content-item text-truncate">{{workOrder.customer.companyName | titlecase}}</div>
                 </ion-col>
                 <!-- Date -->
                 <ion-col size="3" class="m-0">
                   <div class="title-item">Created</div>
-                  <div class="content-item">08/16/25</div>
+                  <div class="content-item">{{workOrder.startDate.toDate() | date:'MM/dd/yy'}}</div>
                 </ion-col>
 
                 <ion-col size="auto" class="m-0 ms-auto">
@@ -63,12 +63,12 @@
                     <ion-button [id]="workOrder.id">
                       <ion-icon name="ellipsis-vertical"></ion-icon>
                     </ion-button>
-                    <ion-popover [trigger]="workOrder.id" triggerAction="click">
+                    <ion-popover [trigger]="workOrder.id" triggerAction="click" [dismissOnSelect]="true">
                       <ng-template>
                         <ion-content>
                           <ion-list >
-                            <ion-item detail="false" button>
-                              <ion-icon size="small" slot="start" name="ellipsis-vertical"></ion-icon>
+                            <ion-item detail="false" button (click)="openRequestSignModal(workOrder)">
+                              <ion-icon size="small" slot="start" name="pencil-outline"></ion-icon>
                               Request Sign
                             </ion-item>
                           </ion-list>
@@ -125,10 +125,10 @@
 
 
   <!-- Mantenemos el infinite scroll para seguir cargando los datos -->
-  <ion-infinite-scroll (ionInfinite)="loadWorkOrders($event)">
+  <!-- <ion-infinite-scroll (ionInfinite)="loadWorkOrders($event)">
     <ion-infinite-scroll-content loadingSpinner="bubbles" loadingText="Cargando más datos...">
     </ion-infinite-scroll-content>
-  </ion-infinite-scroll>
+  </ion-infinite-scroll> -->
 
 </ion-content>
 
