@@ -38,7 +38,7 @@ export function getApiUrl(): string {
       // return 'http://localhost:5001/bnm-01-abd4b/us-central1/api'
       // return 'http://10.0.2.2:5001/bnm-01-abd4b/us-central1/api'; // Para emulador Android
 
-      return 'http://192.168.50.46:5001/bnm-01-abd4b/us-central1/api'; // para android. poner direccion ip de la pc
+      return 'http://192.168.50.131:5001/bnm-01-abd4b/us-central1/api'; // para android. poner direccion ip de la pc
     case 'ios':
       return 'http://localhost:5001/bnm-01-abd4b/us-central1/api'; // Para emulador iOS
     case 'web':

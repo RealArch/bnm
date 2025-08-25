@@ -6,17 +6,18 @@ const config: CapacitorConfig = {
   appId: 'com.bmips.app',
   appName: 'B&M App',
   webDir: 'www',
-  // server: { //Activar esto para emular en android
-  //   androidScheme: 'http',
-  //   cleartext: true,
-  //   url: "http://192.168.50.46:8100",
-  // },
+  server: { //Activar esto para emular en android
+    androidScheme: 'http',
+    cleartext: true,
+    url: "http://192.168.50.131:8100",
+  },
   android: {
-    allowMixedContent: true
+    allowMixedContent: true,
+      adjustMarginsForEdgeToEdge: 'auto' // o 'auto', pero 'force' es más seguro en todos los casos
   },
   ios:{
     appendUserAgent: 'Mobile',
-    scrollEnabled: false
+    scrollEnabled: false,
   },
   plugins: {
     Keyboard: {
@@ -26,7 +27,7 @@ const config: CapacitorConfig = {
     },
     StatusBar: {
       style: "Default", // O "Light" o "Dark" según el tema
-      // overlaysWebView: false, // Evita que el status bar se superponga al contenido
+      // overlaysWebView: true, // Evita que el status bar se superponga al contenido
       backgroundColor: '#C10A31'
     }
   }
