@@ -1,89 +1,76 @@
 import { Injectable } from '@angular/core';
-import { Auth, IdTokenResult, authState, getAuth, getIdToken, idToken, onAuthStateChanged, sendPasswordResetEmail, signInWithCustomToken, signInWithEmailAndPassword, signOut } from '@angular/fire/auth';
+import { Auth, authState, getIdToken, sendPasswordResetEmail, signInWithCustomToken, signInWithEmailAndPassword, signOut, user } from '@angular/fire/auth';
 import { HttpClient } from '@angular/common/http';
 import { environment } from '../../environments/environment';
-import { idTokenResult } from '@angular/fire/auth-guard';
-import { Firestore, deleteDoc, doc, docData, docSnapshots, getDoc, getFirestore } from '@angular/fire/firestore';
+import { Firestore, deleteDoc, doc, docData, docSnapshots, getDoc } from '@angular/fire/firestore';
 import { Router } from '@angular/router';
 import { NavController } from '@ionic/angular';
-import { map } from 'rxjs'
+import { map } from 'rxjs/operators'; // 👈 mejor desde 'rxjs/operators'
 import { PublicConfig } from 'src/app/interfaces/public-config';
+import { firstValueFrom } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
 })
 export class AuthService {
-
   constructor(
     private firestore: Firestore,
-    private auth: Auth, //Esto es necesario para hacer funcionar el servicio en standalone
+    private auth: Auth, 
     private http: HttpClient,
     private router: Router,
     private navController: NavController
-
-  ) { }
+  ) {}
 
   login(email: string, password: string) {
-    return signInWithEmailAndPassword(this.auth, email, password)
+    return signInWithEmailAndPassword(this.auth, email, password);
   }
-  loginWithToken(loginToken: string) {
-    return signInWithCustomToken(this.auth, loginToken)
-  }
-  signup(registerForm: any) {
-    var data = {
-      firstName: registerForm.firstName,
-      lastName: registerForm.lastName,
-      email: registerForm.email,
-      password: registerForm.password,
-    }
-    return this.http.post(`${environment.api}/auth/signup`, data)
-  }
-  getAuthState() {
-    return authState(this.auth)
-  }
-  getPublicConfigData() {
-    var ref = doc(this.firestore, 'general', 'settings')
-    return docSnapshots(ref).pipe(
-      map(snapshot => ({
-        ...snapshot.data()
-      } as any))
-    )
-  }
-  // ({ id: snapshot.id, 
-  logout() {
-    localStorage.removeItem('userUid')
-    // this.router.navigate(["/auth/login"])
-    this.navController.navigateRoot("/auth/login")
 
-    return signOut(this.auth)
+  loginWithToken(loginToken: string) {
+    return signInWithCustomToken(this.auth, loginToken);
   }
+
+  signup(registerForm: any) {
+    return this.http.post(`${environment.api}/auth/signup`, registerForm);
+  }
+
+  getAuthState() {
+    return authState(this.auth);
+  }
+
+  getPublicConfigData() {
+    const ref = doc(this.firestore, 'general', 'settings');
+    return docSnapshots(ref).pipe(
+      map(snapshot => snapshot.data() as PublicConfig)
+    );
+  }
+
+  logout() {
+    localStorage.removeItem('userUid');
+    this.navController.navigateRoot("/auth/login");
+    return signOut(this.auth);
+  }
+
   async getIdToken() {
-    // var token = await this.auth.currentUser?.getIdToken(true)
-    // return token
-    const user = this.auth.currentUser;
-    var token = user ? await user.getIdToken(true) : null;
-    return token;
+   const user$ = user(this.auth); // observable gestionado por AngularFire
+    const currentUser = await firstValueFrom(user$);
+    return currentUser ? getIdToken(currentUser, true) : null;
   }
+
   getUserData(userUid: string) {
-    var ref = doc(this.firestore, 'users', userUid)
+    const ref = doc(this.firestore, 'users', userUid);
     return docSnapshots(ref).pipe(
       map(snapshot => ({
         id: snapshot.id,
         ...snapshot.data()
       }))
-    )
+    );
   }
+
   deleteAccount(userUid: string, afAuthToken: string) {
-    var data = {
-      userUid: userUid,
-      afAuthToken: afAuthToken
-    }
-    return this.http.post(`${environment.api}/auth/deleteAccount`, data)
+    return this.http.post(`${environment.api}/auth/deleteAccount`, { userUid, afAuthToken });
   }
+
   sendPasswordResetEmail(email: string) {
-    console.log(email)
-    return sendPasswordResetEmail(this.auth, email)
+    return sendPasswordResetEmail(this.auth, email);
   }
-
-
 }

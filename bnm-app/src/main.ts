@@ -7,21 +7,14 @@ import { AppComponent } from './app/app.component';
 import { DatePipe, TitleCasePipe } from '@angular/common';
 import { provideHttpClient } from '@angular/common/http';
 import { environment } from './environments/environment';
-import { connectFirestoreEmulator, getFirestore, provideFirestore } from '@angular/fire/firestore';
-import { connectAuthEmulator, getAuth, provideAuth, indexedDBLocalPersistence, initializeAuth, Auth } from '@angular/fire/auth';
+
+// Firebase Imports
 import { getApp, initializeApp, provideFirebaseApp } from '@angular/fire/app';
+import { connectAuthEmulator, getAuth, provideAuth, indexedDBLocalPersistence, initializeAuth, Auth } from '@angular/fire/auth';
+import { connectFirestoreEmulator, getFirestore, provideFirestore } from '@angular/fire/firestore';
+import { connectStorageEmulator, getStorage, provideStorage } from '@angular/fire/storage';
+
 import { Capacitor } from '@capacitor/core';
-
-let firestoreHost ='localhost'
-let authHost = 'localhost'
-if (Capacitor.getPlatform() === 'android') {
-  console.log('Android!')
-  firestoreHost = '10.0.2.2';
-  authHost = '10.0.2.2';
-}
-
-
-
 
 bootstrapApplication(AppComponent, {
   providers: [
@@ -32,65 +25,54 @@ bootstrapApplication(AppComponent, {
     provideHttpClient(),
     provideFirebaseApp(() => initializeApp(environment.firebaseConfig)),
 
+    // FIRESTORE INIT
     provideFirestore(() => {
+      const firestore = getFirestore();
       if (environment.useEmulators) {
-        var host = 'localhost'
-        if (Capacitor.getPlatform() === 'android')  host ='192.168.50.131';
-        const firestore = getFirestore();
-        connectFirestoreEmulator(firestore, host, 8080)
-        return firestore
-      } else {
-        return getFirestore()
+        // Use the specific IP for Android emulator, otherwise localhost
+        const host = Capacitor.getPlatform() === 'android' ? '192.168.50.131' : 'localhost';
+        console.log(`Using Firestore Emulator at ${host}:8080`);
+        connectFirestoreEmulator(firestore, host, 8080);
       }
-
+      return firestore;
     }),
 
-    //AUTHENTICATION INIT
+    // AUTHENTICATION INIT
     provideAuth(() => {
-      //IMPORTANT TO SET  PERSISTENCE IN NATIVE ENVIROMENTS FOR AUTH> IF NOT CRASHES
       let auth: Auth;
 
+      // Set persistence for native environments to prevent crashes
       if (Capacitor.isNativePlatform()) {
         console.log('Running on native platform, using indexedDBLocalPersistence.');
         auth = initializeAuth(getApp(), {
           persistence: indexedDBLocalPersistence
         });
       } else {
-        console.log('Running on web, using getAuth().');
+        console.log('Running on web, using default persistence.');
         auth = getAuth();
       }
 
       if (environment.useEmulators) {
+        // For Auth emulator, the URL needs the protocol
         const authHost = Capacitor.getPlatform() === 'android' ? 'http://192.168.50.131:9099' : 'http://localhost:9099';
         console.log(`Using Auth Emulator at ${authHost}`);
         connectAuthEmulator(auth, authHost);
       }
 
       return auth;
-      // if (environment.useEmulators) {
-      //   var host = 'http://localhost:9099'
+    }),
 
-      //   if (Capacitor.getPlatform() === 'android')  host ='http://10.0.2.2:9099';
-      //   console.log('usando dev' + ' ' + host)
-
-      //   const fireauth = getAuth();
-      //   connectAuthEmulator(fireauth, host);
-      //   return fireauth;
-      // } else { 
-      //   console.log('usando prod')
-
-      //   return getAuth(); 
-      // }
-
-
-      // if (Capacitor.isNativePlatform()) {
-			// 	return initializeAuth(getApp(), {
-			// 		persistence: indexedDBLocalPersistence
-			// 	});
-			// } else {
-			// 	return getAuth();
-			// }
+    // STORAGE INIT
+    provideStorage(() => {
+      const storage = getStorage();
+      if (environment.useEmulators) {
+        // Use the specific IP for Android emulator, otherwise localhost
+        const host = Capacitor.getPlatform() === 'android' ? '192.168.50.131' : 'localhost';
+        const port = 9199; // Default port for Storage emulator
+        console.log(`Using Storage Emulator at ${host}:${port}`);
+        connectStorageEmulator(storage, host, port);
+      }
+      return storage;
     }),
   ],
 });
-

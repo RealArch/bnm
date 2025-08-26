@@ -94,12 +94,192 @@
         <ion-item lines="none" class="dataItem">
           <ion-label>
             <div class="title">Ordered By</div>
-            <div class="data text-truncate">{{workOrder.createdBy| titlecase}}</div>
+            <div class="data text-truncate">{{workOrder.createdBy.firstName +' '+ workOrder.createdBy.lastName |
+              titlecase}}</div>
           </ion-label>
         </ion-item>
       </ion-col>
       <!--  -->
 
+
+      <!-- job location -->
+      <ion-col size="12">
+        <ion-item lines="none" class="dataItem">
+          <ion-label>
+            <div class="title">Ordered By</div>
+            <div class="data truncate-2">{{
+              workOrder.customer.companyAddress.street + ", "+
+              workOrder.customer.companyAddress.state + ", "+
+              workOrder.customer.companyAddress.zip
+              | titlecase}}</div>
+          </ion-label>
+        </ion-item>
+      </ion-col>
+      <!--  -->
     </ion-row>
+
+    <!-- Noted equipment -->
+    <ion-row>
+      <ion-col size="12" class="section-subtitle">
+        Noted Equipments
+      </ion-col>
+      @for(eq of workOrder.notedEquipments; track eq; let i =$index ){
+      <ion-col>
+        <ion-item class="dataItem with-counter">
+          <div class="counter">
+            {{$index + 1}}
+          </div>
+          <ion-row class="w-100">
+            <ion-col size="6" class="">
+              <div class="title">
+                Make
+              </div>
+              <div class="data">
+                {{eq.make || 'N/A'}}
+              </div>
+            </ion-col>
+            <ion-col size="6">
+              <div class="title">
+                Model
+              </div>
+              <div class="data">
+                {{eq.model || 'N/A'}}
+              </div>
+            </ion-col>
+            <ion-col size="6">
+              <div class="title">
+                Serial Number
+              </div>
+              <div class="data">
+                {{eq.serialNumber || 'N/A'}}
+              </div>
+            </ion-col>
+            <ion-col size="6">
+              <div class="title">
+                Equipment Number
+              </div>
+              <div class="data">
+                {{eq.equipmentNumber || 'N/A'}}
+              </div>
+            </ion-col>
+          </ion-row>
+        </ion-item>
+      </ion-col>
+      } @empty {
+      <ion-col>
+        <div class="no-items-box">
+          <div>
+            No Equipments added to the work order.
+          </div>
+        </div>
+      </ion-col>
+      }
+    </ion-row>
+
+    <!-- services performed -->
+    <ion-row>
+      <ion-col size="12" class="section-subtitle">
+        Services Performed
+      </ion-col>
+      @for(servicePerformed of workOrder.servicesPerformed; track servicePerformed; let i =$index ){
+
+      <ion-col>
+        <ion-item class="dataItem with-counter w-100">
+          <div class="counter">
+            {{$index + 1}}
+          </div>
+
+          <ion-row class="w-100">
+            <ion-col size="2" class="pe-0 mx-0 d-flex flex-column justify-content-center">
+              <div class="title">
+                Qty.
+              </div>
+              <div class="equipmentData">
+                {{servicePerformed.quantity || 'N/A'}}
+              </div>
+            </ion-col>
+            <ion-col size="10" class="d-flex flex-column justify-content-center">
+              <div class="title">
+                {{servicePerformed.title}}
+              </div>
+              <div class="serviceDescription ">
+                {{servicePerformed.description}}
+              </div>
+            </ion-col>
+          </ion-row>
+
+
+        </ion-item>
+      </ion-col>
+      } @empty {
+      <ion-col>
+        <div class="no-items-box">
+          <div>
+            No Services added to the work order.
+          </div>
+        </div>
+      </ion-col>
+      }
+    </ion-row>
+
+    <!-- Material Used-->
+    <ion-row>
+      <ion-col size="12" class="section-subtitle">
+        Material Used
+      </ion-col>
+      @for(materialUsed of workOrder.materialsUsed; track materialUsed; let i =$index ){
+
+      <ion-col>
+        <ion-item class="dataItem with-counter w-100">
+          <div class="counter">
+            {{$index + 1}}
+          </div>
+
+          <ion-row class="w-100">
+            <ion-col size="2" class="pe-0 mx-0 d-flex flex-column justify-content-center">
+              <div class="title">
+                Qty.
+              </div>
+              <div class="equipmentData">
+                {{materialUsed.quantity || 'N/A'}}
+              </div>
+            </ion-col>
+            <ion-col size="2" class="d-flex flex-column justify-content-center">
+              <div class="title">
+                Part No.
+              </div>
+              <div class="equipmentData ">
+                {{materialUsed.partNumber || 'N/A'}}
+              </div>
+            </ion-col>
+            <ion-col size="8" class="d-flex flex-column justify-content-center">
+              <div class="title">
+                Description
+              </div>
+              <div class="equipmentData ">
+                {{materialUsed.description}}
+              </div>
+            </ion-col>
+          </ion-row>
+        </ion-item>
+      </ion-col>
+      } @empty {
+      <ion-col>
+        <div class="no-items-box">
+          <div>
+            No materials added to the work order.
+          </div>
+        </div>
+      </ion-col>
+
+      }
+    </ion-row>
+
+    <ion-row class="mt-3 mb-5 pb-5">
+      <ion-col size="12" class="justify-content-center d-flex">
+        <ion-button>Sign Work order</ion-button>
+      </ion-col>
+    </ion-row>
+
   </ion-grid>
 </ion-content>

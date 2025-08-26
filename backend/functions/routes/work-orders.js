@@ -1,7 +1,7 @@
 // Importaciones necesarias de Firebase, Express y Algolia
 const router = require('express').Router();
 const { getFirestore, FieldValue } = require('firebase-admin/firestore');
-const { onDocumentCreated } = require('firebase-functions/v2/firestore');
+const { onDocumentCreated, onDocumentDeleted } = require('firebase-functions/v2/firestore');
 const { defineSecret } = require('firebase-functions/params');
 const { algoliasearch } = require('algoliasearch');
 const { logger } = require("firebase-functions");
@@ -44,6 +44,8 @@ router.post('/create', middlewares.verifyClientToken, async (req, res) => {
 
         // Referencia al documento contador
         const counterRef = db.collection('counters').doc('workOrderCounter');
+        //obetener el usuario que creo la work order
+        const user = await db.collection('users').doc(userUid).get()
 
         // --- INICIO DE LA LÓGICA DE TRANSACCIÓN ---
         // Usamos una transacción para garantizar que el número de control sea único y se incremente de forma atómica.
@@ -67,7 +69,11 @@ router.post('/create', middlewares.verifyClientToken, async (req, res) => {
             const newWorkOrder = {
                 ...value, // Datos validados por Joi
                 controlNo: newControlNo, // ¡Aquí asignamos el nuevo número de control!
-                createdBy: userUid,
+                createdBy: {
+                    uid:userUid,
+                    firstName:user.data().firstName,
+                    lastName:user.data().lastName,
+                },
                 createdAt: FieldValue.serverTimestamp(), // serverTimestamp es seguro de usar en transacciones
                 status: 'pending',
                 workSign: {
@@ -155,10 +161,39 @@ const workOrderCreated = onDocumentCreated({ document: 'workOrders/{workOrderId}
     }
 );
 
+/**
+ * Se activa cuando se elimina un documento en la colección 'workOrders'.
+ * Elimina el objeto correspondiente del índice de Algolia.
+ */
+ const workOrderDeleted = onDocumentDeleted({
+    document: 'workOrders/{workOrderId}',
+    secrets: [ALGOLIA_APP_ID, ALGOLIA_ADMIN_KEY]
+}, async (event) => {
+    // Define el nombre del índice en Algolia (diferente para producción y desarrollo)
+    const ALGOLIA_INDEX_NAME = !process.env.FUNCTIONS_EMULATOR ? 'workOrders_prod' : 'workOrders_dev';
+
+    // Inicializa el cliente de Algolia con tus credenciales
+    const client = algoliasearch(ALGOLIA_APP_ID.value(), ALGOLIA_ADMIN_KEY.value());
+
+    // Obtiene el ID del documento eliminado de los parámetros del evento
+    const objectID = event.params.workOrderId;
+
+    logger.info(`Attempting to delete Work Order ${objectID} from Algolia index: ${ALGOLIA_INDEX_NAME}`);
+
+    try {
+        // Elimina el objeto del índice de Algolia usando su objectID
+        await client.deleteObject(objectID);
+        logger.info(`Successfully deleted Work Order ${objectID} from Algolia.`);
+    } catch (error) {
+        logger.error(`Error deleting Work Order ${objectID} from Algolia:`, error);
+    }
+});
+
 
 // --- EXPORTACIONES ---
 // Exporta tanto el router para la API como el trigger para Firebase Functions
 module.exports = {
     router,
     workOrderCreated,
+    workOrderDeleted
 };

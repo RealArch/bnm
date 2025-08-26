@@ -35,19 +35,6 @@ const ALGOLIA_APP_ID = defineSecret("ALGOLIA_APP_ID")
 const customersTrigger = require('./routes/customers');
 const shiftsTriggers = require('./routes/shifts')
 
-// let client;
-// onInit(() => {
-
-//     console.log(ALGOLIA_ADMIN_KEY.value())
-//     console.log(ALGOLIA_APP_ID.value())
-
-//     const algoliaAppIdValue = ALGOLIA_APP_ID.value()
-//     const algoliaAdminKeyValue = ALGOLIA_ADMIN_KEY.value();
-//     client = algoliasearch.searchClient(algoliaAppIdValue, algoliaAdminKeyValue);
-//     return
-// });
-
-
 //RUTAS
 //Auth
 const { router: authRoute } = require('./routes/auth');
@@ -86,6 +73,7 @@ exports.paycheckHistoryCreated = paycheckHistoryCreated;
 exports.paycheckHistoryUpdated = paycheckHistoryUpdated;
 exports.closePaychecks = closePaychecks;
 exports.workOrderCreated = workOrdersRoute.workOrderCreated;
+exports.workOrderDeleted = workOrdersRoute.workOrderDeleted;
 
 //Auto functions auth
 // exports.deleteUser = userDeleted

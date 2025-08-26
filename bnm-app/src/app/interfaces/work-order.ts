@@ -5,18 +5,23 @@ export interface WorkOrder {
   controlNo: number;
 
   customer: {
-    id:string,
-    companyName:string,
-    companyPhone:string,
-    companyAddress:object,
-    contactName:string,
-    contactPhone:string,
+    id: string,
+    companyName: string,
+    companyPhone: string,
+    companyAddress: {
+      city:string,
+      state:string,
+      street:string,
+      zip:string
+    },
+    contactName: string,
+    contactPhone: string,
   };
   startDate: Timestamp; // O puedes convertirlo a Date
   closeDate?: Timestamp; // Opcional
   status: 'pending' | 'closed' | 'in-progress' | 'draft';
   type: 'work' | 'pickup';
-  createdBy: string;
+  createdBy: { uid: string, firstName: string, lastName: string };
   createdAt: { seconds: number; nanoseconds: number; };
   servicesPerformed: [{
     title: string,
