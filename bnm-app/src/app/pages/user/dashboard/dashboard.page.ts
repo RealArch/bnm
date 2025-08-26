@@ -41,7 +41,6 @@ export class DashboardPage implements OnInit {
   }
 
   ngOnInit() {
-    console.log(44)
 
     this.getUserData()
   }
@@ -49,7 +48,6 @@ export class DashboardPage implements OnInit {
   //Saying he will lost his shift if not closing before 11:59
   getUserData() {
     this.userUid = localStorage.getItem('userUid')
-    console.log(this.userUid)
     this.loadingData = true
     combineLatest([
       this.authService.getUserData(this.userUid),
@@ -77,7 +75,6 @@ export class DashboardPage implements OnInit {
 
   }
   calculateWorkedHours(currentPaycheck: any) {
-    console.log(currentPaycheck)
     let totalWorkHours = 0;
     let totalLunchHours = 0;
     currentPaycheck.forEach((paycheck: { timeWorked: { work: number; lunch: number; }; }) => {

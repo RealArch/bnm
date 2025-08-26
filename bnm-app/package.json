@@ -30,6 +30,7 @@
     "@capacitor/haptics": "^7.0.2",
     "@capacitor/ios": "^7.4.3",
     "@capacitor/keyboard": "^7.0.2",
+    "@capacitor/screen-orientation": "^7.0.2",
     "@capacitor/status-bar": "^7.0.2",
     "@ionic/angular": "^8.0.0",
     "algoliasearch": "^5.20.4",
@@ -38,6 +39,7 @@
     "ionicons": "^7.0.0",
     "moment-timezone": "^0.5.47",
     "rxjs": "~7.8.0",
+    "signature_pad": "^5.0.10",
     "tslib": "^2.3.0",
     "zone.js": "~0.15.0"
   },
@@ -54,6 +56,7 @@
     "@capacitor/cli": "^7.4.3",
     "@ionic/angular-toolkit": "^12.0.0",
     "@types/jasmine": "~5.1.0",
+    "@types/signature_pad": "^2.3.6",
     "@typescript-eslint/eslint-plugin": "^8.18.0",
     "@typescript-eslint/parser": "^8.18.0",
     "eslint": "^9.16.0",

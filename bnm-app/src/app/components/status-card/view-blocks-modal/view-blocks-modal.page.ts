@@ -41,12 +41,9 @@ export class ViewBlocksModalPage implements OnInit {
     
     
     this.customers = await this.getCustomer() as Customer[]
-    console.log(this.shift)
     //If no hourly rate was provided, use the current HourlyRate from userData
     this.hourlyRate.set(this.userData.hourlyRate)  
-    console.log(this.fixedHourlyRate)
     if(this.fixedHourlyRate){
-      console.log('usando el fixed')
       this.hourlyRate.set(this.fixedHourlyRate)  
     }
     this.timeWorked.set(this.shift.timeWorked.work)
@@ -66,10 +63,8 @@ export class ViewBlocksModalPage implements OnInit {
   }
    
   getCompanyInfoById(id: string): string {
-    console.log(id)
-    console.log(this.customers)
+
     const index = this.customers.findIndex(customer => customer.id === id);
-    console.log(index)
     if (index !== -1) {
       const customer = this.customers[index];
       return `${customer.companyName}, ${customer.companyAddress.city}, ${customer.companyAddress.state}`;

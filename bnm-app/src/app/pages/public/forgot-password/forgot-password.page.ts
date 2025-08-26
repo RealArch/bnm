@@ -34,7 +34,6 @@ export class ForgotPasswordPage implements OnInit {
 
       this.authService.sendPasswordResetEmail(formValue.email)
         .then(() => {
-          console.log('Email sent successfully')
           this.popupService.presentAlert("Check your inbox!", "We just sent you an email with steps to reset your password. It might take a few minutes to arrive — and don’t forget to check your spam folder!")
           this.router.navigate(['/auth/login'])
           this.loading = false
@@ -45,8 +44,6 @@ export class ForgotPasswordPage implements OnInit {
           this.loading = false
 
         })
-      // console.log(res)
 
   }
 }
-//rafael8721693@gmai.com

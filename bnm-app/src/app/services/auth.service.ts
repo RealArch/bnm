@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { inject, Injectable, Injector, runInInjectionContext } from '@angular/core';
 import { Auth, authState, getIdToken, sendPasswordResetEmail, signInWithCustomToken, signInWithEmailAndPassword, signOut, user } from '@angular/fire/auth';
 import { HttpClient } from '@angular/common/http';
 import { environment } from '../../environments/environment';
@@ -13,13 +13,15 @@ import { firstValueFrom } from 'rxjs';
   providedIn: 'root'
 })
 export class AuthService {
+  private injector = inject(Injector);
+
   constructor(
     private firestore: Firestore,
-    private auth: Auth, 
+    private auth: Auth,
     private http: HttpClient,
     private router: Router,
     private navController: NavController
-  ) {}
+  ) { }
 
   login(email: string, password: string) {
     return signInWithEmailAndPassword(this.auth, email, password);
@@ -38,10 +40,13 @@ export class AuthService {
   }
 
   getPublicConfigData() {
-    const ref = doc(this.firestore, 'general', 'settings');
-    return docSnapshots(ref).pipe(
-      map(snapshot => snapshot.data() as PublicConfig)
-    );
+    return runInInjectionContext(this.injector, () => {
+
+      const ref = doc(this.firestore, 'general', 'settings');
+      return docSnapshots(ref).pipe(
+        map(snapshot => snapshot.data() as PublicConfig)
+      );
+    });
   }
 
   logout() {
@@ -51,19 +56,23 @@ export class AuthService {
   }
 
   async getIdToken() {
-   const user$ = user(this.auth); // observable gestionado por AngularFire
+    const user$ = user(this.auth); // observable gestionado por AngularFire
     const currentUser = await firstValueFrom(user$);
     return currentUser ? getIdToken(currentUser, true) : null;
   }
 
   getUserData(userUid: string) {
-    const ref = doc(this.firestore, 'users', userUid);
-    return docSnapshots(ref).pipe(
-      map(snapshot => ({
-        id: snapshot.id,
-        ...snapshot.data()
-      }))
-    );
+    return runInInjectionContext(this.injector, () => {
+
+      const ref = doc(this.firestore, 'users', userUid);
+      return docSnapshots(ref).pipe(
+        map(snapshot => ({
+          id: snapshot.id,
+          ...snapshot.data()
+        }))
+      );
+    });
+
   }
 
   deleteAccount(userUid: string, afAuthToken: string) {

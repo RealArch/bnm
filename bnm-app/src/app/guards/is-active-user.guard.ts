@@ -7,7 +7,6 @@ const checkIfActive = () => {
   //if localStorage isUserActive is false, redirect to not-allowed-user page 
   if (localStorage.getItem('isUserActive') == 'false') {
     router.navigate(["not-allowed-user"])
-    console.log(localStorage.getItem('isUserActive'))
 
     return false
   }

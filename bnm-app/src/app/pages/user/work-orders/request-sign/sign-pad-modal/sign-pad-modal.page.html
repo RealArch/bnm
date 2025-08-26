@@ -1,0 +1,34 @@
+<ion-header>
+  <ion-toolbar color="primary">
+    <ion-title>Por favor, firme en el recuadro</ion-title>
+    <ion-buttons slot="end">
+      <ion-button (click)="cancel()">Cancelar</ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content fullscreen>
+  <div class="landscape-wrapper">
+    
+    <div class="signature-container">
+      <canvas #signatureCanvas></canvas>
+      <div class="sign-here-text">Firme aquí</div>
+    </div>
+
+    <div class="controls-container">
+      <ion-button expand="full" color="success" (click)="acceptSignature()">
+        Aceptar
+      </ion-button>
+      <ion-button expand="full" fill="outline" color="dark" (click)="changePenColor('black')">
+        Negro
+      </ion-button>
+      <ion-button expand="full" fill="outline" color="primary" (click)="changePenColor('blue')">
+        Azul
+      </ion-button>
+      <ion-button expand="full" color="danger" (click)="clearSignature()">
+        Limpiar
+      </ion-button>
+    </div>
+
+  </div>
+</ion-content>

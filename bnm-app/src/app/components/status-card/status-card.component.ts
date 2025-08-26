@@ -134,34 +134,11 @@ export class StatusCardComponent implements OnInit {
     this.modal.dismiss(null, 'cancel');
   }
 
-  // async closeShift() {
-  //   // this.modal.dismiss()
-
-  //   this.updating = true
-  //   var afAuthToken = await this.authService.getIdToken()
-  //   this.subscriptions.push(this.shiftsService.closeShift(this.closingShiftTime, afAuthToken)
-  //     .subscribe({
-  //       next: (res) => {
-  //         console.log(res)
-  //         this.updating = false;
-  //         this.modalCtrl.dismiss()
-  //       },
-  //       error: (err) => {
-  //         this.updating = false;
-  //         console.log(err)
-  //       }
-  //     })
-  //   )
-  // }
-  // this executes every time the ending shift Modal opens
   fillCopyElapseTime() {
-    console.log('holas')
     this.copyElapseTime = this.getElapsedMinSec(this.userData.currentShift.blocks)
     //update the variable datetimeValue with the date now so it can send the close time to the api
     this.datetimeValue = new Date(Date.now()).toISOString()
-    console.log(new Date(Date.now()).toISOString())
 
-    // console.log(Date.now())
 
   }
   //MODALS//

@@ -65,9 +65,6 @@ export class StartShiftModalComponent implements OnInit {
       //if a previous shift exist, don't allow select a time before the start time. We dont want negative count hours
 
       // this.minDatePicker = this.timeServices.formatToIso8601(this.previousShift.startTime)
-
-      console.log(this.minDatePicker)
-      console.log(this.maxDatePicker)
       if (this.modType == 'lunch') {
         this.startShiftForm.controls['workingPlace'].setValue(this.previousShift.workingPlace)
         this.startShiftForm.controls['details'].setValue(this.previousShift.details)
@@ -248,7 +245,6 @@ export class StartShiftModalComponent implements OnInit {
   }
 
   ngOnDestroy() {
-    console.log('destroy StartShiftModalComponent')
     this.subscriptions.forEach(element => {
       element.unsubscribe()
     });

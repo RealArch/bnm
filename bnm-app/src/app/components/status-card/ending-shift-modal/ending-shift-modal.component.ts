@@ -67,7 +67,6 @@ export class EndingShiftModalComponent implements OnInit {
         this.shiftsService.closeShift(datetimeValueMilliseconds, geolocation, afAuthToken)
           .subscribe({
             next: (res) => {
-              console.log(res)
               this.updating = false;
               this.modalCtrl.dismiss()
             },
@@ -106,17 +105,12 @@ export class EndingShiftModalComponent implements OnInit {
   }
   //Executes every time the date picker changes
   calculateClosingHour(value: any) {
-    // this.datetimeValue = value
-    // console.log(value)
+
     this.closingShiftTime = this.timeServices.dateNowToIso8601Timezone()
-    console.log(this.closingShiftTime)
-    // console.log(this.closingShiftTime)
 
     var copyBlocks = JSON.parse(JSON.stringify(this.userData.currentShift.blocks));
     copyBlocks[copyBlocks.length - 1].endTime = this.pickerTime;
-    // this.copyElapseTime = this.shiftsService.getElapsedMinSec(copyBlocks, this.userData.status)
-    // console.log(this.copyElapseTime)
-    // console.log(this.copyElapseTime)
+
     this.copyElapseTime = this.shiftsService.getElapsedMinSec2(copyBlocks, this.userData.status)
   }
 

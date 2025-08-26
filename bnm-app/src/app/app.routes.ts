@@ -1,11 +1,9 @@
-import { ActivatedRouteSnapshot, ResolveFn, RouterStateSnapshot, Routes } from '@angular/router';
-import { canActivate, redirectLoggedInTo, redirectUnauthorizedTo } from '@angular/fire/auth-guard'
-import { inject } from '@angular/core';
-import { AuthService } from './services/auth.service';
+import { Routes } from '@angular/router';
+// Se elimina la importación de @angular/fire/auth-guard
 import { isActiveGuard } from './guards/is-active-user.guard';
+import { authGuard, publicGuard } from './guards/auth.guard';
 
-const redirectToHome = () => redirectUnauthorizedTo(['/auth/login'])
-const redirectToDashboard = () => redirectLoggedInTo(['/user'])
+// Se eliminan las constantes que usaban los guardias anteriores
 
 export const routes: Routes = [
 
@@ -19,8 +17,9 @@ export const routes: Routes = [
   {
     path: 'user',
     loadComponent: () => import('./pages/user/user.page').then(m => m.UserPage),
-    ...canActivate(redirectToHome),
-    canMatch: [isActiveGuard,],
+    // Se reemplaza el guardia de AngularFire por tu authGuard personalizado
+    canActivate: [authGuard], 
+    canMatch: [isActiveGuard],
     children: [
       {
         path: '',
@@ -57,7 +56,8 @@ export const routes: Routes = [
   {
     path: 'auth',
     loadComponent: () => import('./pages/public/public.page').then(m => m.PublicPage),
-    ...canActivate(redirectToDashboard),
+    // Se reemplaza el guardia de AngularFire por tu publicGuard personalizado
+    canActivate: [publicGuard], 
     children: [
       {
         path: 'login',
@@ -116,17 +116,8 @@ export const routes: Routes = [
     path: 'select-work-type',
     loadComponent: () => import('./pages/user/work-orders/select-work-type/select-work-type.page').then(m => m.SelectWorkTypePage)
   },
-
-
-
-
-
-
-
-
-
-
-
-
-
+  {
+    path: 'sign-pad-modal',
+    loadComponent: () => import('./pages/user/work-orders/request-sign/sign-pad-modal/sign-pad-modal.page').then( m => m.SignPadModalPage)
+  },
 ];

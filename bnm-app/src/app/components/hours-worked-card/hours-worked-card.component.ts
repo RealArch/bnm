@@ -32,11 +32,5 @@ export class HoursWorkedCardComponent implements OnInit {
       }
     }
   }
-  // ngOnInit() {
-  //   console.log(this.totalWorkHours)
-  //   this.hours = Math.floor(this.totalWorkHours / (1000 * 60 * 60))
-  //   this.minutes = Math.floor((this.totalWorkHours % (1000 * 60 * 60)) / (1000 * 60));
-
-  // }
 
 }

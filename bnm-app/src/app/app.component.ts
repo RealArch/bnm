@@ -28,30 +28,24 @@ export class AppComponent implements OnDestroy {
   private unsubscribe$ = new Subject<void>();
   constructor(private platform: Platform) {
     //solo si es la primera vez
-    console.log(localStorage)
-    console.log(localStorage.getItem('gpsModalPresented'))
     if (localStorage.getItem('gpsModalPresented') != 'true') {
       // this.checkGpsPermissions()
       this.requestGpsModal()
     }
 
     //todo:Pause app loading if can't find userData
-    console.log('antes')
     authState(getAuth())
       .pipe(takeUntil(this.unsubscribe$))
       .subscribe({
         next: (user) => {
-          console.log('pase')
 
           this.setUserData(user)
         },
         error: (err) => {
           console.log(err)
-          console.log('eeror 1')
 
         }
       })
-    console.log('antes')
 
     this.router.events
       .pipe(
@@ -66,7 +60,6 @@ export class AppComponent implements OnDestroy {
   setUserData(user: any) {
     var userData: any
     if (user) {
-      console.log(user.uid)
 
       this.authService.getUserData(user.uid)
         .pipe(takeUntil(this.unsubscribe$))
@@ -91,7 +84,6 @@ export class AppComponent implements OnDestroy {
     } else {
       localStorage.removeItem('userUid');
       localStorage.removeItem('isUserActive');
-      console.log('no user')
       this.navController.navigateRoot('/auth/login')
 
 
@@ -127,7 +119,6 @@ export class AppComponent implements OnDestroy {
   }
 
   ngOnDestroy() {
-    console.log('destroy')
     this.unsubscribe$.next();
     this.unsubscribe$.complete();
   }
