@@ -1,4 +1,4 @@
-import { Component, inject, OnInit } from '@angular/core';
+import { Component, inject, OnDestroy, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import {
@@ -17,6 +17,8 @@ import { SelectWorkTypePage } from './select-work-type/select-work-type.page';
 import { WorkOrdersService } from 'src/app/services/work-orders.service';
 import { WorkOrder } from 'src/app/interfaces/work-order';
 import { RequestSignPage } from './request-sign/request-sign.page';
+import { combineLatest, Subject, takeUntil } from 'rxjs';
+import { PopupsService } from 'src/app/services/popups.service';
 
 @Component({
   selector: 'app-work-orders',
@@ -35,10 +37,14 @@ import { RequestSignPage } from './request-sign/request-sign.page';
 export class WorkOrdersPage implements OnInit {
   modalCtrl = inject(ModalController);
   workOrdersService = inject(WorkOrdersService);
+  popupService = inject(PopupsService);
 
-  workOrders: any[] = [];
+  pendingSignWorkOrders: any[] = [];
+  inProgressWorkOrders: any[] = [];
+  closedWorkOrders: any[] = []
   private offset = 0;
   private readonly pageSize = 20;
+  private destroy$ = new Subject<void>();
 
   isSearching = [];
   searchText = '';
@@ -54,43 +60,25 @@ export class WorkOrdersPage implements OnInit {
   }
 
   loadWorkOrders() {
-    console.log('hola1')
-    this.workOrdersService.getUserPendingSignWorkOrders()
+    combineLatest([
+      this.workOrdersService.getUserWorkOrders('pending'),
+      this.workOrdersService.getUserWorkOrders('in-progress'),
+      this.workOrdersService.getUserWorkOrders('closed')
+    ])
+      .pipe(takeUntil(this.destroy$))
       .subscribe({
-        next: (data) => {
-          this.workOrders = data
+        next: ([signWorkOrders, inProgressWorkOrders, closedWorkOrders]) => {
+          this.pendingSignWorkOrders = signWorkOrders;
+          this.inProgressWorkOrders = inProgressWorkOrders;
+          this.closedWorkOrders = closedWorkOrders;
         },
         error: (err) => {
-          console.log(err)
-
+          this.popupService.presentToast("bottom", "", "")
+          console.error('Error loading work orders', err);
         }
-      })
+      });
 
-    // try {
-    //   const data = await this.workOrdersService.getWorkOrders_A(this.offset, this.pageSize);
-    //   if (data && data.hits) {
-    //     // Usar un nuevo array para mejorar la detección de cambios
-    //     this.workOrders = [...this.workOrders, ...data.hits];
 
-    //     this.offset += this.pageSize;
-    //     if (event) {
-    //       event.target.complete();
-    //       if (data.hits.length < this.pageSize) {
-    //         event.target.disabled = true;
-    //       }
-    //     }
-    //   } else {
-    //     if (event) {
-    //       event.target.disabled = true;
-    //     }
-    //   }
-
-    // } catch (error) {
-    //   console.error('Error al cargar las órdenes de trabajo:', error);
-    //   if (event) {
-    //     event.target.complete();
-    //   }
-    // }
   }
 
   /**
@@ -131,5 +119,10 @@ export class WorkOrdersPage implements OnInit {
       }
     });
     await modal.present();
+  }
+  ngOnDestroy(): void {
+    console.log('destroy 1')
+    this.destroy$.next();
+    this.destroy$.complete();
   }
 }

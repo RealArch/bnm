@@ -20,7 +20,7 @@
     <ion-row>
       <ion-col size="12">
         <div class="type-box">
-          @if(type=='work'){
+          @if(workOrder.type=='work'){
           <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
             stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round"
             class="icon icon-tabler icons-tabler-outline icon-tabler-hammer me-2">
@@ -30,7 +30,7 @@
               d="M18.121 15.293l2.586 -2.586a1 1 0 0 0 0 -1.414l-7.586 -7.586a1 1 0 0 0 -1.414 0l-2.586 2.586a1 1 0 0 0 0 1.414l7.586 7.586a1 1 0 0 0 1.414 0z" />
           </svg>
           Work order for work or delivery
-          } @else if(type=='pickup') {
+          } @else if(workOrder.type=='pickup') {
           <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
             stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round"
             class="icon icon-tabler icons-tabler-outline icon-tabler-car-crane me-2">
@@ -169,11 +169,14 @@
       <ion-col>
         <div class="no-items-box">
           <div>
-            No Equipments added to the work order.
+            No equipments had been added to the work order before.
           </div>
         </div>
       </ion-col>
       }
+
+
+
     </ion-row>
 
     <!-- services performed -->
@@ -186,7 +189,7 @@
       <ion-col>
         <ion-item class="dataItem with-counter w-100">
           <div class="counter">
-            {{$index + 1}}
+            <!-- {{$index + 1}} -->
           </div>
 
           <ion-row class="w-100">
@@ -215,11 +218,61 @@
       <ion-col>
         <div class="no-items-box">
           <div>
-            No Services added to the work order.
+            No services had been added to the work order before.
           </div>
         </div>
       </ion-col>
       }
+      <ion-col size="12">
+        <div class="divider"></div>
+        @if(newServicesPerformed.length > 0){
+        <div class="text-center divider-text">New services since the last signature</div>
+        }
+      </ion-col>
+      <!-- NEW SERVICES -->
+      <ion-col size="12">
+        @for(servicePerformed of newServicesPerformed; track $index; let i = $index){
+        <ion-item class="dataItem with-counter w-100">
+          <div class="counter me-2">
+            <!-- {{$index + 1}} -->
+          </div>
+          <ion-row class="w-100">
+            <ion-col size="2" class="px-0 mx-0 d-flex flex-column justify-content-center">
+              <div class="equipmentHeader">
+                Qty.
+              </div>
+              <div class="equipmentData">
+                {{servicePerformed.quantity || 'N/A'}}
+              </div>
+            </ion-col>
+            <ion-col size="10" class="d-flex flex-column justify-content-center">
+              <div class="equipmentHeader text-truncate">
+                {{servicePerformed.title}}
+              </div>
+              <div class="equipmentData text-truncate-2-lines">
+                {{servicePerformed.description}}
+              </div>
+            </ion-col>
+
+
+          </ion-row>
+          <!-- BOTÓN DE EDITAR -->
+          <ion-button (click)="openServiceModal(servicePerformed, i)" fill="clear" slot="end">
+            <ion-icon color="medium" name="create-outline" slot="icon-only"></ion-icon>
+          </ion-button>
+
+          <!-- BOTÓN DE ELIMINAR -->
+          <ion-button (click)="removeService(i)" fill="clear" color="danger" slot="end">
+            <ion-icon name="close" slot="icon-only"></ion-icon>
+          </ion-button>
+        </ion-item>
+        }
+        <div class="d-flex justify-content-center pt-2">
+          <ion-button size="small" (click)="openServiceModal()">Add Service
+            <ion-icon name="add" slot="start"></ion-icon>
+          </ion-button>
+        </div>
+      </ion-col>
     </ion-row>
 
     <!-- Material Used-->
@@ -267,19 +320,97 @@
       <ion-col>
         <div class="no-items-box">
           <div>
-            No materials added to the work order.
+            No materials had been added to the work order before.
           </div>
         </div>
       </ion-col>
 
       }
-    </ion-row>
+      <ion-col size="12">
+        <div class="divider"></div>
+        @if(newServicesPerformed.length > 0){
+        <div class="text-center divider-text">New materials since the last signature</div>
+        }
+      </ion-col>
+      <!-- NEW MATERIALS -->
+      <ion-col size="12">
+        @for(materialUsed of newMaterialsUsed; track $index; let i = $index){
+        <ion-item class="mb-1">
+          <ion-row class="w-100">
 
-    <ion-row class="mt-3 mb-5 pb-5">
-      <ion-col size="12" class="justify-content-center d-flex">
-        <ion-button (click)="openSignatureModal()">Sign Work order</ion-button>
+            <ion-col size="2" class="px-0 mx-0 d-flex flex-column justify-content-center">
+              <div class="equipmentHeader">
+                Qty.
+              </div>
+              <div class="equipmentData">
+                {{materialUsed.quantity || 'N/A'}}
+              </div>
+            </ion-col>
+
+            <ion-col size="10" class="d-flex flex-column justify-content-center">
+              <div class="equipmentHeader text-truncate">
+                Description
+              </div>
+              <div class="equipmentData text-truncate">
+                {{materialUsed.description}}
+              </div>
+            </ion-col>
+
+          </ion-row>
+          <!-- BOTÓN DE EDITAR -->
+          <ion-button (click)="openMaterialModal(materialUsed, i)" fill="clear" slot="end">
+            <ion-icon color="medium" name="create-outline" slot="icon-only"></ion-icon>
+          </ion-button>
+
+          <!-- BOTÓN DE ELIMINAR -->
+          <ion-button (click)="removeMaterial(i)" fill="clear" color="danger" slot="end">
+            <ion-icon name="close" slot="icon-only"></ion-icon>
+          </ion-button>
+        </ion-item>
+        }
+
+
+        <div class="d-flex justify-content-center pt-2">
+          <ion-button size="small" (click)="openMaterialModal()">Add Material
+            <ion-icon name="add" slot="start"></ion-icon>
+          </ion-button>
+        </div>
       </ion-col>
     </ion-row>
 
+    @if(workOrder.status == "in-progress" && workOrder.type == "pickup"){
+    <ion-row>
+      <ion-col size="12" class="section-subtitle">
+        Requested Pickup sign
+      </ion-col>
+      <ion-col size="12">
+        <div class="signImg">
+          <img src="{{workOrder.openSign.img}}" alt="">
+          <div class="infoBox">
+            Requested on {{workOrder.openSign.dateSigned?.toDate() | date}}
+          </div>
+        </div>
+      </ion-col>
+    </ion-row>
+    }
+    <ion-row class="mt-3 mb-5 pb-5">
+
+      <ion-col size="12" class="justify-content-center d-flex">
+        <ion-button (click)="openSignatureModal()">
+          @if(workOrder.type == "pickup"){
+          @if(workOrder.openSign.img == null){
+          Request Pickup Sign
+          } @else if(workOrder.openSign.img != null){
+          Request Delivery Sign
+          }
+          }@else if(workOrder.type == "work"){
+          Request Work Sign
+          }
+
+
+        </ion-button>
+      </ion-col>
+
+    </ion-row>
   </ion-grid>
 </ion-content>

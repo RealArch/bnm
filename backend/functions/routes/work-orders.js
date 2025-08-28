@@ -70,21 +70,31 @@ router.post('/create', middlewares.verifyClientToken, async (req, res) => {
                 ...value, // Datos validados por Joi
                 controlNo: newControlNo, // ¡Aquí asignamos el nuevo número de control!
                 createdBy: {
-                    uid:userUid,
-                    firstName:user.data().firstName,
-                    lastName:user.data().lastName,
+                    uid: userUid,
+                    firstName: user.data().firstName,
+                    lastName: user.data().lastName,
                 },
                 createdAt: FieldValue.serverTimestamp(), // serverTimestamp es seguro de usar en transacciones
                 status: 'pending',
-                workSign: {
+                openSign: {
                     img: null,
                     dateSigned: null,
-                    requestedBy: null
+                    requestedBy: {
+                        id: null,
+                        firstName: null,
+                        lastName: null
+                    },
+                    imgName: null
                 },
-                pickupSign: {
+                closeSign: {
                     img: null,
                     dateSigned: null,
-                    requestedBy: null
+                    requestedBy: {
+                        id: null,
+                        firstName: null,
+                        lastName: null
+                    },
+                    imgName: null
                 }
             };
 
@@ -165,7 +175,7 @@ const workOrderCreated = onDocumentCreated({ document: 'workOrders/{workOrderId}
  * Se activa cuando se elimina un documento en la colección 'workOrders'.
  * Elimina el objeto correspondiente del índice de Algolia.
  */
- const workOrderDeleted = onDocumentDeleted({
+const workOrderDeleted = onDocumentDeleted({
     document: 'workOrders/{workOrderId}',
     secrets: [ALGOLIA_APP_ID, ALGOLIA_ADMIN_KEY]
 }, async (event) => {

@@ -1,16 +1,16 @@
 .type-box {
     background-color: rgb(220, 220, 220);
-    border-radius: 15px;
+    border-radius: 10px;
     padding: 15px;
 }
 
 .section-subtitle {
-    margin-top: 10px;
+    margin-top: 20px;
     font-weight: 500;
 }
 
 ion-item {
-    border-radius: 15px;
+    border-radius: 10px;
 }
 
 .dataItem {
@@ -32,22 +32,14 @@ ion-item {
 }
 
 .no-items-box {
-    background-color: rgb(220, 220, 220);
-    color: var(--ion-color-medium);
-    height: 75px;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    border-radius: 15px;
-    width: 100%;
+
 }
 
 .counter {
     background-color: var(--ion-color-primary);
     color: white;
     height: 100%;
-    width: 22px;
+    width: 10px;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -61,4 +53,25 @@ ion-item {
 .serviceDescription{
     font-size: 14px;
     line-height: normal;
+}
+
+.signImg{
+    background-color: white;
+    border-radius: 10px;
+    overflow: hidden;
+}
+.infoBox{
+    background-color: rgb(201, 201, 201);
+    color: rgb(93, 93, 93);
+    text-align: center;
+    padding: 6px 0;
+}
+.divider{
+    height: 1px;
+    background-color: rgb(207, 207, 207);
+    margin: 5px 0px;
+}
+.divider-text{
+    font-size: 13px;
+    color: rgb(161, 161, 161);
 }

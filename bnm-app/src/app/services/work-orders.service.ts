@@ -2,8 +2,8 @@ import { HttpClient } from '@angular/common/http';
 import { inject, Injectable, Injector, runInInjectionContext } from '@angular/core';
 import { catchError, from, map, Observable, of } from 'rxjs';
 import { environment as globals } from "./../../environments/environment"
-import { collection, collectionData, CollectionReference, doc, DocumentData, Firestore, query, serverTimestamp, updateDoc, where } from '@angular/fire/firestore';
-import { WorkOrder, PaginatedWorkOrderResult } from '../interfaces/work-order';
+import { arrayUnion, collection, collectionData, CollectionReference, doc, DocumentData, Firestore, query, serverTimestamp, updateDoc, where } from '@angular/fire/firestore';
+import { WorkOrder, PaginatedWorkOrderResult, workOrderStatus, workOrderSignType } from '../interfaces/work-order';
 import { algoliasearch } from 'algoliasearch';
 import { environment } from 'src/environments/environment';
 import { getStorage, ref, uploadString, getDownloadURL } from 'firebase/storage';
@@ -70,16 +70,34 @@ export class WorkOrdersService {
     return runInInjectionContext(this.injector, () => {
       var q = query(
         this.workOrdersCollection,
-        where("workSign.img", "==", null),
-        where("pickupSign.img", "==", null)
+        where("status", "==", 'pending'),
+
+      )
+      return collectionData(q, { idField: "id" })
+    });
+  }
+  getUserInProgressWorkOrders() {
+    return runInInjectionContext(this.injector, () => {
+      var q = query(
+        this.workOrdersCollection,
+        where("status", "==", 'in-progress'),
+      )
+      return collectionData(q, { idField: "id" })
+    });
+  }
+  getUserWorkOrders(status: workOrderStatus) {
+    return runInInjectionContext(this.injector, () => {
+      var q = query(
+        this.workOrdersCollection,
+        where("status", "==", status),
       )
       return collectionData(q, { idField: "id" })
     });
   }
 
-  async uploadSignature(signatureDataURL: string, workOrderId: string, type: 'work' | 'pickup') {
+  async uploadSignature(signatureDataURL: string, workOrderId: string, workOrdertype: 'work' | 'pickup', signType: workOrderSignType, newMaterialsUsed: any[], newServicesPerformed: any[]) {
     try {
-            // 1. Obtener el usuario actual de Firebase Auth
+      // 1. Obtener el usuario actual de Firebase Auth
       const user = this.auth.currentUser;
 
       // 2. Validar que el usuario esté autenticado antes de continuar
@@ -91,7 +109,7 @@ export class WorkOrdersService {
       const blob = this.base64ToBlob(signatureDataURL);
 
       // Subir a Firebase Storage
-      const filePath = `signatures/${type}_${workOrderId}_${Date.now()}.png`;
+      const filePath = `signatures/${workOrdertype}_${workOrderId}_${Date.now()}.png`;
       const storageRef = ref(this.storage, filePath);
       await uploadBytes(storageRef, blob);
       const url = await getDownloadURL(storageRef);
@@ -99,17 +117,29 @@ export class WorkOrdersService {
       // Actualizar Firestore
       const docRef = doc(this.firestore, `workOrders/${workOrderId}`);
       const updateData: any = {};
-      if (type === 'work') {
-        updateData['workSign.img'] = url;
-        updateData['workSign.imgName'] = filePath;
-        updateData['workSign.dateSigned'] = serverTimestamp();
-        updateData['workSign.requestedBy'] = user.uid;
-      } else if (type === 'pickup') {
-        updateData['pickupSign.img'] = url;
-        updateData['pickupSign.imgName'] = filePath;
-        updateData['pickupSign.dateSigned'] = serverTimestamp();
-        updateData['pickupSign.requestedBy'] = user.uid;
+      if (signType === 'closeSign') {
+        updateData['closeSign.img'] = url;
+        updateData['closeSign.imgName'] = filePath;
+        updateData['closeSign.dateSigned'] = serverTimestamp();
+        updateData['closeSign.requestedBy'] = user.uid;
+        updateData['status'] = 'closed';
+      } else if (signType === 'openSign') {
+        updateData['openSign.img'] = url;
+        updateData['openSign.imgName'] = filePath;
+        updateData['openSign.dateSigned'] = serverTimestamp();
+        updateData['openSign.requestedBy'] = user.uid;
+        updateData['status'] = 'in-progress';
       }
+    //  Si hay materiales nuevos, agregarlos sin sobrescribir
+    if (newMaterialsUsed && newMaterialsUsed.length > 0) {
+      updateData['materialsUsed'] = arrayUnion(...newMaterialsUsed);
+    }
+
+    //  Si hay servicios nuevos, agregarlos sin sobrescribir
+    if (newServicesPerformed && newServicesPerformed.length > 0) {
+      updateData['servicesPerformed'] = arrayUnion(...newServicesPerformed);
+    }
+    //
       return await updateDoc(docRef, updateData);
 
     } catch (error) {

@@ -40,7 +40,69 @@
       </ion-col>
       <ion-col size="12">
         <ion-list style="border-radius: 15px;">
-          @for(workOrder of workOrders; track workOrder.id){
+          @for(workOrder of pendingSignWorkOrders; track workOrder.id){
+          <ion-item detail="false" color="light">
+            <ion-label>
+              <ion-row class="align-items-center">
+                <ion-col size="12" class="controlNo m-0 pb-0">
+                   No. {{workOrder.controlNo}}
+                </ion-col>
+                <!-- billTo -->
+                <ion-col size="7" class="m-0">
+                  <div class="title-item">Customer</div>
+                  <div class="content-item text-truncate">{{workOrder.customer.companyName | titlecase}}</div>
+                </ion-col>
+                <!-- Date -->
+                <ion-col size="3" class="m-0">
+                  <div class="title-item">Created</div>
+                  <div class="content-item">{{workOrder.startDate.toDate() | date:'MM/dd/yy'}}</div>
+                </ion-col>
+
+                <ion-col size="auto" class="m-0 ms-auto">
+                  <ion-buttons>
+                    <ion-button [id]="workOrder.id">
+                      <ion-icon name="ellipsis-vertical"></ion-icon>
+                    </ion-button>
+                    <ion-popover [trigger]="workOrder.id" triggerAction="click" [dismissOnSelect]="true">
+                      <ng-template>
+                        <ion-content>
+                          <ion-list>
+                            <ion-item detail="false" button (click)="openRequestSignModal(workOrder)">
+                              <ion-icon size="small" slot="start" name="pencil-outline"></ion-icon>
+                              Request Sign
+                            </ion-item>
+                          </ion-list>
+                        </ion-content>
+                      </ng-template>
+                    </ion-popover>
+
+                  </ion-buttons>
+                </ion-col>
+
+              </ion-row>
+            </ion-label>
+          </ion-item>
+          }@empty {
+            <ion-item lines="none" color="translucent" class="no-items-box">
+              <ion-label>
+                No pending work orders for signature.
+              </ion-label>
+            </ion-item>
+          }
+        </ion-list>
+      </ion-col>
+    </ion-row>
+
+    <ion-row class="pt-3">
+      <ion-col class="title-box">
+
+        <ion-text>
+          Pending for delivery
+        </ion-text>
+      </ion-col>
+      <ion-col size="12">
+        <ion-list style="border-radius: 15px;">
+          @for(workOrder of inProgressWorkOrders; track workOrder.id){
           <ion-item detail="false" color="light">
             <ion-label>
               <ion-row class="align-items-center">
@@ -66,10 +128,10 @@
                     <ion-popover [trigger]="workOrder.id" triggerAction="click" [dismissOnSelect]="true">
                       <ng-template>
                         <ion-content>
-                          <ion-list >
+                          <ion-list>
                             <ion-item detail="false" button (click)="openRequestSignModal(workOrder)">
                               <ion-icon size="small" slot="start" name="pencil-outline"></ion-icon>
-                              Request Sign
+                              Request Delivery Sign
                             </ion-item>
                           </ion-list>
                         </ion-content>
@@ -82,53 +144,88 @@
               </ion-row>
             </ion-label>
           </ion-item>
+          } @empty {
+            <ion-item lines="none" color="translucent" class="no-items-box">
+              <ion-label>
+                No pending delivery work orders.
+              </ion-label>
+            </ion-item>
           }
         </ion-list>
       </ion-col>
     </ion-row>
 
+
+    <!-- CLOSED WORK ORDERS -->
+
     <ion-row class="pt-3">
       <ion-col class="title-box">
 
         <ion-text>
-          Open work orders
+          Closed Work Orders
         </ion-text>
       </ion-col>
       <ion-col size="12">
         <ion-list style="border-radius: 15px;">
-          <ion-item detail="false" color="light" button>
-            w
+          @for(workOrder of closedWorkOrders; track workOrder.id){
+          <ion-item detail="false" color="light">
+            <ion-label>
+              <ion-row class="align-items-center">
+                <ion-col size="12" class="controlNo m-0 pb-0">
+                  No. {{workOrder.controlNo}}
+                </ion-col>
+                <!-- billTo -->
+                <ion-col size="7" class="m-0">
+                  <div class="title-item">Customer</div>
+                  <div class="content-item text-truncate">{{workOrder.customer.companyName | titlecase}}</div>
+                </ion-col>
+                <!-- Date -->
+                <ion-col size="3" class="m-0">
+                  <div class="title-item">Created</div>
+                  <div class="content-item">{{workOrder.startDate.toDate() | date:'MM/dd/yy'}}</div>
+                </ion-col>
+
+                <ion-col size="auto" class="m-0 ms-auto">
+                  <ion-buttons>
+                    <ion-button [id]="workOrder.id">
+                      <ion-icon name="ellipsis-vertical"></ion-icon>
+                    </ion-button>
+                    <ion-popover [trigger]="workOrder.id" triggerAction="click" [dismissOnSelect]="true">
+                      <ng-template>
+                        <ion-content>
+                          <ion-list>
+                            <ion-item detail="false" button (click)="openRequestSignModal(workOrder)">
+                              <ion-icon size="small" slot="start" name="pencil-outline"></ion-icon>
+                              Request Delivery Sign
+                            </ion-item>
+                          </ion-list>
+                        </ion-content>
+                      </ng-template>
+                    </ion-popover>
+
+                  </ion-buttons>
+                </ion-col>
+
+              </ion-row>
+            </ion-label>
           </ion-item>
-          <ion-item detail="false" color="light" button>
-            w
-          </ion-item>
+          } @empty {
+            <ion-item lines="none" color="translucent" class="no-items-box">
+              <ion-label>
+                No close work orders.
+              </ion-label>
+            </ion-item>
+          }
         </ion-list>
       </ion-col>
     </ion-row>
+
   </ion-grid>
 
-
-  <!--
-    Usamos el viewport de scroll virtual del CDK de Angular.
-    'itemSize' es muy importante: debes poner la altura en píxeles de cada item.
-    Esto permite al CDK calcular cuántos items caben en pantalla y optimizar el renderizado.
-    Ajusta el valor 75 a la altura real de tus items para un rendimiento óptimo.
-  -->
-  <!-- <cdk-virtual-scroll-viewport [itemSize]="75" class="h-full">
-    <ion-item *cdkVirtualFor="let workOrder of workOrders; trackBy: trackById">
-      <ion-label>
-        <h2>Orden #{{ workOrder.id }}</h2>
-        <p>Descripción o estado de la orden...</p>
-      </ion-label>
-    </ion-item>
-  </cdk-virtual-scroll-viewport> -->
+  
 
 
-  <!-- Mantenemos el infinite scroll para seguir cargando los datos -->
-  <!-- <ion-infinite-scroll (ionInfinite)="loadWorkOrders($event)">
-    <ion-infinite-scroll-content loadingSpinner="bubbles" loadingText="Cargando más datos...">
-    </ion-infinite-scroll-content>
-  </ion-infinite-scroll> -->
+
 
 </ion-content>
 

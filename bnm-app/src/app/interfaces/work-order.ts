@@ -9,10 +9,10 @@ export interface WorkOrder {
     companyName: string,
     companyPhone: string,
     companyAddress: {
-      city:string,
-      state:string,
-      street:string,
-      zip:string
+      city: string,
+      state: string,
+      street: string,
+      zip: string
     },
     contactName: string,
     contactPhone: string,
@@ -22,7 +22,7 @@ export interface WorkOrder {
   status: 'pending' | 'closed' | 'in-progress' | 'draft';
   type: 'work' | 'pickup';
   createdBy: { uid: string, firstName: string, lastName: string };
-  createdAt: { seconds: number; nanoseconds: number; };
+  createdAt: Timestamp;
   servicesPerformed: [{
     title: string,
     description: string,
@@ -41,15 +41,25 @@ export interface WorkOrder {
     equipmentNumber: string
 
   }],
-  workSign: {
+  openSign: {
     img: string | null,
-    dateSigned: string | null,
-    requestedBy: string | null
+    imgName: string | null,
+    dateSigned: Timestamp | null,
+    requestedBy: {
+      id: string | null,
+      firstName: string | null,
+      lastName: string | null,
+    }
   },
-  pickupSign: {
+  closeSign: {
     img: string | null,
-    dateSigned: string | null,
-    requestedBy: string | null
+    imgName: string | null,
+    dateSigned: Timestamp | null,
+    requestedBy: {
+      id: string | null,
+      firstName: string | null,
+      lastName: string | null,
+    }
   },
   // Agrega aquí los demás campos como servicesPerformed, materialsUsed, etc.
 }
@@ -60,3 +70,5 @@ export interface PaginatedWorkOrderResult {
   nbHits: number;
   hitsPerPage: number;
 }
+export type workOrderStatus = 'pending' | 'closed' | 'in-progress' | 'draft';
+export type workOrderSignType = 'openSign' | 'closeSign';
