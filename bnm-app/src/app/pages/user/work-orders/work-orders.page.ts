@@ -4,12 +4,12 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import {
   IonContent, IonHeader, IonTitle, IonToolbar,
   IonIcon, IonButtons, IonButton, IonSearchbar,
-  IonFab, IonFabButton, ModalController,
+  IonFab, IonFabButton, ModalController, AlertController,
   IonList, IonLabel, IonSpinner, IonInfiniteScroll, IonInfiniteScrollContent,
-  IonItem, IonGrid, IonCol, IonRow, IonText, IonCard, IonCardContent, IonPopover
+  IonItem, IonGrid, IonCol, IonRow, IonText, IonCard, IonCardContent, IonPopover, IonAlert
 } from '@ionic/angular/standalone';
 import { addIcons } from 'ionicons';
-import { add, close, search, ellipsisVertical, pencilOutline } from 'ionicons/icons';
+import { add, close, search, ellipsisVertical, pencilOutline, trash } from 'ionicons/icons';
 import { RouterLink } from '@angular/router';
 // Importante: Añadir el módulo de Scrolling del CDK de Angular
 import { ScrollingModule } from '@angular/cdk/scrolling';
@@ -25,7 +25,7 @@ import { PopupsService } from 'src/app/services/popups.service';
   templateUrl: './work-orders.page.html',
   styleUrls: ['./work-orders.page.scss'],
   standalone: true,
-  imports: [IonPopover, IonCardContent, IonCard, IonText, IonRow, IonCol, IonGrid,
+  imports: [IonAlert, IonPopover, IonCardContent, IonCard, IonText, IonRow, IonCol, IonGrid,
     IonSpinner, IonLabel, IonList, IonItem, IonSearchbar,
     IonButtons, IonIcon, IonContent, IonHeader, IonTitle,
     IonButton, IonToolbar, CommonModule, FormsModule,
@@ -38,10 +38,10 @@ export class WorkOrdersPage implements OnInit {
   modalCtrl = inject(ModalController);
   workOrdersService = inject(WorkOrdersService);
   popupService = inject(PopupsService);
-
+  alertController = inject(AlertController);
   pendingSignWorkOrders: any[] = [];
   inProgressWorkOrders: any[] = [];
-  closedWorkOrders: any[] = []
+  closedWorkOrders: WorkOrder[] = []
   private offset = 0;
   private readonly pageSize = 20;
   private destroy$ = new Subject<void>();
@@ -49,8 +49,9 @@ export class WorkOrdersPage implements OnInit {
   isSearching = [];
   searchText = '';
 
+
   constructor() {
-    addIcons({ ellipsisVertical, add, close, search, pencilOutline });
+    addIcons({ ellipsisVertical, add, close, search, pencilOutline, trash });
   }
 
   ngOnInit() {
@@ -58,12 +59,22 @@ export class WorkOrdersPage implements OnInit {
     this.loadWorkOrders();
 
   }
+  removeWorkOrder(workOrderId: string) {
 
+    this.workOrdersService.removeWorkOrder(workOrderId)
+      .then(() => {
+        this.popupService.presentToast("bottom", "success", "Work order deleted successfully");
+      })
+      .catch(err => {
+        this.popupService.presentToast("bottom", "danger", "There was a problem deleting the work order. Please try again.");
+        console.error('Error deleting work order:', err);
+      });
+  }
   loadWorkOrders() {
     combineLatest([
-      this.workOrdersService.getUserWorkOrders('pending'),
-      this.workOrdersService.getUserWorkOrders('in-progress'),
-      this.workOrdersService.getUserWorkOrders('closed')
+      this.workOrdersService.getUserWorkOrders('pending', 5),
+      this.workOrdersService.getUserWorkOrders('in-progress', 5),
+      this.workOrdersService.getUserWorkOrders('closed', 5)
     ])
       .pipe(takeUntil(this.destroy$))
       .subscribe({
@@ -124,5 +135,30 @@ export class WorkOrdersPage implements OnInit {
     console.log('destroy 1')
     this.destroy$.next();
     this.destroy$.complete();
+  }
+
+  //ALERTS
+  async openDeleteAlert(id: string) {
+    const alert = await this.alertController.create({
+      header: 'Delete Work Order',
+      message: 'Are you sure you want to delete this work order? This action cannot be undone.',
+      buttons: [
+        {
+          text: 'Cancel',
+          role: 'cancel',
+          cssClass: 'custom-cancel-btn',
+        },
+        {
+          text: 'DELETE',
+          role: 'confirm',
+          cssClass: 'custom-delete-btn',
+          handler: () => {
+            this.removeWorkOrder(id);
+          },
+        },
+      ],
+    });
+
+    await alert.present();
   }
 }

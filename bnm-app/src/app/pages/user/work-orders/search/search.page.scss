@@ -1,0 +1,79 @@
+// Main host styles for the component
+:host {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+}
+
+// Styling for the content area
+ion-content {
+    --background: #f4f5f8; // A softer background color
+}
+
+// Container that fills the available space in the content area
+.results-container {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    width: 100%;
+}
+
+// The viewport for virtual scrolling, designed to be flexible
+.viewport {
+    flex: 1; // Allows the viewport to grow and fill the container
+}
+
+// A utility class to center content, used for loading and empty states
+.center-box {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    height: 100%;
+    text-align: center;
+    color: #888;
+    padding: 20px;
+}
+
+// Clean and modern styles for list items
+ion-item {
+    --padding-start: 16px;
+    --inner-padding-end: 16px;
+    --border-color: #e0e0e0;
+    --border-width: 0 0 0.55px 0; // Subtle bottom border
+    --background: #ffffff; // Explicitly set background for items
+    margin-bottom: 8px; // Spacing between items
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05); // A subtle shadow for depth
+
+    .controlNo {
+        font-weight: bold;
+        font-size: 0.9em;
+        color: var(--ion-color-primary);
+        padding-bottom: 6px;
+    }
+
+    .title-item {
+        font-size: 0.75em;
+        color: #666;
+        margin-bottom: 2px;
+    }
+
+    .content-item {
+        font-size: 0.95em;
+        color: #333;
+        font-weight: 500;
+    }
+
+    .text-truncate {
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+}
+
+// Remove unnecessary margins and paddings from columns inside the item row
+ion-item ion-col {
+    margin: 0;
+    padding-top: 2px;
+    padding-bottom: 2px;
+}

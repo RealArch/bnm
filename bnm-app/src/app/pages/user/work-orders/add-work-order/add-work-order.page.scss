@@ -53,3 +53,8 @@
 ion-item{
     border-radius: 10px;
 }
+.disabled-item{
+    --background: #f0f0f0;
+    --color: var(--ion-color-medium);
+    pointer-events: none; // Desactiva la interacción
+}

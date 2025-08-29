@@ -117,3 +117,11 @@ ion-card {
     padding: 10px 20px;
 
 }
+
+button.alert-button.custom-cancel-btn {
+  color: var(--ion-color-medium); // Cambia el color del texto
+}
+
+button.alert-button.custom-delete-btn {
+  color: var(--ion-color-danger); // Cambia el color del texto
+}

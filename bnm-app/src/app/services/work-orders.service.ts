@@ -1,8 +1,8 @@
 import { HttpClient } from '@angular/common/http';
-import { inject, Injectable, Injector, runInInjectionContext } from '@angular/core';
+import { inject, Injectable, Injector, Query, runInInjectionContext } from '@angular/core';
 import { catchError, from, map, Observable, of } from 'rxjs';
 import { environment as globals } from "./../../environments/environment"
-import { arrayUnion, collection, collectionData, CollectionReference, doc, DocumentData, Firestore, query, serverTimestamp, updateDoc, where } from '@angular/fire/firestore';
+import { arrayUnion, collection, collectionData, CollectionReference, deleteDoc, doc, DocumentData, Firestore, limit, query, serverTimestamp, Timestamp, updateDoc, where } from '@angular/fire/firestore';
 import { WorkOrder, PaginatedWorkOrderResult, workOrderStatus, workOrderSignType } from '../interfaces/work-order';
 import { algoliasearch } from 'algoliasearch';
 import { environment } from 'src/environments/environment';
@@ -26,7 +26,7 @@ export class WorkOrdersService {
   private injector = inject(Injector);
 
   constructor() {
-    this.workOrdersCollection = collection(this.firestore, 'workOrders');
+    this.workOrdersCollection = collection(this.firestore, 'workOrders') as CollectionReference<WorkOrder>;
 
   }
 
@@ -66,36 +66,82 @@ export class WorkOrdersService {
       }
     })
   }
-  getUserPendingSignWorkOrders() {
-    return runInInjectionContext(this.injector, () => {
-      var q = query(
-        this.workOrdersCollection,
-        where("status", "==", 'pending'),
 
-      )
-      return collectionData(q, { idField: "id" })
+  getUserWorkOrders(status: workOrderStatus, maxResults?: number): Observable<WorkOrder[]> {
+    return runInInjectionContext(this.injector, () => {
+      // Creamos un arreglo de constraints
+      const constraints: any[] = [where("status", "==", status)];
+
+      if (maxResults) {
+        constraints.push(limit(maxResults));
+      }
+
+      // Pasamos todos los constraints juntos
+      const q = query(this.workOrdersCollection, ...constraints);
+
+      return collectionData(q, { idField: "id" }) as Observable<WorkOrder[]>;
     });
   }
-  getUserInProgressWorkOrders() {
-    return runInInjectionContext(this.injector, () => {
-      var q = query(
-        this.workOrdersCollection,
-        where("status", "==", 'in-progress'),
-      )
-      return collectionData(q, { idField: "id" })
-    });
-  }
-  getUserWorkOrders(status: workOrderStatus) {
-    return runInInjectionContext(this.injector, () => {
-      var q = query(
-        this.workOrdersCollection,
-        where("status", "==", status),
-      )
-      return collectionData(q, { idField: "id" })
+  getWorkOrdersFiltered(params: {
+    page?: number,
+    hitsPerPage?: number,
+    query?: string, // búsqueda de texto
+    createdByUid?: string,
+    customerId?: string,
+    status?: string,
+    type?: string,
+    startDate?: string, // ISO string
+    closeDate?: string  // ISO string
+  }) {
+    const {
+      page = 0,
+      hitsPerPage = 10,
+      query = '',
+      createdByUid,
+      customerId,
+      status,
+      type,
+      startDate,
+      closeDate
+    } = params;
+
+    // Construimos los filtros de Algolia
+    const filters: string[] = [];
+
+    if (createdByUid) filters.push(`createdBy.uid:"${createdByUid}"`);
+    if (customerId) filters.push(`customer.id:"${customerId}"`);
+    if (status) filters.push(`status:"${status}"`);
+    if (type) filters.push(`type:"${type}"`);
+    if (startDate && closeDate) {
+      // Algolia espera rango en formato [valor TO valor]
+      filters.push(`startDate:[${startDate} TO ${closeDate}]`);
+    } else if (startDate) {
+      filters.push(`startDate >= ${startDate}`);
+    } else if (closeDate) {
+      filters.push(`closeDate <= ${closeDate}`);
+    }
+
+    const filterString = filters.join(' AND ');
+    client.clearCache()
+    return client.searchSingleIndex({
+      indexName: environment.algolia.indexes.workOrders,
+      searchParams: {
+        page,
+        hitsPerPage,
+        query,
+        filters: filterString || undefined
+      }
     });
   }
 
-  async uploadSignature(signatureDataURL: string, workOrderId: string, workOrdertype: 'work' | 'pickup', signType: workOrderSignType, newMaterialsUsed: any[], newServicesPerformed: any[]) {
+
+  async removeWorkOrder(id: string): Promise<void> {
+    const docRef = doc(this.workOrdersCollection, id);
+    await deleteDoc(docRef);
+  }
+
+  async uploadSignature(signatureDataURL: string, workOrderId: string, workOrdertype: 'work' | 'pickup', signType: workOrderSignType, newMaterialsUsed: any[], newServicesPerformed: any[], closeDate: string | null = null) {
+
     try {
       // 1. Obtener el usuario actual de Firebase Auth
       const user = this.auth.currentUser;
@@ -130,16 +176,22 @@ export class WorkOrdersService {
         updateData['openSign.requestedBy'] = user.uid;
         updateData['status'] = 'in-progress';
       }
-    //  Si hay materiales nuevos, agregarlos sin sobrescribir
-    if (newMaterialsUsed && newMaterialsUsed.length > 0) {
-      updateData['materialsUsed'] = arrayUnion(...newMaterialsUsed);
-    }
+      //  Si hay materiales nuevos, agregarlos sin sobrescribir
+      if (newMaterialsUsed && newMaterialsUsed.length > 0) {
+        updateData['materialsUsed'] = arrayUnion(...newMaterialsUsed);
+      }
 
-    //  Si hay servicios nuevos, agregarlos sin sobrescribir
-    if (newServicesPerformed && newServicesPerformed.length > 0) {
-      updateData['servicesPerformed'] = arrayUnion(...newServicesPerformed);
-    }
-    //
+      //  Si hay servicios nuevos, agregarlos sin sobrescribir
+      if (newServicesPerformed && newServicesPerformed.length > 0) {
+        updateData['servicesPerformed'] = arrayUnion(...newServicesPerformed);
+      }
+      // Si closeDate no es null, agregarlo a los datos de actualización como un timestamp basado en closeDate
+      if (closeDate) {
+
+        updateData['closeDate'] = closeDate;
+      }
+
+      //
       return await updateDoc(docRef, updateData);
 
     } catch (error) {
@@ -157,7 +209,6 @@ export class WorkOrdersService {
     }
     return new Blob([ab], { type: 'image/png' });
   }
-
 
 
 

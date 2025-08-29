@@ -53,11 +53,11 @@ const createWorkOrderSchema = Joi.object({
         'any.required': 'Customer information is required.'
     }),
 
-    startDate: Joi.date().iso().required().messages({
+    startDate: Joi.string().pattern(/^\d{4}-\d{2}-\d{2}$/).optional().allow(null).messages({
         'any.required': 'Start date is required.',
         'date.iso': 'Start date must be in ISO 8601 format (e.g., YYYY-MM-DD).'
     }),
-    closeDate: Joi.date().iso().allow(null).messages({
+    closeDate: Joi.string().pattern(/^\d{4}-\d{2}-\d{2}$/).optional().allow(null).messages({
         'date.iso': 'Close date must be in ISO 8601 format (e.g., YYYY-MM-DD).'
     }),
     notedEquipments: Joi.array().items(Joi.object()).allow(null),

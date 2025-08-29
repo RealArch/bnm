@@ -109,16 +109,16 @@
       <ion-row formGroupName="customer">
         <!-- orderedBy -->
         <ion-col size="12">
-          <ion-item>
-            <ion-input formControlName="companyName"   labelPlacement="stacked" label="Ordered By"></ion-input>
+          <ion-item class="disabled-item">
+            <ion-input formControlName="companyName" readonly  labelPlacement="stacked" label="Ordered By"></ion-input>
           </ion-item>
         </ion-col>
         <!--  -->
 
         <!-- address -->
         <ion-col size="12">
-          <ion-item>
-            <ion-input disabled [value]="addressString" labelPlacement="stacked" label="Address"></ion-input>
+          <ion-item class="disabled-item">
+            <ion-input readonly [value]="addressString" labelPlacement="stacked" label="Address"></ion-input>
           </ion-item>
         </ion-col>
         <!--  -->

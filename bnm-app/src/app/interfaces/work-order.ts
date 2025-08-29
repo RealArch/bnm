@@ -17,8 +17,8 @@ export interface WorkOrder {
     contactName: string,
     contactPhone: string,
   };
-  startDate: Timestamp; // O puedes convertirlo a Date
-  closeDate?: Timestamp; // Opcional
+  startDate: string;
+  closeDate: string | null;
   status: 'pending' | 'closed' | 'in-progress' | 'draft';
   type: 'work' | 'pickup';
   createdBy: { uid: string, firstName: string, lastName: string };

@@ -49,15 +49,15 @@ export class AddWorkOrderPage implements OnInit {
     addIcons({ createOutline, close, add, alert, alertCircleOutline });
     this.addWorkOrderForm = this.fb.group({
       startDate: [new Date().toISOString().split('T')[0], [Validators.required]],
-      closeDate: [new Date().toISOString().split('T')[0], [Validators.required]],
+      closeDate: [null, []],
       // billTo: [null, [Validators.required]],
       customer: this.fb.group({
-        id: [{ value: null, disabled: true }, [Validators.required]],
-        companyName: [{ value: null, disabled: true }, []],
-        companyPhone: [{ value: null, disabled: true }, [Validators.required]],
-        companyAddress: [{ value: null, disabled: true }, [Validators.required]],
-        contactName: [{ value: null, disabled: true }, [Validators.required]],
-        contactPhone: [{ value: null, disabled: true }, [Validators.required]],
+        id: [null, [Validators.required]],
+        companyName: [null, []],
+        companyPhone: [null, [Validators.required]],
+        companyAddress: [null, [Validators.required]],
+        contactName: [null, [Validators.required]],
+        contactPhone: [null, [Validators.required]],
       }),
       notedEquipments: this.fb.array([]),
       servicesPerformed: this.fb.array([], [minLengthArray(1)]),
@@ -83,8 +83,15 @@ export class AddWorkOrderPage implements OnInit {
   // id: "uqjazTllgLR3tiXMj1K4"
   async ngOnInit() {
     this.type = this.route.snapshot.paramMap.get('type');
+    //if type = work, add default close date to startDate: [new Date().toISOString().split('T')[0], [Validators.required]],
+    if (this.type == 'work') {
+      this.addWorkOrderForm.get('closeDate')?.setValue(new Date().toISOString().split('T')[0]);
+      this.addWorkOrderForm.get('closeDate')?.setValidators([Validators.required]);
+    }
+    console.log(this.addWorkOrderForm.value)
+    console.log(this.type)
     this.customers = await this.getCustomer() as Customer[]
-    console.log('hola')
+
   }
   get notedEquipments() {
     return this.addWorkOrderForm.get('notedEquipments') as FormArray;
@@ -132,24 +139,24 @@ export class AddWorkOrderPage implements OnInit {
 
 
 
-  if (this.customer) {
-    // Usamos patchValue, que es más seguro y flexible.
-    this.customer.patchValue({
-      id: selectedCustomer.id,
-      companyName: selectedCustomer.companyName, // Ahora incluimos este campo
-      companyPhone: selectedCustomer.companyPhone,
-      companyAddress: selectedCustomer.companyAddress,
-      contactName: selectedCustomer.contactName,
-      contactPhone: selectedCustomer.contactPhone,
-    });
-    
-    // Si tienes una propiedad aparte para la dirección, actualízala aquí.
-    // Aunque es mejor que esté dentro del FormGroup.
-    this.addressString = selectedCustomer.companyAddress.street + ', ' +
-                          selectedCustomer.companyAddress.city + ', ' +
-                          selectedCustomer.companyAddress.state + ', ' +
-                          selectedCustomer.companyAddress.zip;
-  }
+    if (this.customer) {
+      // Usamos patchValue, que es más seguro y flexible.
+      this.customer.patchValue({
+        id: selectedCustomer.id,
+        companyName: selectedCustomer.companyName, // Ahora incluimos este campo
+        companyPhone: selectedCustomer.companyPhone,
+        companyAddress: selectedCustomer.companyAddress,
+        contactName: selectedCustomer.contactName,
+        contactPhone: selectedCustomer.contactPhone,
+      });
+
+      // Si tienes una propiedad aparte para la dirección, actualízala aquí.
+      // Aunque es mejor que esté dentro del FormGroup.
+      this.addressString = selectedCustomer.companyAddress.street + ', ' +
+        selectedCustomer.companyAddress.city + ', ' +
+        selectedCustomer.companyAddress.state + ', ' +
+        selectedCustomer.companyAddress.zip;
+    }
 
   }
   // EQUIPMENT MODAL
@@ -179,7 +186,7 @@ export class AddWorkOrderPage implements OnInit {
   async createWorkOrder() {
 
     this.saving = true;
-
+    console.log(this.addWorkOrderForm.getRawValue())
     var afAuthToken = await this.authService.getIdToken()
 
     this.workOrderService.addWorkOrder(this.addWorkOrderForm.getRawValue(), afAuthToken!).pipe(

@@ -18,7 +18,7 @@ export const routes: Routes = [
     path: 'user',
     loadComponent: () => import('./pages/user/user.page').then(m => m.UserPage),
     // Se reemplaza el guardia de AngularFire por tu authGuard personalizado
-    canActivate: [authGuard], 
+    canActivate: [authGuard],
     canMatch: [isActiveGuard],
     children: [
       {
@@ -50,6 +50,10 @@ export const routes: Routes = [
         path: 'work-orders/request-sign',
         loadComponent: () => import('./pages/user/work-orders/request-sign/request-sign.page').then(m => m.RequestSignPage)
       },
+      {
+        path: 'work-orders/search',
+        loadComponent: () => import('./pages/user/work-orders/search/search.page').then(m => m.SearchPage)
+      },
 
     ]
   },
@@ -57,7 +61,7 @@ export const routes: Routes = [
     path: 'auth',
     loadComponent: () => import('./pages/public/public.page').then(m => m.PublicPage),
     // Se reemplaza el guardia de AngularFire por tu publicGuard personalizado
-    canActivate: [publicGuard], 
+    canActivate: [publicGuard],
     children: [
       {
         path: 'login',
@@ -118,6 +122,6 @@ export const routes: Routes = [
   },
   {
     path: 'sign-pad-modal',
-    loadComponent: () => import('./pages/user/work-orders/request-sign/sign-pad-modal/sign-pad-modal.page').then( m => m.SignPadModalPage)
+    loadComponent: () => import('./pages/user/work-orders/request-sign/sign-pad-modal/sign-pad-modal.page').then(m => m.SignPadModalPage)
   },
 ];
