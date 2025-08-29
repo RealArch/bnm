@@ -191,8 +191,10 @@ const workOrderDeleted = onDocumentDeleted({
     logger.info(`Attempting to delete Work Order ${objectID} from Algolia index: ${ALGOLIA_INDEX_NAME}`);
 
     try {
-        // Elimina el objeto del índice de Algolia usando su objectID
-        await client.deleteObject(objectID);
+        await client.deleteObject({
+            indexName: ALGOLIA_INDEX_NAME,
+            objectID: objectID
+        });
         logger.info(`Successfully deleted Work Order ${objectID} from Algolia.`);
     } catch (error) {
         logger.error(`Error deleting Work Order ${objectID} from Algolia:`, error);
