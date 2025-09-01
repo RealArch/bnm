@@ -6,13 +6,16 @@ import {
     IonContent, IonHeader, IonToolbar, IonButtons, IonButton, IonIcon,
     IonBackButton, IonSearchbar, IonRow, IonCol, IonItem, IonLabel,
     IonSpinner, IonRefresher, IonRefresherContent, IonInfiniteScroll,
-    IonInfiniteScrollContent, IonGrid, IonTitle, IonPopover, IonList, IonFab, IonFabButton
+    IonInfiniteScrollContent, IonGrid, IonTitle, IonPopover, IonList, IonFab, 
+    IonFabButton, ModalController
 } from '@ionic/angular/standalone';
 import { debounceTime, Subject, finalize, switchMap, catchError, of, tap, from } from 'rxjs';
 import { WorkOrdersService } from 'src/app/services/work-orders.service';
 import { addIcons } from 'ionicons';
 import { optionsOutline, close } from 'ionicons/icons';
 import { NoItemsFoundComponent } from 'src/app/components/no-items-found/no-items-found.component';
+import { WorkOrder } from 'src/app/interfaces/work-order';
+import { RequestSignPage } from '../request-sign/request-sign.page';
 
 @Component({
     selector: 'app-search',
@@ -27,7 +30,7 @@ import { NoItemsFoundComponent } from 'src/app/components/no-items-found/no-item
         IonBackButton, IonSearchbar, IonRow, IonCol, IonItem, IonLabel,
         IonSpinner, IonRefresher, IonRefresherContent, IonInfiniteScroll,
         IonInfiniteScrollContent, IonGrid, IonTitle, IonPopover, IonList, IonFab, IonFabButton,
-        CdkVirtualScrollViewport, NoItemsFoundComponent
+        CdkVirtualScrollViewport, NoItemsFoundComponent, 
     ]
 })
 export class SearchPage implements OnInit {
@@ -44,7 +47,7 @@ export class SearchPage implements OnInit {
     private hitsPerPage = 20;
     private totalPages = 1;
     private query = '';
-    workOrders: any[] = [];
+    workOrders: WorkOrder[] = [];
     private searchSubject = new Subject<string>();
 
     // --- Filters ---
@@ -56,7 +59,8 @@ export class SearchPage implements OnInit {
 
     constructor(
         private workOrdersService: WorkOrdersService,
-        private cdr: ChangeDetectorRef
+        private cdr: ChangeDetectorRef,
+        private modalCtrl: ModalController
     ) {
         addIcons({ optionsOutline, close });
     }
@@ -166,11 +170,17 @@ export class SearchPage implements OnInit {
     openFilters() {
         console.log('Open filter modal');
     }
-
-    openRequestSignModal(workOrder: any) {
-        console.log('Request sign for:', workOrder);
+    ////////// MODALS //////////
+    async openModalWorkOrder(workOrder:string) {
+          const modal = await this.modalCtrl.create({
+            component: RequestSignPage,
+            componentProps: {
+              workOrder
+            }
+          });
+          await modal.present();
     }
-
+    ////////////////////////////
     // **** ADD THIS FUNCTION ****
     /**
      * A trackBy function for the virtual scroll to improve performance.
