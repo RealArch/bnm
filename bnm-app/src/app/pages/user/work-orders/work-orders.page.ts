@@ -126,7 +126,7 @@ export class WorkOrdersPage implements OnInit {
     const modal = await this.modalCtrl.create({
       component: RequestSignPage,
       componentProps: {
-        workOrder
+        workOrderId: workOrder.id
       }
     });
     await modal.present();

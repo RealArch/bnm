@@ -8,7 +8,7 @@
 </ion-header>
 
 <ion-content color="light">
-    @if(loadingCustomers){
+  @if(loadingCustomers){
   <div class="loading">
     <ion-spinner name="circular"></ion-spinner>
   </div>
@@ -50,29 +50,34 @@
         </ion-col>
         <!-- startDate -->
         <ion-col size="6">
-          <ion-item>
-            <ion-label position="stacked">Start date</ion-label>
-            <ion-datetime-button class="pb-3" datetime="startDate"></ion-datetime-button>
-            <ion-popover [keepContentsMounted]="true">
-              <ng-template>
-                <ion-datetime presentation="date" id="startDate" formControlName="startDate"></ion-datetime>
-              </ng-template>
-            </ion-popover>
-          </ion-item>
+          <ion-card class="m-0">
+            <ion-card-content class="d-flex flex-column align-items-start">
+              <ion-label class="mb-1">Start date</ion-label>
+              <ion-datetime-button class="" datetime="startDate"></ion-datetime-button>
+              <ion-popover [keepContentsMounted]="true">
+                <ng-template>
+                  <ion-datetime presentation="date" id="startDate" formControlName="startDate"></ion-datetime>
+                </ng-template>
+              </ion-popover>
+            </ion-card-content>
+          </ion-card>
         </ion-col>
         <!--  -->
         <!-- closeDate -->
         @if(type=='work'){
         <ion-col size="6">
-          <ion-item>
-            <ion-label position="stacked">Date completed</ion-label>
-            <ion-datetime-button class="pb-3" datetime="closeDate"></ion-datetime-button>
-            <ion-popover [keepContentsMounted]="true">
-              <ng-template>
-                <ion-datetime presentation="date" id="closeDate" formControlName="closeDate"></ion-datetime>
-              </ng-template>
-            </ion-popover>
-          </ion-item>
+
+          <ion-card class="m-0">
+            <ion-card-content class="d-flex flex-column align-items-start">
+              <ion-label class="mb-1">Date completed</ion-label>
+              <ion-datetime-button datetime="closeDate"></ion-datetime-button>
+              <ion-popover [keepContentsMounted]="true">
+                <ng-template>
+                  <ion-datetime presentation="date" id="closeDate" formControlName="closeDate"></ion-datetime>
+                </ng-template>
+              </ion-popover>
+            </ion-card-content>
+          </ion-card>
         </ion-col>
         }
 
@@ -86,14 +91,15 @@
         <!-- billTo -->
         <ion-col size="12">
           <ion-item>
-            <ion-select labelPlacement="stacked" placeholder="Select a customer"
-              interface="modal" (ionChange)="onCustomerSelected($event)">
+            <ion-select labelPlacement="stacked" placeholder="Select a customer" interface="modal"
+              (ionChange)="onCustomerSelected($event)">
               <div slot="label">Bill To <ion-text color="danger">(Required)</ion-text></div>
               @for(customer of customers; track customer.id){
-              <ion-select-option [value]="customer" >
+              <ion-select-option [value]="customer">
                 <span>[{{customer.companyAddress.state}}] </span>
-                <span>{{customer.companyName | titlecase}}</span>, <span>{{customer.companyAddress.city | titlecase}}</span>
-               
+                <span>{{customer.companyName | titlecase}}</span>, <span>{{customer.companyAddress.city |
+                  titlecase}}</span>
+
               </ion-select-option>
               }
 
@@ -110,7 +116,7 @@
         <!-- orderedBy -->
         <ion-col size="12">
           <ion-item class="disabled-item">
-            <ion-input formControlName="companyName" readonly  labelPlacement="stacked" label="Ordered By"></ion-input>
+            <ion-input formControlName="companyName" readonly labelPlacement="stacked" label="Ordered By"></ion-input>
           </ion-item>
         </ion-col>
         <!--  -->
@@ -323,14 +329,12 @@
       <!--  -->
     </form>
   </ion-grid>
-}
+  }
 </ion-content>
 <ion-footer>
-  <ion-toolbar color="light">
+  <ion-toolbar color="light" class="py-0">
     <ion-buttons slot="end">
-      <!-- <ion-button fill="clear">
 
-      </ion-button> -->
       <ion-button (click)="createWorkOrder()" fill="solid" color="primary"
         [disabled]="!addWorkOrderForm.valid || saving">
         <div class="px-3">

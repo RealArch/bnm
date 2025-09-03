@@ -1,8 +1,8 @@
 import { HttpClient } from '@angular/common/http';
 import { inject, Injectable, Injector, Query, runInInjectionContext } from '@angular/core';
-import { catchError, from, map, Observable, of } from 'rxjs';
+import { catchError, from, map, Observable, of, take } from 'rxjs';
 import { environment as globals } from "./../../environments/environment"
-import { arrayUnion, collection, collectionData, CollectionReference, deleteDoc, doc, DocumentData, Firestore, limit, query, serverTimestamp, Timestamp, updateDoc, where } from '@angular/fire/firestore';
+import { arrayUnion, collection, collectionData, CollectionReference, deleteDoc, doc, docData, DocumentData, Firestore, getDoc, limit, query, serverTimestamp, Timestamp, updateDoc, where } from '@angular/fire/firestore';
 import { WorkOrder, PaginatedWorkOrderResult, workOrderStatus, workOrderSignType } from '../interfaces/work-order';
 import { algoliasearch } from 'algoliasearch';
 import { environment } from 'src/environments/environment';
@@ -55,6 +55,12 @@ export class WorkOrdersService {
     // El segundo argumento { idField: 'id' } mapea automáticamente el ID del documento
     // a una propiedad 'id' en el objeto, lo cual es una excelente práctica.
     return collectionData(this.workOrdersCollection, { idField: 'id' }) as Observable<WorkOrder[]>;
+  }
+
+  getWorkOrderById(id: string): Observable<WorkOrder | null> {
+    const docRef = doc(this.workOrdersCollection, id);
+    console.log(id)
+    return docData(docRef, { idField: 'id' }) as Observable<WorkOrder | null>;
   }
 
   getWorkOrders_A(page: number = 0, hitsPerPage: number = 10) {

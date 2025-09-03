@@ -74,6 +74,7 @@ exports.paycheckHistoryUpdated = paycheckHistoryUpdated;
 exports.closePaychecks = closePaychecks;
 exports.workOrderCreated = workOrdersRoute.workOrderCreated;
 exports.workOrderDeleted = workOrdersRoute.workOrderDeleted;
+exports.workOrderUpdated = workOrdersRoute.workOrderUpdated;
 
 //Auto functions auth
 // exports.deleteUser = userDeleted

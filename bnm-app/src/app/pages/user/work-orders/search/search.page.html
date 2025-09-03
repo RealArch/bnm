@@ -36,7 +36,7 @@
 
     <cdk-virtual-scroll-viewport itemSize="120" class="viewport" *ngIf="workOrders.length > 0">
       <ion-list>
-        <ion-item (click)="openModalWorkOrder(workOrder.id)" button detail="false" color="light" *cdkVirtualFor="let workOrder of workOrders; trackBy: trackById">
+        <ion-item (click)="openModalWorkOrder(workOrder)" button detail="false" color="light" *cdkVirtualFor="let workOrder of workOrders; trackBy: trackById">
           <ion-label>
             <ion-row class="align-items-center">
               <ion-col size="12" class="controlNo">

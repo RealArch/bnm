@@ -171,11 +171,11 @@ export class SearchPage implements OnInit {
         console.log('Open filter modal');
     }
     ////////// MODALS //////////
-    async openModalWorkOrder(workOrder:string) {
+    async openModalWorkOrder(workOrder:WorkOrder) {
           const modal = await this.modalCtrl.create({
             component: RequestSignPage,
             componentProps: {
-              workOrder
+              workOrderId: workOrder.id
             }
           });
           await modal.present();

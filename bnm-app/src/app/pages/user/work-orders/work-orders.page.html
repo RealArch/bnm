@@ -172,7 +172,7 @@
       <ion-col size="12">
         <ion-list style="border-radius: 15px;">
           @for(workOrder of closedWorkOrders; track workOrder.id){
-          <ion-item detail="false" color="light">
+          <ion-item button detail="false" color="light" (click)="openRequestSignModal(workOrder)">
             <ion-label>
               <ion-row class="align-items-center">
                 <ion-col size="12" class="controlNo m-0 pb-0">

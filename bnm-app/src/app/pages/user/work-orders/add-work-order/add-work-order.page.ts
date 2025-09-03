@@ -3,8 +3,7 @@ import { CommonModule, JsonPipe } from '@angular/common';
 import { AbstractControl, FormArray, FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, ValidationErrors, Validators } from '@angular/forms';
 import {
   IonContent, IonHeader, IonTitle, IonToolbar, IonBackButton, IonButtons, IonGrid, IonRow, IonCol, IonItem, IonLabel, IonDatetimeButton, IonDatetime, IonPopover, IonInput, IonText,
-  IonSelect, IonSelectOption, IonButton, IonIcon, ModalController, IonList, IonFooter, IonSpinner, NavController
-} from '@ionic/angular/standalone';
+  IonSelect, IonSelectOption, IonButton, IonIcon, ModalController, IonList, IonFooter, IonSpinner, NavController, IonCard, IonCardContent } from '@ionic/angular/standalone';
 import { addIcons } from 'ionicons';
 import { add, close, createOutline, alert, alertCircleOutline } from 'ionicons/icons'
 import { ModalAddEquipmentPage } from './modal-add-equipment/modal-add-equipment.page';
@@ -22,7 +21,7 @@ import { Customer } from 'src/app/interfaces/customers';
   templateUrl: './add-work-order.page.html',
   styleUrls: ['./add-work-order.page.scss'],
   standalone: true,
-  imports: [IonSpinner, IonFooter, IonIcon, IonButton, IonText, IonPopover, IonDatetime,
+  imports: [IonCardContent, IonCard, IonSpinner, IonFooter, IonIcon, IonButton, IonText, IonPopover, IonDatetime,
     IonDatetimeButton, IonLabel, IonItem, IonCol, IonRow, IonGrid,
     IonButtons, IonBackButton, IonInput,
     IonContent, IonHeader, IonTitle, IonToolbar, CommonModule,

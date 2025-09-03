@@ -1,7 +1,7 @@
 // Importaciones necesarias de Firebase, Express y Algolia
 const router = require('express').Router();
 const { getFirestore, FieldValue } = require('firebase-admin/firestore');
-const { onDocumentCreated, onDocumentDeleted } = require('firebase-functions/v2/firestore');
+const { onDocumentCreated, onDocumentDeleted, onDocumentUpdated } = require('firebase-functions/v2/firestore');
 const { defineSecret } = require('firebase-functions/params');
 const { algoliasearch } = require('algoliasearch');
 const { logger } = require("firebase-functions");
@@ -170,6 +170,39 @@ const workOrderCreated = onDocumentCreated({ document: 'workOrders/{workOrderId}
         }
     }
 );
+const workOrderUpdated = onDocumentUpdated(
+  { document: 'workOrders/{workOrderId}', secrets: [ALGOLIA_APP_ID, ALGOLIA_ADMIN_KEY] },
+  async (event) => {
+    // Define el nombre del índice en Algolia (diferente para producción y desarrollo)
+    const ALGOLIA_INDEX_NAME = !process.env.FUNCTIONS_EMULATOR ? 'workOrders_prod' : 'workOrders_dev';
+
+    // Inicializa el cliente de Algolia con tus credenciales
+    const client = algoliasearch(ALGOLIA_APP_ID.value(), ALGOLIA_ADMIN_KEY.value());
+    // const index = client.initIndex(ALGOLIA_INDEX_NAME);
+
+    // Obtiene los datos del documento después de la actualización
+    const newData = event.data.after.data();
+    const objectID = event.data.after.id; // Usa el ID de Firestore como objectID en Algolia
+
+    logger.info(`Updating Work Order ${objectID} in Algolia index: ${ALGOLIA_INDEX_NAME}`);
+
+    try {
+      // Actualiza el objeto en el índice de Algolia
+      await client.saveObject({
+        indexName: ALGOLIA_INDEX_NAME,
+        body: {
+          objectID: objectID,
+          id: objectID,
+          ...newData,
+        },
+      });
+
+      logger.info(`Successfully updated Work Order ${objectID} in Algolia.`);
+    } catch (error) {
+      logger.error(`Error updating Work Order ${objectID} in Algolia:`, error);
+    }
+  }
+);
 
 /**
  * Se activa cuando se elimina un documento en la colección 'workOrders'.
@@ -207,5 +240,6 @@ const workOrderDeleted = onDocumentDeleted({
 module.exports = {
     router,
     workOrderCreated,
-    workOrderDeleted
+    workOrderDeleted,
+    workOrderUpdated
 };

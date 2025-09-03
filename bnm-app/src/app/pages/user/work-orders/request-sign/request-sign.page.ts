@@ -16,6 +16,7 @@ import { addIcons } from 'ionicons';
 import { createOutline, close, add, calendarOutline } from 'ionicons/icons';
 import { ModalAddMaterialsPage } from '../add-work-order/modal-add-materials/modal-add-materials.page';
 import { Timestamp } from '@angular/fire/firestore';
+import { take } from 'rxjs';
 
 @Component({
   selector: 'app-request-sign',
@@ -25,7 +26,7 @@ import { Timestamp } from '@angular/fire/firestore';
   imports: [IonList, IonPopover, IonDatetimeButton, IonModal, IonText, IonDatetime, IonLabel, IonItem, IonGrid, IonCol, IonRow, IonBackButton, IonIcon, IonButton, IonButtons, IonSearchbar, IonContent, IonHeader, IonTitle, IonToolbar, CommonModule, FormsModule]
 })
 export class RequestSignPage implements OnInit {
-  @Input() workOrder!: WorkOrder;
+  @Input() workOrderId: string = '';
   modalController = inject(ModalController)
   loadingCtrl = inject(LoadingController)
   workOrdersService = inject(WorkOrdersService)
@@ -33,18 +34,45 @@ export class RequestSignPage implements OnInit {
   newServicesPerformed: any = []
   newMaterialsUsed: any = []
   closeDate: null | string = null;
+  loading: boolean = true;
+  workOrder: WorkOrder = {} as WorkOrder;
   constructor() {
     addIcons({ close, createOutline, add, calendarOutline });
   }
   ngOnInit() {
-    console.log(this.workOrder)
-    //si el tipo es work, llenar closeDate con la fecha actual
-    if (this.workOrder.status == 'in-progress' && this.workOrder.startDate) {
-      this.closeDate = this.getTodaysDateFormatted();
-    }
+    console.log(this.workOrderId)
+    //leer la work order con el id
+    this.getWorkOrders();
+
+
   }
   dismiss() {
     this.modalController.dismiss()
+  }
+  getWorkOrders() {
+    this.loading = true
+    this.workOrdersService.getWorkOrderById(this.workOrderId).pipe(take(1)).subscribe({
+      next: (workOrder: WorkOrder | null) => {
+        if (workOrder) {
+          this.workOrder = workOrder as WorkOrder;
+          console.log(this.workOrder)
+          //si el tipo es work, llenar closeDate con la fecha actual
+          if (this.workOrder.status == 'in-progress' && this.workOrder.startDate) {
+            this.closeDate = this.getTodaysDateFormatted();
+          }
+        } else {
+          this.popupService.presentToast("bottom", "danger", "Work order not found.");
+          this.dismiss();
+        }
+        this.loading = false;
+      },
+      error: (error) => {
+        console.error('Error fetching work order:', error);
+        this.popupService.presentToast("bottom", "danger", "Error fetching work order. Please try again.");
+        this.dismiss();
+        this.loading = false;
+      }
+    });
   }
   async openSignatureModal() {
     const modal = await this.modalController.create({
@@ -119,7 +147,7 @@ export class RequestSignPage implements OnInit {
     return formattedDate;
   }
   formatDate(event: any) {
-   // Obtenemos el valor UTC directamente del evento
+    // Obtenemos el valor UTC directamente del evento
     const dateValueFromPicker = event.detail.value;
 
     if (dateValueFromPicker) {
@@ -134,7 +162,7 @@ export class RequestSignPage implements OnInit {
 
       // Formateamos y asignamos el valor a nuestra variable una sola vez
       this.closeDate = `${year}-${String(month).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
-      
+
       console.log('Fecha formateada y asignada:', this.closeDate);
     }
   }
