@@ -125,3 +125,7 @@ button.alert-button.custom-cancel-btn {
 button.alert-button.custom-delete-btn {
   color: var(--ion-color-danger); // Cambia el color del texto
 }
+.rounded{
+    border-radius: 14px;
+    --border-radius: 13px;
+}

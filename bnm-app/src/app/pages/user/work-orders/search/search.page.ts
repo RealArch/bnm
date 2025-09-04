@@ -17,6 +17,7 @@ import { NoItemsFoundComponent } from 'src/app/components/no-items-found/no-item
 import { WorkOrder } from 'src/app/interfaces/work-order';
 import { RequestSignPage } from '../request-sign/request-sign.page';
 import { SearchFiltersPage } from './search-filters/search-filters.page';
+import { ActivatedRoute, Router } from '@angular/router';
 
 @Component({
     selector: 'app-search',
@@ -61,21 +62,44 @@ export class SearchPage implements OnInit {
     constructor(
         private workOrdersService: WorkOrdersService,
         private cdr: ChangeDetectorRef,
-        private modalCtrl: ModalController
+        private modalCtrl: ModalController,
+        private route: ActivatedRoute,
+        private router: Router
     ) {
         addIcons({ optionsOutline, caretDown, close });
     }
 
     ngOnInit() {
-        this.loadInitialData();
+        this.route.queryParams.subscribe(params => {
+            this.filters.status = params['status'] || '';
+            this.filters.type = params['type'] || '';
+            this.filters.customerId = params['customerId'] || '';
+            this.query = params['query'] || '';
+            this.loadInitialData();
+        });
 
         this.searchSubject.pipe(
             debounceTime(300),
             tap(query => {
                 this.query = query;
+                this.updateUrl();
                 this.resetAndLoad();
             })
         ).subscribe();
+    }
+
+    private updateUrl() {
+        this.router.navigate([], {
+            relativeTo: this.route,
+            queryParams: {
+                query: this.query || null,
+                status: this.filters.status || null,
+                type: this.filters.type || null,
+                customerId: this.filters.customerId || null
+            },
+            queryParamsHandling: 'merge',
+            replaceUrl: true
+        });
     }
 
     onSearchChange(event: any) {
@@ -182,13 +206,18 @@ export class SearchPage implements OnInit {
     async openFiltersModal() {
         const modal = await this.modalCtrl.create({
             component: SearchFiltersPage,
+            componentProps: {
+                filters: { ...this.filters } // Pass a copy of the current filters
+            }
         });
         modal.present();
 
         const { data, role } = await modal.onWillDismiss();
 
         if (role === 'confirm') {
-            // this.message = `Hello, ${data}!`;
+            this.filters = data;
+            this.updateUrl();
+            this.resetAndLoad();
         }
     }
     ////////////////////////////
@@ -202,5 +231,22 @@ export class SearchPage implements OnInit {
      */
     trackById(index: number, item: any): any {
         return item.controlNo;
+    }
+    createDate(dateValue: any): string {
+        if (!dateValue) return '';
+        // Firestore Timestamp serializado
+        if (typeof dateValue === 'object' && dateValue._seconds !== undefined) {
+            const date = new Date(dateValue._seconds * 1000);
+            return date.toLocaleDateString() + ' ' + date.toLocaleTimeString();
+        }
+        // Si es Firestore Timestamp con método toDate
+        if (dateValue.toDate && typeof dateValue.toDate === 'function') {
+            const d = dateValue.toDate();
+            return d.toLocaleDateString() + ' ' + d.toLocaleTimeString();
+        }
+        // Si es string o número
+        const date = new Date(dateValue);
+        if (isNaN(date.getTime())) return '';
+        return date.toLocaleDateString() + ' ' + date.toLocaleTimeString();
     }
 }

@@ -82,4 +82,13 @@ export class AuthService {
   sendPasswordResetEmail(email: string) {
     return sendPasswordResetEmail(this.auth, email);
   }
+
+    /**
+     * Obtiene el UID del usuario actualmente logueado
+     */
+    async getCurrentUserUid(): Promise<string | null> {
+      const user$ = user(this.auth);
+      const currentUser = await firstValueFrom(user$);
+      return currentUser ? currentUser.uid : null;
+    }
 }

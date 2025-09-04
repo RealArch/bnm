@@ -10,7 +10,7 @@ import {
 } from '@ionic/angular/standalone';
 import { addIcons } from 'ionicons';
 import { add, close, search, ellipsisVertical, pencilOutline, trash } from 'ionicons/icons';
-import { RouterLink } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
 // Importante: Añadir el módulo de Scrolling del CDK de Angular
 import { ScrollingModule } from '@angular/cdk/scrolling';
 import { SelectWorkTypePage } from './select-work-type/select-work-type.page';
@@ -38,6 +38,7 @@ export class WorkOrdersPage implements OnInit {
   modalCtrl = inject(ModalController);
   workOrdersService = inject(WorkOrdersService);
   popupService = inject(PopupsService);
+  router = inject(Router);
   alertController = inject(AlertController);
   pendingSignWorkOrders: any[] = [];
   inProgressWorkOrders: any[] = [];
@@ -135,6 +136,26 @@ export class WorkOrdersPage implements OnInit {
     console.log('destroy 1')
     this.destroy$.next();
     this.destroy$.complete();
+  }
+  viewMore(status?: string, type?: string) {
+    // Abrir búsqueda con los parámetros
+    const queryParams: any = {};
+
+    // Añadir parámetros según el estado y tipo
+    if (status === "pending") {
+      queryParams.status = "pending";
+    } else if (status === "closed") {
+      queryParams.status = "closed";
+    } else if (type === 'pickup' && status === 'in-progress') {
+      queryParams.status = "in-progress";
+      queryParams.type = "pickup";
+    } else if (status === "in-progress") {
+      queryParams.status = "in-progress";
+    }
+
+    this.router.navigate(['/user/work-orders/search'], {
+      queryParams
+    });
   }
 
   //ALERTS

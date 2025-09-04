@@ -33,15 +33,24 @@
       </ion-col>
     </ion-row> -->
     <ion-row>
-      <ion-col class="title-box">
-        <ion-text>
-          Pending for sign
-        </ion-text>
+
+      <ion-col class="title-box d-flex align-items-center pb-0">
+        <div>
+          <ion-text>
+            Pending for sign
+          </ion-text>
+        </div>
+        <div class="ms-auto">
+          <ion-button (click)="viewMore('pending')" color="primary" size="small" fill="clear">
+            View All
+          </ion-button>
+        </div>
       </ion-col>
+
       <ion-col size="12">
         <ion-list style="border-radius: 15px;">
           @for(workOrder of pendingSignWorkOrders; track workOrder.id){
-          <ion-item detail="false" color="light">
+          <ion-item detail="false" color="light" class="rounded">
             <ion-label>
               <ion-row class="align-items-center">
                 <ion-col size="12" class="controlNo m-0 pb-0">
@@ -98,16 +107,25 @@
     </ion-row>
 
     <ion-row class="pt-3">
-      <ion-col class="title-box">
+      <ion-col class="title-box pb-0" >
 
-        <ion-text>
-          Pending for delivery
-        </ion-text>
+        <ion-col class="title-box d-flex align-items-center">
+          <div>
+            <ion-text>
+              Pending for Delivery
+            </ion-text>
+          </div>
+          <div class="ms-auto">
+            <ion-button (click)="viewMore('in-progress', 'pickup')" color="primary" size="small" fill="clear">
+              View All
+            </ion-button>
+          </div>
+        </ion-col>
       </ion-col>
       <ion-col size="12">
         <ion-list style="border-radius: 15px;">
           @for(workOrder of inProgressWorkOrders; track workOrder.id){
-          <ion-item detail="false" color="light">
+          <ion-item detail="false" color="light" class="rounded">
             <ion-label>
               <ion-row class="align-items-center">
                 <ion-col size="12" class="controlNo m-0 pb-0">
@@ -163,16 +181,22 @@
     <!-- CLOSED WORK ORDERS -->
 
     <ion-row class="pt-3">
-      <ion-col class="title-box">
-
-        <ion-text>
-          Closed Work Orders
-        </ion-text>
+      <ion-col class="title-box d-flex align-items-center  pb-0">
+        <div>
+          <ion-text>
+            Closed Work orders
+          </ion-text>
+        </div>
+        <div class="ms-auto">
+          <ion-button (click)="viewMore('closed')" color="primary" size="small" fill="clear">
+            View All
+          </ion-button>
+        </div>
       </ion-col>
       <ion-col size="12">
         <ion-list style="border-radius: 15px;">
           @for(workOrder of closedWorkOrders; track workOrder.id){
-          <ion-item button detail="false" color="light" (click)="openRequestSignModal(workOrder)">
+          <ion-item button class="rounded" detail="false" color="light" (click)="openRequestSignModal(workOrder)">
             <ion-label>
               <ion-row class="align-items-center">
                 <ion-col size="12" class="controlNo m-0 pb-0">

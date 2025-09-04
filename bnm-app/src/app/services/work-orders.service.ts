@@ -99,6 +99,7 @@ export class WorkOrdersService {
     startDate?: string, // ISO string
     closeDate?: string  // ISO string
   }) {
+    console.log(params)
     const {
       page = 0,
       hitsPerPage = 10,
@@ -126,8 +127,9 @@ export class WorkOrdersService {
     } else if (closeDate) {
       filters.push(`closeDate <= ${closeDate}`);
     }
-
     const filterString = filters.join(' AND ');
+    console.log(filterString)
+
     client.clearCache()
     return client.searchSingleIndex({
       indexName: environment.algolia.indexes.workOrders,

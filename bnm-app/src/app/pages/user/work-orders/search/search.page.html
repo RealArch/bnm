@@ -43,12 +43,11 @@
       <cdk-virtual-scroll-viewport itemSize="120" class="viewport" *ngIf="workOrders.length > 0">
         <ion-row class="h-100">
 
-          <ion-col size="12"
-            *cdkVirtualFor="let workOrder of workOrders; trackBy: trackById">
-            <ion-item button detail="false" lines="none" class="rounded" (click)="openModalWorkOrder(workOrder)" >
+          <ion-col size="12" class="pb-0" *cdkVirtualFor="let workOrder of workOrders; trackBy: trackById">
+            <ion-item button detail="false" lines="none" class="rounded" (click)="openModalWorkOrder(workOrder)">
               <ion-label>
                 <ion-row class="align-items-center">
-                  <ion-col size="12" class="d-flex align-items-center ">
+                  <ion-col size="12" class="d-flex align-items-center">
 
                     <div class="status radius">
                       {{ workOrder.status | titlecase }}
@@ -59,13 +58,28 @@
                     </div>
 
                   </ion-col>
-                  <ion-col size="7">
+                  <ion-col size="9">
                     <div class="title-item">Customer</div>
                     <div class="content-item text-truncate">{{ workOrder.customer.companyName | titlecase }}</div>
                   </ion-col>
-                  <ion-col size="3">
+                  <ion-col size="3" >
+                    @if(workOrder.status === 'pending'){
+                    <div class="title-item">Created</div>
+                    <div class="content-item">{{ createDate(workOrder.createdAt) | date:'MM/dd/yy'}}</div>
+
+                    } @else if(workOrder.status === 'closed'){
+                    <div class="title-item">Completed</div>
+                    <div class="content-item">{{ workOrder.closeDate | date:'MM/dd/yy' }}</div>
+
+                    } @else if(workOrder.type === 'pickup' && workOrder.status === 'in-progress'){
+                    <div class="title-item">Picked up</div>
+                    <div class="content-item">{{ createDate(workOrder.openSign.dateSigned) | date:'MM/dd/yy' }}</div>
+                    }
+
+                    <!-- @else if(workOrder.status === 'pending' && workOrder.type == 'pickup'){
                     <div class="title-item">Picked Up</div>
                     <div class="content-item">{{ workOrder.startDate | date:'MM/dd/yy' }}</div>
+                    } -->
                   </ion-col>
                 </ion-row>
               </ion-label>

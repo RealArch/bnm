@@ -1,4 +1,4 @@
-<ion-header [translucent]="true">
+<ion-header>
   <ion-toolbar color="primary">
     <ion-title>Filters</ion-title>
     <ion-buttons slot="end">
@@ -7,125 +7,101 @@
   </ion-toolbar>
 </ion-header>
 
-<ion-content [fullscreen]="true">
+<ion-content class="ion-padding">
+  @if(loading){
+
+  } @else {
   <ion-grid>
 
-    <ion-row>
+    <ion-row class="mb-3">
       <ion-col size="12">
         <div class="title">
           Status
         </div>
       </ion-col>
       <ion-col size="12">
-        <ion-chip class="selected">
+        <ion-chip [class.selected]="filters.status === ''" (click)="filters.status = ''">
           <ion-label>All</ion-label>
         </ion-chip>
-        <ion-chip>
+        <ion-chip [class.selected]="filters.status === 'pending'" (click)="filters.status = 'pending'">
           <ion-label>Pending</ion-label>
         </ion-chip>
-        <ion-chip>
+        <ion-chip [class.selected]="filters.status === 'in-progress'" (click)="filters.status = 'in-progress'">
           <ion-label>In Progress</ion-label>
         </ion-chip>
-        <ion-chip>
+        <ion-chip [class.selected]="filters.status === 'closed'" (click)="filters.status = 'closed'">
           <ion-label>Closed</ion-label>
         </ion-chip>
       </ion-col>
     </ion-row>
 
-    <ion-row>
+    <ion-row class="mb-3">
       <ion-col size="12">
         <div class="title">
           Type
         </div>
       </ion-col>
       <ion-col size="12">
-        <ion-chip class="selected">
+        <ion-chip [class.selected]="filters.type === ''" (click)="filters.type = ''">
           <ion-label>All</ion-label>
         </ion-chip>
-        <ion-chip>
+        <ion-chip [class.selected]="filters.type === 'pickup'" (click)="filters.type = 'pickup'">
           <ion-label>Pickup</ion-label>
         </ion-chip>
-        <ion-chip>
+        <ion-chip [class.selected]="filters.type === 'work'" (click)="filters.type = 'work'">
           <ion-label>Work</ion-label>
         </ion-chip>
       </ion-col>
     </ion-row>
 
-    <ion-row>
+    <ion-row class="mb-3">
       <ion-col size="12">
         <div class="title">
           Created By
         </div>
       </ion-col>
       <ion-col size="12">
-        <ion-chip class="selected">
+        <ion-chip [class.selected]="filters.createdBy === this.userUid" (click)="filters.createdBy = this.userUid">
           <ion-label>Me</ion-label>
         </ion-chip>
-        <ion-chip>
+        <ion-chip [class.selected]="filters.createdBy === ''" (click)="filters.createdBy = ''">
           <ion-label>All</ion-label>
         </ion-chip>
+       
       </ion-col>
     </ion-row>
 
-    <ion-row>
+    <ion-row class="mb-3">
       <ion-col size="12">
         <div class="title">
           Customer
         </div>
       </ion-col>
       <ion-col size="12">
-        <ion-item class="rounded" color="light">
-          <ion-select label="Select Customer" placeholder="Favorite Fruit">
-            <ion-select-option value="apple">Apple</ion-select-option>
-            <ion-select-option value="banana">Banana</ion-select-option>
-            <ion-select-option value="orange">Orange</ion-select-option>
+        <ion-item class="rounded" color="light" lines="none">
+          <ion-select label="Select Customer" placeholder="Customer" [(ngModel)]="filters.customerId">
+            <ion-select-option value="">All</ion-select-option>
+            @for(customer of customers; track customer.id){
+            <ion-select-option [value]="customer.id">
+              <span>[{{customer.companyAddress.state}}] </span>
+              <span>{{customer.companyName | titlecase}}</span>,
+              <span>{{customer.companyAddress.city | titlecase}}</span>
+            </ion-select-option>
+            }
           </ion-select>
         </ion-item>
       </ion-col>
     </ion-row>
 
-    <ion-row>
-      <ion-col size="12">
-        <div class="title">
-          Dates
-        </div>
-      </ion-col>
-      <ion-col size="12">
-        <ion-item class="rounded" color="light">
-          <ion-label>
-            Min
-          </ion-label>
-          <ion-datetime-button datetime="date"></ion-datetime-button>
-
-          <ion-popover [keepContentsMounted]="true">
-            <ng-template>
-              <ion-datetime id="date" presentation="date"></ion-datetime>
-            </ng-template>
-          </ion-popover>
-        </ion-item>
-      </ion-col>
-      <!-- <ion-col size="12">
-        <ion-item class="rounded" color="light">
-          <ion-label>
-            Max
-          </ion-label>
-          <ion-datetime-button datetime="date"></ion-datetime-button>
-
-          <ion-popover [keepContentsMounted]="true">
-            <ng-template>
-              <ion-datetime id="date" presentation="date"></ion-datetime>
-            </ng-template>
-          </ion-popover>
-        </ion-item>
-      </ion-col> -->
-    </ion-row>
-
   </ion-grid>
+  }
 </ion-content>
+@if(!loading){
 <ion-footer>
   <ion-toolbar>
     <ion-buttons slot="end">
-      <ion-button color="primary" fill="solid">Apply filters</ion-button>
+      <ion-button color="primary" fill="solid" (click)="applyFilters()">Apply filters</ion-button>
     </ion-buttons>
   </ion-toolbar>
 </ion-footer>
+}
