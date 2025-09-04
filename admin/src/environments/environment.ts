@@ -17,12 +17,14 @@ export const environment = {
     measurementId: "G-DQB4L8VBDE"
   },
   //ALGOLIA CONFIG
-  algolia:{
+  algolia: {
     appID: 'CKJQ46D11T',
     searchKey: '020bc175a201a0515a5a52f951e1fb54',
-    indexes:{
-      customers:'customers_dev',
-      paycheckHistory:'paycheckHistory_dev'
+    indexes: {
+      customers: 'customers_dev',
+      paycheckHistory: 'paycheckHistory_dev',
+      workOrders: 'workOrders_dev'
+
     }
   }
 };

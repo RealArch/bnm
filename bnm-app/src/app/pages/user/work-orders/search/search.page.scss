@@ -1,15 +1,3 @@
-// Main host styles for the component
-// :host {
-//     display: flex;
-//     flex-direction: column;
-//     height: 100%;
-// }
-
-// Styling for the content area
-// ion-content {
-//     --background: #f4f5f8; // A softer background color
-// }
-
 // Container that fills the available space in the content area
 .results-container {
     display: flex;
@@ -92,12 +80,3 @@ ion-item {
         text-overflow: ellipsis;
     }
 }
-
-
-
-// Remove unnecessary margins and paddings from columns inside the item row
-// ion-item ion-col {
-//     margin: 0;
-//     padding-top: 2px;
-//     padding-bottom: 2px;
-// }
