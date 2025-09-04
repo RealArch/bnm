@@ -70,3 +70,5 @@ node_modules/
 .dir/
 
 dir/
+
+firebase-export-*/
