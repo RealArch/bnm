@@ -6,23 +6,24 @@ import {
     IonContent, IonHeader, IonToolbar, IonButtons, IonButton, IonIcon,
     IonBackButton, IonSearchbar, IonRow, IonCol, IonItem, IonLabel,
     IonSpinner, IonRefresher, IonRefresherContent, IonInfiniteScroll,
-    IonInfiniteScrollContent, IonGrid, IonTitle, IonPopover, IonList, IonFab, 
-    IonFabButton, ModalController
+    IonInfiniteScrollContent, IonGrid, IonTitle, IonPopover, IonList, IonFab,
+    IonFabButton, ModalController, IonChip
 } from '@ionic/angular/standalone';
 import { debounceTime, Subject, finalize, switchMap, catchError, of, tap, from } from 'rxjs';
 import { WorkOrdersService } from 'src/app/services/work-orders.service';
 import { addIcons } from 'ionicons';
-import { optionsOutline, close } from 'ionicons/icons';
+import { optionsOutline, close, caretDown } from 'ionicons/icons';
 import { NoItemsFoundComponent } from 'src/app/components/no-items-found/no-items-found.component';
 import { WorkOrder } from 'src/app/interfaces/work-order';
 import { RequestSignPage } from '../request-sign/request-sign.page';
+import { SearchFiltersPage } from './search-filters/search-filters.page';
 
 @Component({
     selector: 'app-search',
     templateUrl: './search.page.html',
     styleUrls: ['./search.page.scss'],
     standalone: true,
-    imports: [
+    imports: [IonChip,
         CommonModule,
         FormsModule,
         ScrollingModule,
@@ -30,7 +31,7 @@ import { RequestSignPage } from '../request-sign/request-sign.page';
         IonBackButton, IonSearchbar, IonRow, IonCol, IonItem, IonLabel,
         IonSpinner, IonRefresher, IonRefresherContent, IonInfiniteScroll,
         IonInfiniteScrollContent, IonGrid, IonTitle, IonPopover, IonList, IonFab, IonFabButton,
-        CdkVirtualScrollViewport, NoItemsFoundComponent, 
+        CdkVirtualScrollViewport, NoItemsFoundComponent,
     ]
 })
 export class SearchPage implements OnInit {
@@ -39,8 +40,8 @@ export class SearchPage implements OnInit {
     @ViewChild(IonInfiniteScroll) infiniteScroll?: IonInfiniteScroll;
 
     // --- State Management ---
-    isLoading = true; 
-    isRefreshing = false; 
+    isLoading = true;
+    isRefreshing = false;
 
     // --- Pagination & Search ---
     private currentPage = 0;
@@ -62,7 +63,7 @@ export class SearchPage implements OnInit {
         private cdr: ChangeDetectorRef,
         private modalCtrl: ModalController
     ) {
-        addIcons({ optionsOutline, close });
+        addIcons({ optionsOutline, caretDown, close });
     }
 
     ngOnInit() {
@@ -80,15 +81,15 @@ export class SearchPage implements OnInit {
     onSearchChange(event: any) {
         this.searchSubject.next(event.detail.value);
     }
-    
+
     private loadInitialData() {
         this.isLoading = true;
         this.workOrders = [];
         this.fetchWorkOrders().pipe(
             finalize(() => this.isLoading = false)
-        ).subscribe((data:any) => this.handleApiResponse(data));
+        ).subscribe((data: any) => this.handleApiResponse(data));
     }
-    
+
     private resetAndLoad() {
         this.currentPage = 0;
         this.totalPages = 1;
@@ -100,7 +101,7 @@ export class SearchPage implements OnInit {
 
         this.fetchWorkOrders().pipe(
             finalize(() => this.isLoading = false)
-        ).subscribe((data:any) => this.handleApiResponse(data));
+        ).subscribe((data: any) => this.handleApiResponse(data));
     }
 
     loadMore(event: any) {
@@ -110,7 +111,7 @@ export class SearchPage implements OnInit {
             return;
         }
 
-        this.fetchWorkOrders().subscribe((data:any) => {
+        this.fetchWorkOrders().subscribe((data: any) => {
             this.handleApiResponse(data, true);
             event.target.complete();
             if (this.currentPage >= this.totalPages) {
@@ -133,7 +134,7 @@ export class SearchPage implements OnInit {
                 event.target.complete();
                 setTimeout(() => this.viewport?.scrollToIndex(0), 100);
             })
-        ).subscribe((data:any) => {
+        ).subscribe((data: any) => {
             this.workOrders = data.hits || [];
             this.totalPages = data.nbPages || 1;
             this.currentPage = 1;
@@ -152,11 +153,11 @@ export class SearchPage implements OnInit {
         })).pipe(
             catchError(err => {
                 console.error('Error fetching work orders:', err);
-                return of({ hits: [], nbPages: 0 }); 
+                return of({ hits: [], nbPages: 0 });
             })
         );
     }
-   
+
     private handleApiResponse(data: any, isAppending = false) {
         const newHits = data.hits || [];
         this.workOrders = isAppending ? [...this.workOrders, ...newHits] : newHits;
@@ -167,18 +168,28 @@ export class SearchPage implements OnInit {
         setTimeout(() => this.viewport?.checkViewportSize(), 0);
     }
 
-    openFilters() {
-        console.log('Open filter modal');
-    }
+
     ////////// MODALS //////////
-    async openModalWorkOrder(workOrder:WorkOrder) {
-          const modal = await this.modalCtrl.create({
+    async openModalWorkOrder(workOrder: WorkOrder) {
+        const modal = await this.modalCtrl.create({
             component: RequestSignPage,
             componentProps: {
-              workOrderId: workOrder.id
+                workOrderId: workOrder.id
             }
-          });
-          await modal.present();
+        });
+        await modal.present();
+    }
+    async openFiltersModal() {
+        const modal = await this.modalCtrl.create({
+            component: SearchFiltersPage,
+        });
+        modal.present();
+
+        const { data, role } = await modal.onWillDismiss();
+
+        if (role === 'confirm') {
+            // this.message = `Hello, ${data}!`;
+        }
     }
     ////////////////////////////
     // **** ADD THIS FUNCTION ****
@@ -190,6 +201,6 @@ export class SearchPage implements OnInit {
      * @returns A unique identifier for the work order, in this case, the control number.
      */
     trackById(index: number, item: any): any {
-        return item.controlNo; 
+        return item.controlNo;
     }
 }

@@ -1,0 +1,131 @@
+<ion-header [translucent]="true">
+  <ion-toolbar color="primary">
+    <ion-title>Filters</ion-title>
+    <ion-buttons slot="end">
+      <ion-button (click)="dismiss()">Close</ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content [fullscreen]="true">
+  <ion-grid>
+
+    <ion-row>
+      <ion-col size="12">
+        <div class="title">
+          Status
+        </div>
+      </ion-col>
+      <ion-col size="12">
+        <ion-chip class="selected">
+          <ion-label>All</ion-label>
+        </ion-chip>
+        <ion-chip>
+          <ion-label>Pending</ion-label>
+        </ion-chip>
+        <ion-chip>
+          <ion-label>In Progress</ion-label>
+        </ion-chip>
+        <ion-chip>
+          <ion-label>Closed</ion-label>
+        </ion-chip>
+      </ion-col>
+    </ion-row>
+
+    <ion-row>
+      <ion-col size="12">
+        <div class="title">
+          Type
+        </div>
+      </ion-col>
+      <ion-col size="12">
+        <ion-chip class="selected">
+          <ion-label>All</ion-label>
+        </ion-chip>
+        <ion-chip>
+          <ion-label>Pickup</ion-label>
+        </ion-chip>
+        <ion-chip>
+          <ion-label>Work</ion-label>
+        </ion-chip>
+      </ion-col>
+    </ion-row>
+
+    <ion-row>
+      <ion-col size="12">
+        <div class="title">
+          Created By
+        </div>
+      </ion-col>
+      <ion-col size="12">
+        <ion-chip class="selected">
+          <ion-label>Me</ion-label>
+        </ion-chip>
+        <ion-chip>
+          <ion-label>All</ion-label>
+        </ion-chip>
+      </ion-col>
+    </ion-row>
+
+    <ion-row>
+      <ion-col size="12">
+        <div class="title">
+          Customer
+        </div>
+      </ion-col>
+      <ion-col size="12">
+        <ion-item class="rounded" color="light">
+          <ion-select label="Select Customer" placeholder="Favorite Fruit">
+            <ion-select-option value="apple">Apple</ion-select-option>
+            <ion-select-option value="banana">Banana</ion-select-option>
+            <ion-select-option value="orange">Orange</ion-select-option>
+          </ion-select>
+        </ion-item>
+      </ion-col>
+    </ion-row>
+
+    <ion-row>
+      <ion-col size="12">
+        <div class="title">
+          Dates
+        </div>
+      </ion-col>
+      <ion-col size="12">
+        <ion-item class="rounded" color="light">
+          <ion-label>
+            Min
+          </ion-label>
+          <ion-datetime-button datetime="date"></ion-datetime-button>
+
+          <ion-popover [keepContentsMounted]="true">
+            <ng-template>
+              <ion-datetime id="date" presentation="date"></ion-datetime>
+            </ng-template>
+          </ion-popover>
+        </ion-item>
+      </ion-col>
+      <!-- <ion-col size="12">
+        <ion-item class="rounded" color="light">
+          <ion-label>
+            Max
+          </ion-label>
+          <ion-datetime-button datetime="date"></ion-datetime-button>
+
+          <ion-popover [keepContentsMounted]="true">
+            <ng-template>
+              <ion-datetime id="date" presentation="date"></ion-datetime>
+            </ng-template>
+          </ion-popover>
+        </ion-item>
+      </ion-col> -->
+    </ion-row>
+
+  </ion-grid>
+</ion-content>
+<ion-footer>
+  <ion-toolbar>
+    <ion-buttons slot="end">
+      <ion-button color="primary" fill="solid">Apply filters</ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-footer>

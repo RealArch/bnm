@@ -4,63 +4,81 @@
       <ion-back-button defaultHref="/user/work-orders"></ion-back-button>
     </ion-buttons>
 
-    <ion-searchbar
-      placeholder="Search orders..."
-      [animated]="true"
-      [debounce]="300"
+    <ion-searchbar placeholder="Search orders..." [animated]="true" [debounce]="300"
       (ionInput)="onSearchChange($event)">
     </ion-searchbar>
 
     <ion-buttons slot="end">
-      <ion-button (click)="openFilters()">
+      <ion-button (click)="openFiltersModal()">
         <ion-icon slot="icon-only" name="options-outline"></ion-icon>
       </ion-button>
     </ion-buttons>
   </ion-toolbar>
 </ion-header>
 
-<ion-content [scrollY]="true">
+<ion-content [scrollY]="true" color="light">
+
   <ion-refresher slot="fixed" (ionRefresh)="doRefresh($event)">
     <ion-refresher-content></ion-refresher-content>
   </ion-refresher>
+  <ion-grid class="h-100">
+    <!-- <ion-toolbar>
+      <ion-buttons slot="end">
+        <ion-button (click)="openFiltersModal()">
+          <ion-label>Filters</ion-label>
+          <ion-icon color="primary" size="small" slot="end" name="caret-down" ></ion-icon>
+        </ion-button>
+      </ion-buttons>
+  
+    </ion-toolbar> -->
+    <div class="results-container">
+      <div *ngIf="isLoading && workOrders.length === 0" class="center-box">
+        <ion-spinner name="crescent"></ion-spinner>
+        <p>Fetching Work Orders</p>
+      </div>
 
-  <div class="results-container">
-    <div *ngIf="isLoading && workOrders.length === 0" class="center-box">
-      <ion-spinner name="crescent"></ion-spinner>
-      <p>Fetching Work Orders</p>
+      <div *ngIf="!isLoading && workOrders.length === 0" class="center-box">
+        <app-no-items-found></app-no-items-found>
+      </div>
+      <cdk-virtual-scroll-viewport itemSize="120" class="viewport" *ngIf="workOrders.length > 0">
+        <ion-row class="h-100">
+
+          <ion-col size="12"
+            *cdkVirtualFor="let workOrder of workOrders; trackBy: trackById">
+            <ion-item button detail="false" lines="none" class="rounded" (click)="openModalWorkOrder(workOrder)" >
+              <ion-label>
+                <ion-row class="align-items-center">
+                  <ion-col size="12" class="d-flex align-items-center ">
+
+                    <div class="status radius">
+                      {{ workOrder.status | titlecase }}
+                    </div>
+
+                    <div class="controlNo">
+                      No. {{ workOrder.controlNo }}
+                    </div>
+
+                  </ion-col>
+                  <ion-col size="7">
+                    <div class="title-item">Customer</div>
+                    <div class="content-item text-truncate">{{ workOrder.customer.companyName | titlecase }}</div>
+                  </ion-col>
+                  <ion-col size="3">
+                    <div class="title-item">Picked Up</div>
+                    <div class="content-item">{{ workOrder.startDate | date:'MM/dd/yy' }}</div>
+                  </ion-col>
+                </ion-row>
+              </ion-label>
+            </ion-item>
+
+          </ion-col>
+        </ion-row>
+
+      </cdk-virtual-scroll-viewport>
     </div>
-
-    <div *ngIf="!isLoading && workOrders.length === 0" class="center-box">
-      <app-no-items-found></app-no-items-found>
-    </div>
-
-    <cdk-virtual-scroll-viewport itemSize="120" class="viewport" *ngIf="workOrders.length > 0">
-      <ion-list>
-        <ion-item (click)="openModalWorkOrder(workOrder)" button detail="false" color="light" *cdkVirtualFor="let workOrder of workOrders; trackBy: trackById">
-          <ion-label>
-            <ion-row class="align-items-center">
-              <ion-col size="12" class="controlNo">
-                No. {{ workOrder.controlNo }}
-              </ion-col>
-              <ion-col size="7">
-                <div class="title-item">Customer</div>
-                <div class="content-item text-truncate">{{ workOrder.customer.companyName | titlecase }}</div>
-              </ion-col>
-              <ion-col size="3">
-                <div class="title-item">Picked Up</div>
-                <div class="content-item">{{ workOrder.startDate | date:'MM/dd/yy' }}</div>
-              </ion-col>
-            </ion-row>
-          </ion-label>
-        </ion-item>
-      </ion-list>
-    </cdk-virtual-scroll-viewport>
-  </div>
-
+  </ion-grid>
   <ion-infinite-scroll threshold="100px" (ionInfinite)="loadMore($event)" *ngIf="workOrders.length > 0">
-    <ion-infinite-scroll-content
-      loadingSpinner="crescent"
-      loadingText="Loading more work orders...">
+    <ion-infinite-scroll-content loadingSpinner="crescent" loadingText="Loading more work orders...">
     </ion-infinite-scroll-content>
   </ion-infinite-scroll>
 </ion-content>

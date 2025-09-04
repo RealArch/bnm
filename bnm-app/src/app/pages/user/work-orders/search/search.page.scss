@@ -1,14 +1,14 @@
 // Main host styles for the component
-:host {
-    display: flex;
-    flex-direction: column;
-    height: 100%;
-}
+// :host {
+//     display: flex;
+//     flex-direction: column;
+//     height: 100%;
+// }
 
 // Styling for the content area
-ion-content {
-    --background: #f4f5f8; // A softer background color
-}
+// ion-content {
+//     --background: #f4f5f8; // A softer background color
+// }
 
 // Container that fills the available space in the content area
 .results-container {
@@ -45,11 +45,22 @@ ion-item {
     margin-bottom: 8px; // Spacing between items
     box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05); // A subtle shadow for depth
 
+    .status {
+        background-color: var(--ion-color-primary);
+        font-weight: bold;
+        font-size: 0.8em;
+        padding: 0px 6px;
+        color: white;
+        width: 100px;
+        text-align: center;
+        margin-right: 10px;
+    }
+
     .controlNo {
         font-weight: bold;
-        font-size: 0.9em;
+        // font-size: 0.9em;
         color: var(--ion-color-primary);
-        padding-bottom: 6px;
+        // padding-bottom: 6px;
     }
 
     .title-item {
@@ -71,9 +82,11 @@ ion-item {
     }
 }
 
+
+
 // Remove unnecessary margins and paddings from columns inside the item row
-ion-item ion-col {
-    margin: 0;
-    padding-top: 2px;
-    padding-bottom: 2px;
-}
+// ion-item ion-col {
+//     margin: 0;
+//     padding-top: 2px;
+//     padding-bottom: 2px;
+// }

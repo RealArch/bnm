@@ -124,4 +124,8 @@ export const routes: Routes = [
     path: 'sign-pad-modal',
     loadComponent: () => import('./pages/user/work-orders/request-sign/sign-pad-modal/sign-pad-modal.page').then(m => m.SignPadModalPage)
   },
+  {
+    path: 'search-filters',
+    loadComponent: () => import('./pages/user/work-orders/search/search-filters/search-filters.page').then( m => m.SearchFiltersPage)
+  },
 ];
