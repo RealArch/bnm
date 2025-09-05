@@ -30,7 +30,7 @@ export class CustomersPage implements OnInit {
     private alertController: AlertController,
     private popupServices: PopupService
   ) {
-    addIcons({ add, pencil, trash })
+    addIcons({trash,pencil,add});
 
   }
 

@@ -1,16 +1,20 @@
-<ion-header [translucent]="true">
+<ion-header >
   <ion-toolbar color="primary">
     <ion-buttons slot="start">
       <ion-menu-button></ion-menu-button>
-
     </ion-buttons>
+
     <ion-row class="align-items-center">
       <ion-col size="8" class="py-0 ps-0">
         <ion-title>Customers</ion-title>
       </ion-col>
       <ion-col size="4" class="py-0 pe-2">
-        <ion-searchbar [debounce]="1000" (ionInput)="searchData($event)" class=" search-bar" mode="ios"></ion-searchbar>
-
+        <ion-searchbar 
+        [debounce]="1000" 
+        (ionInput)="searchData($event)" 
+        class=" search-bar" 
+        mode="ios"
+        ></ion-searchbar>
       </ion-col>
     </ion-row>
 

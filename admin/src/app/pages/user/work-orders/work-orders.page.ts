@@ -1,9 +1,11 @@
+
 import { Component, OnInit, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import {
   IonContent, IonHeader, IonTitle, IonToolbar, IonButton, IonList, IonItem, IonLabel, IonInfiniteScroll,
   IonInfiniteScrollContent, IonSearchbar, IonButtons, IonIcon, IonGrid, IonRow, IonCol, IonCard, IonCardContent,
-  IonSpinner, IonPopover, PopoverController, IonSelect, IonSelectOption
+  IonSpinner, IonPopover, PopoverController, IonSelect, IonSelectOption,IonMenuButton,
+
 } from '@ionic/angular/standalone';
 import { Router } from '@angular/router';
 import { WorkOrdersService } from 'src/app/services/work-orders.service';
@@ -11,7 +13,7 @@ import { TimeService } from 'src/app/services/time.service';
 import { WorkOrdersFiltersPopover } from './work-orders-filters/work-orders-filters.popover';
 import { FormsModule } from '@angular/forms';
 import { addIcons } from 'ionicons';
-import { refresh } from 'ionicons/icons';
+import { refresh, closeCircleOutline } from 'ionicons/icons';
 
 @Component({
   selector: 'app-work-orders',
@@ -22,7 +24,7 @@ import { refresh } from 'ionicons/icons';
     CommonModule,
     IonContent, IonHeader, IonTitle, IonToolbar, IonButton, IonList, IonItem, IonLabel, IonInfiniteScroll, IonInfiniteScrollContent, IonSearchbar,
     IonButtons, IonIcon, IonGrid, IonRow, IonCol, IonCard, IonCardContent, IonSpinner,
-    IonSelect, FormsModule, IonSelectOption
+    IonSelect, FormsModule, IonSelectOption, IonMenuButton
 
   ]
 })
@@ -50,10 +52,19 @@ export class WorkOrdersPage implements OnInit {
   };
   customers: any[] = [];
 
-  constructor(){
-    addIcons({refresh});
+  constructor() {
+    addIcons({ refresh, closeCircleOutline });
   }
   ngOnInit() {
+    // Leer los parámetros de la URL y sincronizar los filtros
+    const params = new URLSearchParams(window.location.search);
+    this.filters.status = params.get('status') || '';
+    this.filters.type = params.get('type') || '';
+    this.filters.customerId = params.get('customerId') || '';
+    this.filters.createdBy = params.get('createdBy') || '';
+    this.filters.startDate = params.get('startDate') || '';
+    this.filters.closeDate = params.get('closeDate') || '';
+    this.query = params.get('query') || '';
     this.loadWorkOrders();
   }
 
@@ -132,6 +143,25 @@ export class WorkOrdersPage implements OnInit {
     this.hasMore = true;
     this.loadWorkOrders();
   }
+  resetFilters() {
+    this.filters = {
+      status: '',
+      type: '',
+      customerId: '',
+      createdBy: '',
+      startDate: '',
+      closeDate: ''
+    };
+    this.query = '';
+    this.router.navigate([], {
+      queryParams: {},
+      replaceUrl: true
+    });
+    this.page = 0;
+    this.workOrders = [];
+    this.hasMore = true;
+    this.loadWorkOrders();
+  }
 
   onSearchChange(event: any) {
     this.query = event.detail.value;
@@ -146,8 +176,11 @@ export class WorkOrdersPage implements OnInit {
     this.hasMore = true;
     this.loadWorkOrders();
   }
-
-  goToSearch() {
-    this.router.navigate(['/admin/user/work-orders/search']);
+  openWorkOrderDetail(workOrderId: string) {
+    this.router.navigate(['/user/work-orders', workOrderId]);
   }
+
+  // goToSearch() {
+  //   this.router.navigate(['/admin/user/work-orders/search']);
+  // }
 }

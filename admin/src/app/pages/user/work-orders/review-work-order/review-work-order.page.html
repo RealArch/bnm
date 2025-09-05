@@ -1,0 +1,367 @@
+<ion-header>
+  <ion-toolbar color="primary">
+    <ion-title>Work Order No. {{id}}</ion-title>
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="/user/work-orders"></ion-back-button>
+    </ion-buttons>
+  </ion-toolbar>
+
+</ion-header>
+
+<ion-content color="light">
+  <ion-grid fixed class="pb-5 mb-5">
+    @if(loading){
+    <div class="loading">
+      <ion-spinner color="primary" name="crescent"></ion-spinner>
+    </div>
+    } @else{
+    @if(!workOrder){
+
+    }@else {
+
+
+    <ion-row>
+      <ion-col size="12">
+        <div class="type-box">
+          @if(workOrder.type=='work'){
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+            stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round"
+            class="icon icon-tabler icons-tabler-outline icon-tabler-hammer me-2">
+            <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+            <path d="M11.414 10l-7.383 7.418a2.091 2.091 0 0 0 0 2.967a2.11 2.11 0 0 0 2.976 0l7.407 -7.385" />
+            <path
+              d="M18.121 15.293l2.586 -2.586a1 1 0 0 0 0 -1.414l-7.586 -7.586a1 1 0 0 0 -1.414 0l-2.586 2.586a1 1 0 0 0 0 1.414l7.586 7.586a1 1 0 0 0 1.414 0z" />
+          </svg>
+          Work order for work or delivery
+          } @else if(workOrder.type=='pickup') {
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+            stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round"
+            class="icon icon-tabler icons-tabler-outline icon-tabler-car-crane me-2">
+            <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+            <path d="M5 17m-2 0a2 2 0 1 0 4 0a2 2 0 1 0 -4 0" />
+            <path d="M17 17m-2 0a2 2 0 1 0 4 0a2 2 0 1 0 -4 0" />
+            <path d="M7 18h8m4 0h2v-6a5 5 0 0 0 -5 -5h-1l1.5 5h4.5" />
+            <path d="M12 18v-11h3" />
+            <path d="M3 17v-5h9" />
+            <path d="M4 12v-6l18 -3v2" />
+            <path d="M8 12v-4l-4 -2" />
+          </svg>
+          Work order for Pick-up
+          }
+        </div>
+      </ion-col>
+    </ion-row>
+
+    <ion-row>
+      <ion-col size="12" class="section-subtitle mt-0">
+        Basic Information
+      </ion-col>
+
+      <!-- startDate -->
+      <ion-col size="6" size-md="2">
+        <ion-item lines="none" class="dataItem">
+          <ion-label>
+            <div class="title">Start Date</div>
+            <div class="data">{{workOrder.startDate | date:'MM/dd/yy'}}</div>
+          </ion-label>
+        </ion-item>
+      </ion-col>
+      <!--  -->
+
+      <!-- closeDate -->
+      @if(workOrder.closeDate){
+      <ion-col size="6" size-md="2">
+        <ion-item lines="none" class="dataItem">
+          <ion-label>
+            <div class="title">Close Date</div>
+            <div class="data">{{workOrder.closeDate | date:'MM/dd/yy'}}</div>
+          </ion-label>
+        </ion-item>
+      </ion-col>
+      }
+      <!--  -->
+
+      <!-- orderedBy -->
+      <ion-col size="6" size-md="3">
+        <ion-item lines="none" class="dataItem">
+          <ion-label>
+            <div class="title">Ordered By</div>
+            <div class="data">{{workOrder.customer.contactName | titlecase}}</div>
+          </ion-label>
+        </ion-item>
+      </ion-col>
+      <!--  -->
+
+      <!-- customer.companyPhone -->
+
+      <ion-col size="6" size-md="2">
+        <ion-item lines="none" class="dataItem">
+          <ion-label>
+            <div class="title">Company Phone</div>
+            <div class="data">{{workOrder.customer.companyPhone}}</div>
+          </ion-label>
+        </ion-item>
+      </ion-col>
+      <!--  -->
+
+      <!-- createdBy -->
+      <ion-col size="6" size-md="3">
+        <ion-item lines="none" class="dataItem">
+          <ion-label>
+            <div class="title">Performed By</div>
+            <div class="data text-truncate">{{workOrder.createdBy.firstName +' '+ workOrder.createdBy.lastName |
+              titlecase}}</div>
+          </ion-label>
+        </ion-item>
+      </ion-col>
+      <!--  -->
+
+      <!-- billTo -->
+      <ion-col size="6" size-md="6">
+        <ion-item lines="none" class="dataItem">
+          <ion-label>
+            <div class="title">Bill To</div>
+            <div class="data text-truncate">{{workOrder.customer.companyName}}</div>
+          </ion-label>
+        </ion-item>
+      </ion-col>
+      <!--  -->
+
+      <!-- job location -->
+      <ion-col size="6">
+        <ion-item lines="none" class="dataItem">
+          <ion-label>
+            <div class="title">Job Location</div>
+            <div class="data truncate-2">{{
+              workOrder.customer.companyAddress.street + ", "+
+              workOrder.customer.companyAddress.state + ", "+
+              workOrder.customer.companyAddress.zip
+              | titlecase}}</div>
+          </ion-label>
+        </ion-item>
+      </ion-col>
+      <!--  -->
+    </ion-row>
+
+    <ion-row>
+
+      <ion-col size="12"  class="p-0">
+        <!-- Noted equipment -->
+        <ion-row>
+          <ion-col size="12" class="section-subtitle">
+            Noted Equipments
+          </ion-col>
+          @for(eq of workOrder.notedEquipments; track eq; let i =$index ){
+          <ion-col>
+            <ion-item class="dataItem with-counter">
+              <div class="counter">
+              </div>
+              <ion-row class="w-100">
+                <ion-col size="6" class="">
+                  <div class="title">
+                    Make
+                  </div>
+                  <div class="data">
+                    {{eq.make || 'N/A'}}
+                  </div>
+                </ion-col>
+                <ion-col size="6">
+                  <div class="title">
+                    Model
+                  </div>
+                  <div class="data">
+                    {{eq.model || 'N/A'}}
+                  </div>
+                </ion-col>
+                <ion-col size="6">
+                  <div class="title">
+                    Serial Number
+                  </div>
+                  <div class="data">
+                    {{eq.serialNumber || 'N/A'}}
+                  </div>
+                </ion-col>
+                <ion-col size="6">
+                  <div class="title">
+                    Equipment Number
+                  </div>
+                  <div class="data">
+                    {{eq.equipmentNumber || 'N/A'}}
+                  </div>
+                </ion-col>
+              </ion-row>
+            </ion-item>
+          </ion-col>
+          } @empty {
+          <ion-col>
+            <div class="no-items-box">
+              <div>
+                No equipments had been added to the work order before.
+              </div>
+            </div>
+          </ion-col>
+          }
+
+
+
+        </ion-row>
+
+      </ion-col>
+
+      <ion-col size="12" class="p-0">
+        <!-- services performed -->
+        <ion-row>
+          <ion-col size="12" class="section-subtitle">
+            Services Performed
+          </ion-col>
+          @for(servicePerformed of workOrder.servicesPerformed; track servicePerformed; let i =$index ){
+
+          <ion-col>
+            <ion-item class="dataItem with-counter w-100">
+              <div class="counter">
+              </div>
+
+              <ion-row class="w-100">
+                <ion-col size="2" class="pe-0 mx-0 d-flex flex-column justify-content-center">
+                  <div class="title">
+                    Qty.
+                  </div>
+                  <div class="equipmentData">
+                    {{servicePerformed.quantity || 'N/A'}}
+                  </div>
+                </ion-col>
+                <ion-col size="10" class="d-flex flex-column justify-content-center">
+                  <div class="title">
+                    {{servicePerformed.title || "Service" | titlecase}}
+                  </div>
+                  <div class="serviceDescription ">
+                    {{servicePerformed.description || "No description available."}}
+                  </div>
+                </ion-col>
+              </ion-row>
+
+
+            </ion-item>
+          </ion-col>
+          } @empty {
+          <ion-col>
+            <div class="no-items-box">
+              <div>
+                No services had been added to the work order before.
+              </div>
+            </div>
+          </ion-col>
+          }
+
+
+
+
+
+        </ion-row>
+      </ion-col>
+
+      <ion-col size="12"  class="p-0">
+        <!-- Material Used-->
+        <ion-row>
+          <ion-col size="12" class="section-subtitle">
+            Material Used
+          </ion-col>
+          @for(materialUsed of workOrder.materialsUsed; track materialUsed; let i =$index ){
+
+          <ion-col>
+            <ion-item class="dataItem with-counter w-100">
+              <div class="counter">
+              </div>
+
+              <ion-row class="w-100">
+                <ion-col size="2" class="pe-0 mx-0 d-flex flex-column justify-content-center">
+                  <div class="title">
+                    Qty.
+                  </div>
+                  <div class="equipmentData">
+                    {{materialUsed.quantity || 'N/A'}}
+                  </div>
+                </ion-col>
+                <ion-col size="2" class="d-flex flex-column justify-content-center">
+                  <div class="title">
+                    Part No.
+                  </div>
+                  <div class="equipmentData ">
+                    {{materialUsed.partNumber || 'N/A'}}
+                  </div>
+                </ion-col>
+                <ion-col size="8" class="d-flex flex-column justify-content-center">
+                  <div class="title">
+                    Description
+                  </div>
+                  <div class="equipmentData ">
+                    {{materialUsed.description}}
+                  </div>
+                </ion-col>
+              </ion-row>
+            </ion-item>
+          </ion-col>
+          } @empty {
+          <ion-col>
+            <div class="no-items-box">
+              <div>
+                No materials had been added to the work order before.
+              </div>
+            </div>
+          </ion-col>
+
+          }
+
+
+        </ion-row>
+      </ion-col>
+
+    </ion-row>
+
+
+
+
+
+
+
+
+    @if(workOrder.openSign.img != null || workOrder.closeSign.img != null){
+    <ion-row>
+      @if(workOrder.openSign.img != null){
+      <ion-col size="6">
+        <div class="section-subtitle">Requested Pickup sign</div>
+        <div class="signImg">
+          <img src="{{workOrder.openSign.img}}" alt="">
+          <div class="infoBox">
+            Requested on {{workOrder.openSign.dateSigned?.toDate() | date}}
+          </div>
+        </div>
+      </ion-col>
+      }
+      @if(workOrder.closeSign.img != null){
+      <ion-col size="6">
+        <div class="section-subtitle">
+          Requested
+          @if(workOrder.type == "pickup"){
+          Delivery
+          } @else if(workOrder.type == "work"){
+          Acceptance
+          }
+          sign
+        </div>
+        <div class="signImg">
+          <img src="{{workOrder.closeSign.img}}" alt="">
+          <div class="infoBox">
+            Requested on {{workOrder.closeSign.dateSigned?.toDate() | date}}
+          </div>
+        </div>
+      </ion-col>
+      }
+    </ion-row>
+    }
+
+    }
+    }
+  </ion-grid>
+
+</ion-content>

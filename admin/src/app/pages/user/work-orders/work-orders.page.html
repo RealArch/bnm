@@ -1,66 +1,131 @@
 <ion-header>
   <ion-toolbar color="primary">
-    <ion-title slot="start">Work Orders</ion-title>
-    <ion-searchbar slot="start" placeholder="Search orders..." [animated]="true" [debounce]="300" (ionInput)="onSearchChange($event)"></ion-searchbar>
-    <ion-buttons slot="end">
-      <ion-button (click)="refreshWorkOrders()" color="light">
-        <ion-icon slot="icon-only" name="refresh"></ion-icon>
-      </ion-button>
+    <ion-buttons slot="start">
+      <ion-menu-button></ion-menu-button>
     </ion-buttons>
+
+    <ion-row class="align-items-center">
+      <ion-col size="8" class="">
+        <ion-title>Work Orders</ion-title>
+      </ion-col>
+      <ion-col size="4" class="py-0">
+        <ion-searchbar [debounce]="300" (ionInput)="onSearchChange($event)" [animated]="true"
+          mode="ios"></ion-searchbar>
+      </ion-col>
+
+    </ion-row>
   </ion-toolbar>
+  <div class="bar-filters ">
+
+    <ion-grid fixed>
+      <ion-row class="filters-row">
+        <!-- El searchbar ahora está en el header -->
+        <!-- Filtros horizontales -->
+        <ion-col size="2" class="d-flex align-items-center ">
+          <ion-item class="radius mb-0 w-100" lines="none">
+            <ion-select class="filter-select" label="Status" [(ngModel)]="filters.status" interface="popover"
+              (ionChange)="onFilterChange()">
+              <ion-select-option value="">All</ion-select-option>
+              <ion-select-option value="pending">Pending</ion-select-option>
+              <ion-select-option value="in-progress">In Progress</ion-select-option>
+              <ion-select-option value="closed">Closed</ion-select-option>
+            </ion-select>
+          </ion-item>
+
+        </ion-col>
+        <ion-col size="2" class="d-flex align-items-center ">
+          <ion-item class="radius mb-0 w-100" lines="none">
+
+            <ion-select label="Type" [(ngModel)]="filters.type" interface="popover" (ionChange)="onFilterChange()">
+              <ion-select-option value="">All</ion-select-option>
+              <ion-select-option value="pickup">Pickup</ion-select-option>
+              <ion-select-option value="work">Work</ion-select-option>
+            </ion-select>
+          </ion-item>
+
+        </ion-col>
+        <ion-col size="2" class="d-flex align-items-center ">
+          <ion-item class="radius mb-0 w-100" lines="none">
+
+            <ion-select label="Customer" [(ngModel)]="filters.customerId" interface="popover"
+              (ionChange)="onFilterChange()">
+              <ion-select-option value="">All</ion-select-option>
+              <ion-select-option *ngFor="let customer of customers" [value]="customer.id">
+                {{customer.companyName}}
+              </ion-select-option>
+            </ion-select>
+          </ion-item>
+
+        </ion-col>
+        <ion-col size="3" class="d-flex align-items-center ">
+          <ion-item class="radius mb-0 w-100" lines="none">
+            <ion-select label="Created By" [(ngModel)]="filters.createdBy" interface="popover"
+              (ionChange)="onFilterChange()">
+              <ion-select-option value="">All</ion-select-option>
+              <ion-select-option value="me">Me</ion-select-option>
+            </ion-select>
+          </ion-item>
+        </ion-col>
+
+        <ion-col size="auto" class="">
+          <ion-button color="light" fill="solid" (click)="resetFilters()" class="m-0 p-0 radius" size="small"
+            title="Reset filters">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+              stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+              class="icon icon-tabler icons-tabler-outline icon-tabler-adjustments-off">
+              <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+              <path d="M4 10a2 2 0 1 0 4 0a2 2 0 0 0 -4 0" />
+              <path d="M6 6v2" />
+              <path d="M6 12v8" />
+              <path d="M10 16a2 2 0 1 0 4 0a2 2 0 0 0 -4 0" />
+              <path d="M12 4v4m0 4v2" />
+              <path d="M12 18v2" />
+              <path d="M16 7a2 2 0 1 0 4 0a2 2 0 0 0 -4 0" />
+              <path d="M18 4v1" />
+              <path d="M18 9v5m0 4v2" />
+              <path d="M3 3l18 18" />
+            </svg>
+          </ion-button>
+        </ion-col>
+
+        <ion-col size="auto" class="">
+          <ion-button color="light" fill="solid" (click)="refreshWorkOrders()" class="m-0 p-0 radius" size="small"
+            title="Refresh Data">
+            <ion-icon class="my-1" slot="icon-only" name="refresh"></ion-icon>
+          </ion-button>
+        </ion-col>
+
+      </ion-row>
+    </ion-grid>
+  </div>
+
 
 </ion-header>
 
 <ion-content color="light">
-  <ion-grid class="h-100">
-    <div *ngIf="loading && workOrders.length === 0" class="center-box">
+
+
+  <ion-grid class="h-100" fixed>
+
+
+
+    <div *ngIf="loading && workOrders.length === 0" class="d-flex align-items-center justify-content-center">
       <ion-spinner name="crescent"></ion-spinner>
       <p>Fetching Work Orders</p>
     </div>
-    <div *ngIf="!loading && workOrders.length === 0" class="center-box">
+    <div *ngIf="!loading && workOrders.length === 0" class="no-items">
       <p>No Work Orders found.</p>
     </div>
 
-  <ion-toolbar>
-    <ion-row class="align-items-center">
-  <!-- El searchbar ahora está en el header -->
-      <!-- Filtros horizontales -->
-      <ion-col size="3">
-        <ion-select [(ngModel)]="filters.status" interface="popover" (ionChange)="onFilterChange()">
-          <ion-select-option value="">Status: All</ion-select-option>
-          <ion-select-option value="pending">Pending</ion-select-option>
-          <ion-select-option value="in-progress">In Progress</ion-select-option>
-          <ion-select-option value="closed">Closed</ion-select-option>
-        </ion-select>
-      </ion-col>
-      <ion-col size="3">
-        <ion-select [(ngModel)]="filters.type" interface="popover" (ionChange)="onFilterChange()">
-          <ion-select-option value="">Type: All</ion-select-option>
-          <ion-select-option value="pickup">Pickup</ion-select-option>
-          <ion-select-option value="work">Work</ion-select-option>
-        </ion-select>
-      </ion-col>
-      <ion-col size="3">
-        <ion-select [(ngModel)]="filters.customerId" interface="popover" (ionChange)="onFilterChange()">
-          <ion-select-option value="">Customer: All</ion-select-option>
-          <ion-select-option *ngFor="let customer of customers" [value]="customer.id">
-            {{customer.companyName}}
-          </ion-select-option>
-        </ion-select>
-      </ion-col>
-      <ion-col size="3">
-        <ion-select [(ngModel)]="filters.createdBy" interface="popover" (ionChange)="onFilterChange()">
-          <ion-select-option value="">Created By: All</ion-select-option>
-          <ion-select-option value="me">Me</ion-select-option>
-        </ion-select>
-      </ion-col>
-    </ion-row>
 
-  </ion-toolbar>
 
-    <ion-row *ngFor="let workOrder of workOrders">
-      <ion-col size="12" class="pb-0">
-        <ion-item button detail="false" lines="none" class="rounded">
+    @if(!loading){
+
+    <ion-row class="mt-2">
+
+
+      <ion-col *ngFor="let workOrder of workOrders" size="12" class="p-0">
+        <ion-item button detail="false" lines="none" class="radius" (click)="openWorkOrderDetail(workOrder.controlNo)">
           <ion-label>
             <ion-row class="align-items-center">
               <ion-col size="12" class="d-flex align-items-center">
@@ -109,5 +174,7 @@
       <ion-infinite-scroll-content loadingSpinner="crescent"
         loadingText="Loading more work orders..."></ion-infinite-scroll-content>
     </ion-infinite-scroll>
+    }
+
   </ion-grid>
 </ion-content>

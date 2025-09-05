@@ -61,6 +61,10 @@ export const routes: Routes = [
         path: 'work-orders',
         loadComponent: () => import('./pages/user/work-orders/work-orders.page').then(m => m.WorkOrdersPage)
       },
+      {
+        path: 'work-orders/:id',
+        loadComponent: () => import('./pages/user/work-orders/review-work-order/review-work-order.page').then(m => m.ReviewWorkOrderPage)
+      },
 
     ]
   },
@@ -116,6 +120,8 @@ export const routes: Routes = [
     path: 'add-user-modal',
     loadComponent: () => import('./pages/user/configs/admin-users/add-user-modal/add-user-modal.page').then(m => m.AddUserModalPage)
   },
+
+
 
 
 
