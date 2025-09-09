@@ -7,7 +7,7 @@ import { Capacitor } from "@capacitor/core";
 export const environment = {
   production: false,
   useEmulators: true,
-
+  version:"1.1.0",
   api: getApiUrl(),
   firebaseConfig: {
     apiKey: "AIzaSyA0LMo7LR0QcHf_ZOy5ozuG_KT4hnGx51k",

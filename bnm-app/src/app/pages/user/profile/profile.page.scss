@@ -34,3 +34,15 @@
         }
     }
 }
+
+.version-info {
+    text-align: center;
+    margin-top: 20px;
+    padding: 10px;
+
+    .version-text {
+        font-size: 0.875rem;
+        color: #999999;
+        font-weight: 400;
+    }
+}

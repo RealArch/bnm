@@ -38,11 +38,17 @@
       <ion-item button color="light" detail="false" (click)="deleteAccountAlert()">
         <ion-text>Delete your account</ion-text>
       </ion-item>
-            <ion-item button color="light" detail="false" (click)="logout()">
+      <ion-item button color="light" detail="false" (click)="logout()">
         Sign out
       </ion-item>
     </ion-list>
 
+    <!-- App Version -->
+    <div class="version-info">
+      <ion-text class="version-text">
+        Version {{appVersion}}
+      </ion-text>
+    </div>
 
   </ion-grid>
 </ion-content>

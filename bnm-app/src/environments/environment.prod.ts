@@ -1,6 +1,7 @@
 export const environment = {
   production: true,
   useEmulators: false,
+    version:"1.1.0",
   //ALGOLIA CONFIG
   api: 'https://us-central1-bnm-01-abd4b.cloudfunctions.net/api',
   firebaseConfig: {

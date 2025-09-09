@@ -7,6 +7,7 @@ import { Subject, takeUntil } from 'rxjs';
 import { IONIC_STANDALONE_MODULES } from 'src/app/ionic-standalone-components';
 import { NgIf, TitleCasePipe } from '@angular/common';
 import { PopupsService } from 'src/app/services/popups.service';
+import { environment } from 'src/environments/environment';
 
 @Component({
   selector: 'app-profile',
@@ -20,6 +21,7 @@ export class ProfilePage implements OnInit {
   subscribe$ = new Subject<void>();
   userData: any;
   errorDelete: string = 'Error';
+  appVersion: string = environment.version;
   constructor(
     private authService: AuthService,
     private modalContrller: ModalController,
