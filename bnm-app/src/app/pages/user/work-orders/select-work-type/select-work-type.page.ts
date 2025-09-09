@@ -14,9 +14,9 @@ import { Router, RouterLink } from '@angular/router';
   templateUrl: './select-work-type.page.html',
   styleUrls: ['./select-work-type.page.scss'],
   standalone: true,
-  imports: [IonRouterLink, IonButton, IonIcon, IonText, IonCardContent, IonCard,
-     IonRow, IonCol, IonGrid, IonButtons, IonContent, IonHeader, IonTitle, 
-     IonToolbar, CommonModule, FormsModule, RouterLink
+  imports: [IonButton, IonIcon, IonText, IonCardContent, IonCard,
+     IonRow, IonCol, IonGrid, IonButtons, IonContent, IonHeader, 
+     IonToolbar, CommonModule, FormsModule
     ]
 })
 export class SelectWorkTypePage implements OnInit {

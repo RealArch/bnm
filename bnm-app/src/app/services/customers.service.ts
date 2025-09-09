@@ -20,6 +20,7 @@ export class CustomersService {
   }
   async getAllCustomersAlgolia() {
     try {
+      client.clearCache()
       const response = await client.searchSingleIndex({
         indexName: environment.algolia.indexes.customers,
         // searchParams: { query: value },

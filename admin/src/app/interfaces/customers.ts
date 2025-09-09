@@ -9,6 +9,7 @@ export interface AddCustomer {
     };
     contactName: string;
     contactPhone: string;
+    contactEmail: string;
     id?: string | null;
 }
 export interface Customer {
@@ -24,5 +25,6 @@ export interface Customer {
     };
     contactName: string;
     contactPhone: string;
+    contactEmail: string;
     creationDate: any;
 }

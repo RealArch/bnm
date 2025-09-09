@@ -87,8 +87,6 @@ export class AddWorkOrderPage implements OnInit {
       this.addWorkOrderForm.get('closeDate')?.setValue(new Date().toISOString().split('T')[0]);
       this.addWorkOrderForm.get('closeDate')?.setValidators([Validators.required]);
     }
-    console.log(this.addWorkOrderForm.value)
-    console.log(this.type)
     this.customers = await this.getCustomer() as Customer[]
 
   }

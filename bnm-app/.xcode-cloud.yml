@@ -1,0 +1,38 @@
+{
+  "version": 1,
+  "workflows": {
+    "bnm-app-workflow": {
+      "name": "BNM App Build Workflow",
+      "description": "Build and archive BNM Capacitor iOS app",
+      "environment": {
+        "variables": [
+          {
+            "name": "NODE_VERSION",
+            "value": "18"
+          }
+        ]
+      },
+      "actions": [
+        {
+          "name": "Build",
+          "actionType": "build",
+          "buildSettings": {
+            "scheme": "App",
+            "configuration": "Release",
+            "archiveExportOptions": {
+              "method": "app-store"
+            }
+          }
+        }
+      ],
+      "startConditions": [
+        {
+          "type": "git_push",
+          "source": {
+            "branch": "main"
+          }
+        }
+      ]
+    }
+  }
+}

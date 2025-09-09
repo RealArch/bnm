@@ -94,6 +94,9 @@
             <ion-select labelPlacement="stacked" placeholder="Select a customer" interface="modal"
               (ionChange)="onCustomerSelected($event)">
               <div slot="label">Bill To <ion-text color="danger">(Required)</ion-text></div>
+              @if(customers.length === 0){
+              <ion-select-option disabled>No customers registered</ion-select-option>
+              } @else {
               @for(customer of customers; track customer.id){
               <ion-select-option [value]="customer">
                 <span>[{{customer.companyAddress.state}}] </span>
@@ -102,9 +105,7 @@
 
               </ion-select-option>
               }
-
-
-
+              }
             </ion-select>
           </ion-item>
         </ion-col>
@@ -251,10 +252,10 @@
             </ion-button>
           </ion-item>
           }
-          @if(servicesPerformed?.errors?.['minLengthArray']){
+          @if(servicesPerformed && servicesPerformed.errors && servicesPerformed.errors['minLengthArray']){
           <div class="errorMessage py-2">
             <ion-icon name="alert-circle-outline"></ion-icon>
-            Debes agregar al menos un servicio realizado.
+            You must add at least one service performed.
           </div>
           }
 

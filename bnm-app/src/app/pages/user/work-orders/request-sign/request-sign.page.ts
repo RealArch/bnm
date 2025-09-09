@@ -23,7 +23,7 @@ import { take } from 'rxjs';
   templateUrl: './request-sign.page.html',
   styleUrls: ['./request-sign.page.scss'],
   standalone: true,
-  imports: [IonList, IonPopover, IonDatetimeButton, IonModal, IonText, IonDatetime, IonLabel, IonItem, IonGrid, IonCol, IonRow, IonBackButton, IonIcon, IonButton, IonButtons, IonSearchbar, IonContent, IonHeader, IonTitle, IonToolbar, CommonModule, FormsModule]
+  imports: [IonList, IonPopover, IonDatetimeButton, IonDatetime, IonLabel, IonItem, IonGrid, IonCol, IonRow, IonIcon, IonButton, IonButtons, IonContent, IonHeader, IonTitle, IonToolbar, CommonModule, FormsModule]
 })
 export class RequestSignPage implements OnInit {
   @Input() workOrderId: string = '';

@@ -36,6 +36,7 @@ export class CustomersService {
     return this.customers$;
 
   }
+
   async searchCustomer2(value: string) {
     const response = await client.getObject({
       indexName: environment.algolia.indexes.customers,
@@ -56,6 +57,24 @@ export class CustomersService {
 
     } catch (error) {
       console.error('Error searching customers:', error);
+      throw error;
+    }
+  }
+
+  async getAllCustomersFromAlgolia(): Promise<Customer[]> {
+    try {
+      client.clearCache();
+      const response = await client.searchSingleIndex({
+        indexName: environment.algolia.indexes.customers,
+        searchParams: {
+          query: '',
+          hitsPerPage: 1000, // Ajusta según el número esperado de customers
+          page: 0
+        }
+      });
+      return response.hits.map((result) => this.mapToCustomer(result));
+    } catch (error) {
+      console.error('Error getting all customers from Algolia:', error);
       throw error;
     }
   }
@@ -86,7 +105,8 @@ export class CustomersService {
       companyAddress: hit.companyAddress || 'N/A',
       contactName: hit.contactName || 'N/A',
       contactPhone: hit.contactPhone || 'N/A',
-      creationDate: hit.creationDate || 'N/A'
+      creationDate: hit.creationDate || 'N/A',
+      contactEmail: hit.contactEmail || 'N/A',
     };
   }
 }

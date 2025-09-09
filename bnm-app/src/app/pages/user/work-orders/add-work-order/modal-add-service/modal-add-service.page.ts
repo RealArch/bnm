@@ -15,8 +15,7 @@ import { close } from 'ionicons/icons';
   templateUrl: './modal-add-service.page.html',
   styleUrls: ['./modal-add-service.page.scss'],
   standalone: true,
-  imports: [IonLabel, IonSegmentButton, IonSegment, IonSegmentView,
-    IonSegmentContent, IonFooter, IonItem, IonCol, IonRow, IonGrid, IonIcon,
+  imports: [IonFooter, IonItem, IonCol, IonRow, IonGrid, IonIcon,
     IonButton, IonButtons, IonContent, IonHeader, IonTitle,
     IonToolbar, CommonModule, FormsModule, ReactiveFormsModule, IonInput,
     IonTextarea

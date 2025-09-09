@@ -24,14 +24,14 @@ import { ActivatedRoute, Router } from '@angular/router';
     templateUrl: './search.page.html',
     styleUrls: ['./search.page.scss'],
     standalone: true,
-    imports: [IonChip,
+    imports: [
         CommonModule,
         FormsModule,
         ScrollingModule,
         IonContent, IonHeader, IonToolbar, IonButtons, IonButton, IonIcon,
         IonBackButton, IonSearchbar, IonRow, IonCol, IonItem, IonLabel,
         IonSpinner, IonRefresher, IonRefresherContent, IonInfiniteScroll,
-        IonInfiniteScrollContent, IonGrid, IonTitle, IonPopover, IonList, IonFab, IonFabButton,
+        IonInfiniteScrollContent, IonGrid,
         CdkVirtualScrollViewport, NoItemsFoundComponent,
     ]
 })

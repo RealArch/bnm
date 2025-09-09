@@ -34,7 +34,7 @@
     "@capacitor/status-bar": "^7.0.2",
     "@ionic/angular": "^8.0.0",
     "algoliasearch": "^5.20.4",
-    "bootstrap": "^5.3.6",
+    "bootstrap": "^5.3.8",
     "capacitor-native-settings": "^7.0.2",
     "ionicons": "^7.0.0",
     "moment-timezone": "^0.5.47",

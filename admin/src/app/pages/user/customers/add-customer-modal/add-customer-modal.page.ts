@@ -30,7 +30,7 @@ export class AddCustomerModalPage implements OnInit {
     private popupService: PopupService,
     private generalService: GeneralService
   ) {
-    addIcons({ close })
+    addIcons({close});
 
    
   }
@@ -47,8 +47,9 @@ export class AddCustomerModalPage implements OnInit {
         state: [this.customer?.companyAddress.state || null, Validators.required],
         zip: [this.customer?.companyAddress.zip || null, Validators.required]
       }),
-      contactName: [this.customer?.contactName || null,],
-      contactPhone: [this.customer?.contactPhone || null,],
+  contactName: [this.customer?.contactName || null, Validators.required],
+  contactPhone: [this.customer?.contactPhone || null,],
+  contactEmail: [this.customer?.contactEmail || null, Validators.required],
     })
     console.log(this.customer)
   }
@@ -61,6 +62,7 @@ export class AddCustomerModalPage implements OnInit {
       companyAddress: this.customerForm.value.companyAddress,
       contactName: this.customerForm.value.contactName,
       contactPhone: this.customerForm.value.contactPhone,
+      contactEmail: this.customerForm.value.contactEmail,
       id:this.customer?.id || null // if null, it's a new record
     }
     this.customersService.addCustomer(data)
@@ -68,7 +70,7 @@ export class AddCustomerModalPage implements OnInit {
         this.popupService.presentToast(
           "bottom",
           "success",
-          "Customer added successfully"
+          "Customer has been added successfully."
         )
         this.closeModal()
         this.loading = false;

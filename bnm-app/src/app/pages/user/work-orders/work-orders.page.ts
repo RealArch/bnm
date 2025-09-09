@@ -25,12 +25,11 @@ import { PopupsService } from 'src/app/services/popups.service';
   templateUrl: './work-orders.page.html',
   styleUrls: ['./work-orders.page.scss'],
   standalone: true,
-  imports: [IonAlert, IonPopover, IonCardContent, IonCard, IonText, IonRow, IonCol, IonGrid,
-    IonSpinner, IonLabel, IonList, IonItem, IonSearchbar,
+  imports: [IonPopover, IonText, IonRow, IonCol, IonGrid,
+    IonLabel, IonList, IonItem,
     IonButtons, IonIcon, IonContent, IonHeader, IonTitle,
     IonButton, IonToolbar, CommonModule, FormsModule,
     ReactiveFormsModule, IonFab, IonFabButton, RouterLink,
-    IonInfiniteScroll, IonInfiniteScrollContent,
     ScrollingModule // <-- Módulo añadido
   ]
 })

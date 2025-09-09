@@ -1,5 +1,5 @@
 import { Injectable, inject } from '@angular/core';
-import { Firestore, collection, collectionData, collectionSnapshots, doc, getFirestore, query, updateDoc, where } from '@angular/fire/firestore';
+import { Firestore, collection, collectionData, collectionSnapshots, doc, getFirestore, query, updateDoc, where, getDocs } from '@angular/fire/firestore';
 import { map } from 'rxjs';
 
 @Injectable({
@@ -69,6 +69,15 @@ export class UsersService {
         return { id, ...data }
       }))
     )
+  }
+
+  async getAllUsersOnce() {
+    const usersRef = collection(getFirestore(), 'users');
+    const snapshot = await getDocs(usersRef);
+    return snapshot.docs.map(doc => ({
+      id: doc.id,
+      ...doc.data()
+    }));
   }
 
 }

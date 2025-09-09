@@ -6,6 +6,37 @@
       </ion-toolbar>
     </ion-header>
     <ion-content class="ion-padding">
+      <!-- User Profile Block -->
+      @if(currentUser){
+      <div class="user-profile-block">
+        <div class="user-avatar">
+          {{ getUserInitials() }}
+        </div>
+        <div class="user-info">
+          <div class="user-name">
+            {{ getUserFullName() }}
+          </div>
+          <div class="user-email">
+            {{ getUserEmail() }}
+          </div>
+        </div>
+      </div>
+      } @else {
+      <div class="user-profile-block">
+        <div class="user-avatar">
+          U
+        </div>
+        <div class="user-info">
+          <div class="user-name">
+            Loading...
+          </div>
+          <div class="user-email">
+            Please wait
+          </div>
+        </div>
+      </div>
+      }
+
       <ion-list class="menu">
         <ion-menu-toggle auto-hide="false">
           <!-- <ion-item lines="none" detail="false" routerLinkActive="selected" routerDirection="root"

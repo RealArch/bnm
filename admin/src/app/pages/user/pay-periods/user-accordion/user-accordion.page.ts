@@ -40,6 +40,15 @@ export class UserAccordionPage implements OnInit {
   ngOnInit() {
     this.schedule = this.getArrayWithSchedule()
   }
+
+  getUserInitials(): string {
+    if (!this.userData || !this.userData.firstName || !this.userData.lastName) {
+      return 'U'; // Default initial if data is missing
+    }
+    const firstInitial = this.userData.firstName.charAt(0).toUpperCase();
+    const lastInitial = this.userData.lastName.charAt(0).toUpperCase();
+    return firstInitial + lastInitial;
+  }
   getArrayWithSchedule() {
     this.loading = true;
     this.timeWorked = this.calculateWorkedHours(this.userData.currentPaycheck)

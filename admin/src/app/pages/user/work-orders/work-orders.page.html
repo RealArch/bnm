@@ -44,14 +44,14 @@
           </ion-item>
 
         </ion-col>
-        <ion-col size="2" class="d-flex align-items-center ">
+        <ion-col size="3" class="d-flex align-items-center ">
           <ion-item class="radius mb-0 w-100" lines="none">
 
-            <ion-select label="Customer" [(ngModel)]="filters.customerId" interface="popover"
+            <ion-select label="Customer" class="small-option" [(ngModel)]="filters.customerId" interface="popover"
               (ionChange)="onFilterChange()">
               <ion-select-option value="">All</ion-select-option>
               <ion-select-option *ngFor="let customer of customers" [value]="customer.id">
-                {{customer.companyName}}
+                  [{{ customer.companyAddress.state }}] {{ customer.companyName }}, {{ customer.companyAddress.city }}
               </ion-select-option>
             </ion-select>
           </ion-item>
@@ -62,7 +62,9 @@
             <ion-select label="Created By" [(ngModel)]="filters.createdBy" interface="popover"
               (ionChange)="onFilterChange()">
               <ion-select-option value="">All</ion-select-option>
-              <ion-select-option value="me">Me</ion-select-option>
+              <ion-select-option *ngFor="let user of users" [value]="user.id">
+                {{ user.firstName }} {{ user.lastName }}
+              </ion-select-option>
             </ion-select>
           </ion-item>
         </ion-col>
@@ -111,10 +113,10 @@
 
     <div *ngIf="loading && workOrders.length === 0" class="d-flex align-items-center justify-content-center">
       <ion-spinner name="crescent"></ion-spinner>
-      <p>Fetching Work Orders</p>
+      <p>Loading work orders...</p>
     </div>
     <div *ngIf="!loading && workOrders.length === 0" class="no-items">
-      <p>No Work Orders found.</p>
+      <p>No work orders found.</p>
     </div>
 
 

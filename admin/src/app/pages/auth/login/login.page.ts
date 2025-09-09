@@ -33,11 +33,11 @@ export class LoginPage implements OnInit {
       }).catch(err => {
         console.log(err.code)
         if (err.code == "auth/user-not-found") {
-          this.popupService.presentToast("bottom", "danger", "The email address you entered is not registered.")
+          this.popupService.presentToast("bottom", "danger", "he email address you entered is not found in our system.")
         } else if (err.code == "auth/wrong-password") {
-          this.popupService.presentToast("bottom", "danger", "The password you entered is wrong.")
+          this.popupService.presentToast("bottom", "danger", "The password you entered is incorrect.")
         } else {
-          this.popupService.presentToast("bottom", "danger", "Ups!? There is an unexpected error")
+          this.popupService.presentToast("bottom", "danger", "Oops! An unexpected error occurred. Please try again.")
           console.log(err)
         }
       }).finally(() => {

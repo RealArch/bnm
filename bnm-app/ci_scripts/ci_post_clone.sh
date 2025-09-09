@@ -28,7 +28,7 @@ pod --version
 
 # Navigate to the project directory
 echo "Navigating to $CI_WORKSPACE/bnm-app"
-cd $CI_WORKSPACE/bnm-app || { echo "Failed to navigate to $CI_WORKSPACE/bnm/bnm-app"; exit 1; }
+cd $CI_WORKSPACE/bnm-app || { echo "Failed to navigate to $CI_WORKSPACE/bnm-app"; exit 1; }
 
 # Verify current directory
 pwd

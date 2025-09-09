@@ -49,6 +49,15 @@ export class ItemUserComponent implements OnInit {
     }
   }
 
+  getUserInitials(): string {
+    if (!this.userData || !this.userData.firstName || !this.userData.lastName) {
+      return 'U'; // Default initial if data is missing
+    }
+    const firstInitial = this.userData.firstName.charAt(0).toUpperCase();
+    const lastInitial = this.userData.lastName.charAt(0).toUpperCase();
+    return firstInitial + lastInitial;
+  }
+
   updateActive(active: boolean, uid: string) {
     //If there are fields required to activate, show EditAndActivateUser Modal
     if (this.hasMissingFields()) {
@@ -59,10 +68,10 @@ export class ItemUserComponent implements OnInit {
     console.log(active, uid)
     this.authService.activateDeactivate(active, uid)
       .then(data => {
-        var msg = 'Usuario actualizado satisfactoriamente'
+        var msg = 'User updated successfully'
         this.popupServices.presentToast('bottom', 'success', msg)
       }).catch(err => {
-        var msg = 'Ocurrió un problema al actualizar el usuario'
+        var msg = 'There was a problem updating the user'
         this.popupServices.presentToast('bottom', 'danger', msg)
       })
   }

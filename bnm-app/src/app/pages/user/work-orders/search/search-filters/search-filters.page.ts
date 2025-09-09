@@ -16,7 +16,7 @@ import { AuthService } from 'src/app/services/auth.service';
   templateUrl: './search-filters.page.html',
   styleUrls: ['./search-filters.page.scss'],
   standalone: true,
-  imports: [IonPopover, IonDatetime, IonDatetimeButton, IonModal, IonItem, IonLabel, IonChip, IonRow, IonCol, IonGrid, IonButtons, IonButton, IonFooter,
+  imports: [IonItem, IonLabel, IonChip, IonRow, IonCol, IonGrid, IonButtons, IonButton, IonFooter,
     IonContent, IonHeader, IonTitle, IonToolbar, CommonModule, FormsModule, IonSelect,
     IonSelectOption
   ]

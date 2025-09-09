@@ -144,3 +144,15 @@ ion-card, ion-modal {
     padding: 10px 20px;
 
 }
+//ion select popovers
+// /* Para el texto del campo cerrado */
+// ion-select.small-option::part(text),
+// ion-select.small-option::part(placeholder) {
+//   font-size: 12px; /* ajusta a lo que quieras */
+// }
+
+/* Para las opciones dentro del popover */
+ion-select-popover ion-item {
+  --min-height: 35px;
+  font-size: 14px;
+}

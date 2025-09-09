@@ -1,12 +1,9 @@
-
 import { Component, OnInit, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import {
   IonContent, IonHeader, IonTitle, IonToolbar, IonButton, IonList, IonItem, IonLabel, IonInfiniteScroll,
   IonInfiniteScrollContent, IonSearchbar, IonButtons, IonIcon, IonGrid, IonRow, IonCol, IonCard, IonCardContent,
-  IonSpinner, IonPopover, PopoverController, IonSelect, IonSelectOption,IonMenuButton,
-
-} from '@ionic/angular/standalone';
+  IonSpinner, IonPopover, PopoverController, IonSelect, IonSelectOption,IonMenuButton, IonText } from '@ionic/angular/standalone';
 import { Router } from '@angular/router';
 import { WorkOrdersService } from 'src/app/services/work-orders.service';
 import { TimeService } from 'src/app/services/time.service';
@@ -14,13 +11,15 @@ import { WorkOrdersFiltersPopover } from './work-orders-filters/work-orders-filt
 import { FormsModule } from '@angular/forms';
 import { addIcons } from 'ionicons';
 import { refresh, closeCircleOutline } from 'ionicons/icons';
+import { CustomersService } from 'src/app/services/customers.service';
+import { UsersService } from 'src/app/services/users.service';
 
 @Component({
   selector: 'app-work-orders',
   templateUrl: './work-orders.page.html',
   styleUrls: ['./work-orders.page.scss'],
   standalone: true,
-  imports: [
+  imports: [IonText, 
     CommonModule,
     IonContent, IonHeader, IonTitle, IonToolbar, IonButton, IonList, IonItem, IonLabel, IonInfiniteScroll, IonInfiniteScrollContent, IonSearchbar,
     IonButtons, IonIcon, IonGrid, IonRow, IonCol, IonCard, IonCardContent, IonSpinner,
@@ -33,6 +32,8 @@ export class WorkOrdersPage implements OnInit {
   router = inject(Router);
   timeService = inject(TimeService);
   popoverController = inject(PopoverController);
+  customersService = inject(CustomersService);
+  usersService = inject(UsersService);
   workOrders: any[] = [];
   page = 0;
   hitsPerPage = 20;
@@ -51,6 +52,7 @@ export class WorkOrdersPage implements OnInit {
     closeDate: ''
   };
   customers: any[] = [];
+  users: any[] = [];
 
   constructor() {
     addIcons({ refresh, closeCircleOutline });
@@ -65,7 +67,31 @@ export class WorkOrdersPage implements OnInit {
     this.filters.startDate = params.get('startDate') || '';
     this.filters.closeDate = params.get('closeDate') || '';
     this.query = params.get('query') || '';
+    this.loadCustomers();
+    this.loadUsers();
     this.loadWorkOrders();
+  }
+
+  async loadCustomers() {
+    try {
+      this.customers = await this.customersService.getAllCustomersFromAlgolia();
+    } catch (error) {
+      console.error('Error loading customers:', error);
+    }
+  }
+
+  async loadUsers() {
+    try {
+      const allUsers = await this.usersService.getAllUsersOnce();
+      // Ordenar por nombre de A a Z
+      this.users = allUsers.sort((a: any, b: any) => {
+        const nameA = `${a.firstName || ''} ${a.lastName || ''}`.trim().toLowerCase();
+        const nameB = `${b.firstName || ''} ${b.lastName || ''}`.trim().toLowerCase();
+        return nameA.localeCompare(nameB);
+      });
+    } catch (error) {
+      console.error('Error loading users:', error);
+    }
   }
 
   async loadWorkOrders(event?: any) {

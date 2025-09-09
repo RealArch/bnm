@@ -32,7 +32,7 @@ export class AdminUsersPage implements OnInit {
   users = signal<any[]>([]);
   updatingList: string[] = []
   constructor() {
-    addIcons({ trash, pause, play, add })
+    addIcons({pause,play,trash,add});
   }
 
   ngOnInit() {
@@ -50,7 +50,7 @@ export class AdminUsersPage implements OnInit {
       error: (err) => {
         console.log(err)
         this.loading.set(false);
-        this.popupService.presentToast('bottom', 'danger', 'An error occurred while getting the users.')
+        this.popupService.presentToast('bottom', 'danger', 'Unable to load user list. Please try again.')
       }
     })
 
@@ -63,13 +63,13 @@ export class AdminUsersPage implements OnInit {
         this.addToUpdatingList(userId);
         this.authService.deleteAdminUser(userId).subscribe({
           next: () => {
-            this.popupService.presentToast('bottom', 'success', 'User deleted successfully.');
+            this.popupService.presentToast('bottom', 'success', 'User has been successfully removed.');
             this.removeFromUpdatingList(userId);
           },
           error: (err) => {
             console.log(err)
             this.removeFromUpdatingList(userId);
-            this.popupService.presentToast('bottom', 'danger', 'An error occurred while deleting the user.')
+            this.popupService.presentToast('bottom', 'danger', 'Failed to delete user. Please try again.')
           }
         })
       }
