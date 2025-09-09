@@ -2,24 +2,26 @@
 set -e # Exit on any error
 
 echo "🚀 Starting ci_post_clone.sh for BNM App"
-echo "Current working directory: $(pwd)"
-echo "Available directories:"
+echo "========================================"
+echo "🔍 CI_WORKSPACE: ${CI_WORKSPACE}"
+echo "🔍 PWD: $(pwd)"
+echo "🔍 Available directories:"
 ls -la
 
-# Check if we're in the right directory structure
-if [ -d "bnm-app" ]; then
-    echo "✅ Found bnm-app directory"
-    cd bnm-app
-elif [ -f "package.json" ]; then
-    echo "✅ Already in bnm-app directory"
-else
-    echo "❌ Cannot find bnm-app directory or package.json"
-    echo "Directory contents:"
-    ls -la
+# Navigate to the correct directory - CI_WORKSPACE points to repository root
+echo "📂 Navigating to bnm-app directory..."
+cd "${CI_WORKSPACE}/bnm-app" || {
+    echo "❌ Failed to navigate to ${CI_WORKSPACE}/bnm-app"
+    echo "🔍 Searching for bnm-app directory..."
+    find "${CI_WORKSPACE}" -name "bnm-app" -type d || echo "bnm-app directory not found"
+    echo "🔍 Looking for package.json files..."
+    find "${CI_WORKSPACE}" -name "package.json" -type f || echo "No package.json found"
     exit 1
-fi
+}
 
 echo "📍 Current directory: $(pwd)"
+echo "📋 Directory contents:"
+ls -la
 
 # Install Homebrew
 echo "Installing Homebrew..."

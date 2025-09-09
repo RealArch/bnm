@@ -3,51 +3,60 @@
 # ci_pre_xcodebuild.sh - CRITICAL: This runs right before Xcode build
 set -e
 
-echo "� CRITICAL: Pre-Xcode Build Script Starting"
-echo "Current directory: $(pwd)"
-echo "Available files:"
-ls -la
+echo "🔥 CRITICAL: Pre-Xcode Build Script Starting"
+echo "============================================"
+echo "🔍 CI_WORKSPACE: ${CI_WORKSPACE}"
+echo "🔍 PWD: $(pwd)"
 
-# Find the correct directory
-if [ -d "bnm-app" ]; then
-    echo "� Entering bnm-app directory"
-    cd bnm-app
-elif [ -f "package.json" ]; then
-    echo "📂 Already in correct directory"
-else
-    echo "❌ ERROR: Cannot find bnm-app or package.json"
-    find . -name "package.json" -type f
+# Navigate to the correct directory
+cd "${CI_WORKSPACE}/bnm-app" || {
+    echo "❌ FATAL: Cannot find bnm-app directory"
+    find "${CI_WORKSPACE}" -name "package.json" -type f
     exit 1
-fi
+}
 
 echo "📍 Working in: $(pwd)"
 
-# Install dependencies
+# Verify package.json exists
+if [ ! -f "package.json" ]; then
+    echo "❌ FATAL: package.json not found"
+    ls -la
+    exit 1
+fi
+
+# Install dependencies FAST
 echo "📦 Installing npm dependencies..."
-npm ci || npm install
+npm ci --no-audit --no-fund || {
+    echo "⚠️ npm ci failed, trying npm install..."
+    npm install --no-audit --no-fund
+}
 
 # Build the web app
 echo "🏗️ Building web application..."
-npm run build
+npm run build || {
+    echo "❌ FATAL: Web build failed"
+    exit 1
+}
 
-# Ensure Capacitor is synced
-echo "🔄 Syncing Capacitor..."
-npx cap sync ios
-
-# Navigate to iOS directory
+# Navigate to iOS directory and install pods
+echo "📱 Preparing iOS build..."
 cd ios/App
 
-# Install CocoaPods dependencies
-echo "🍫 Installing CocoaPods..."
-pod install --repo-update
+# Critical: Install CocoaPods dependencies
+echo "🍫 Installing CocoaPods dependencies..."
+pod install --repo-update --verbose || {
+    echo "❌ FATAL: pod install failed"
+    exit 1
+}
 
-# Verify the critical files exist
+# CRITICAL VERIFICATION
 if [ -f "Pods/Target Support Files/Pods-App/Pods-App.release.xcconfig" ]; then
     echo "✅ SUCCESS: Pods-App.release.xcconfig found"
+    echo "✅ CocoaPods setup complete"
 else
-    echo "❌ ERROR: Pods-App.release.xcconfig still missing"
-    echo "Contents of Pods directory:"
-    find Pods -name "*.xcconfig" -type f || echo "No xcconfig files found"
+    echo "❌ FATAL: Pods-App.release.xcconfig still missing after pod install"
+    echo "🔍 Pods directory contents:"
+    find Pods -name "*.xcconfig" -type f 2>/dev/null || echo "No xcconfig files found"
     exit 1
 fi
 
