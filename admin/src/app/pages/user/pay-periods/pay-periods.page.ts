@@ -1,7 +1,7 @@
 import { Component, inject, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { addIcons } from 'ionicons';
-import { calendar, ellipsisVertical } from 'ionicons/icons';
+import { calendar, checkmark, ellipsisVertical } from 'ionicons/icons';
 import { UserAccordionPage } from './user-accordion/user-accordion.page';
 import { UsersService } from 'src/app/services/users.service';
 import { combineLatest, Subject, takeUntil } from 'rxjs';
@@ -35,7 +35,7 @@ export class PayPeriodsPage implements OnInit {
   currentClosingDate: any;
   customers: Customer[] = []
   constructor() {
-    addIcons({ ellipsisVertical, calendar })
+    addIcons({ ellipsisVertical, calendar, checkmark })
   }
 
   ngOnInit() {
