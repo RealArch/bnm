@@ -6,11 +6,11 @@ const config: CapacitorConfig = {
   appId: 'com.bmips.app',
   appName: 'B&M App',
   webDir: 'www',
-  server: { //Activar esto para emular en android
-    androidScheme: 'http',
-    cleartext: true,
-    url: "http://192.168.50.131:8100",
-  },
+  // server: { //Activar esto para emular en android
+  //   androidScheme: 'http',
+  //   cleartext: true,
+  //   url: "http://192.168.50.131:8100",
+  // },
   android: {
     allowMixedContent: true,
       adjustMarginsForEdgeToEdge: 'auto' // o 'auto', pero 'force' es más seguro en todos los casos
